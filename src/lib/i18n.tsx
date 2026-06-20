@@ -99,7 +99,7 @@ export const translations = {
     },
     forwhom: {
       label: "Pour qui",
-      title: "Du terrain à\nl'événement corporate",
+      title: "Du terrain au\nchampionnat",
       sub: "PurInstinct s'adapte à tous les contextes, du primaire au championnat national.",
       cards: [
         {
@@ -244,7 +244,7 @@ export const translations = {
     },
     forwhom: {
       label: "Who it's for",
-      title: "From the field to\ncorporate events",
+      title: "From the field to\nthe championship",
       sub: "PurInstinct adapts to any context, from elementary schools to national championships.",
       cards: [
         {

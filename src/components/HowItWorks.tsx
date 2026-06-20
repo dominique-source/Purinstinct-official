@@ -73,7 +73,7 @@ function StepCard({ photo, pos, num, title, body, delay }: { photo: string; pos:
 }
 
 export default function HowItWorks() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const headerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -109,30 +109,16 @@ export default function HowItWorks() {
           ))}
         </div>
 
-        {/* YouTube CTA */}
-        <div
-          onClick={() => window.open("https://www.youtube.com/@PurInstinct", "_blank")}
-          style={{
-            marginTop: 48, borderRadius: 16, overflow: "hidden",
-            border: "1px solid rgba(255,255,255,0.07)", background: "#13161f",
-            padding: "36px 40px", display: "flex", alignItems: "center", justifyContent: "space-between",
-            flexWrap: "wrap", gap: 20, cursor: "pointer",
-            transition: "border-color 0.2s, background 0.2s",
-          }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(132,204,22,0.3)"; (e.currentTarget as HTMLElement).style.background = "#15191f"; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.07)"; (e.currentTarget as HTMLElement).style.background = "#13161f"; }}
-        >
-          <div>
-            <p style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 20, textTransform: "uppercase", letterSpacing: "0.04em", color: "#fff", marginBottom: 4 }}>
-              Voir PurInstinct en action
-            </p>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>YouTube · @PurInstinct</p>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 52, height: 52, borderRadius: "50%", background: "rgba(132,204,22,0.12)", border: "1px solid rgba(132,204,22,0.25)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M8 6l9 5-9 5V6z" fill="#84cc16" /></svg>
-            </div>
-          </div>
+        {/* Rules video — switches with language */}
+        <div style={{ marginTop: 48, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)", background: "#000", position: "relative", aspectRatio: "16 / 9" }}>
+          <iframe
+            key={lang}
+            src={`https://www.youtube.com/embed/${lang === "fr" ? "DB-3cgM8Nq4" : "9Q1YW1LgouE"}?rel=0&modestbranding=1&color=white`}
+            title={lang === "fr" ? "Règles PurInstinct" : "PurInstinct Rules"}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+          />
         </div>
       </div>
 
