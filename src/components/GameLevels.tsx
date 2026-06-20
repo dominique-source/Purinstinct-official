@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
 
@@ -22,370 +22,532 @@ const IMGS: Record<string, Record<string, string>> = {
   },
 };
 
-function Star({ on }: { on: boolean }) {
+const LIME = "#84cc16";
+
+function StarRow({ count, total = 6, size = 20 }: { count: number; total?: number; size?: number }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M8 1.5l1.76 3.57 3.94.57-2.85 2.78.67 3.93L8 10.35l-3.52 1.85.67-3.93L2.3 5.64l3.94-.57L8 1.5z"
-        fill={on ? "#84cc16" : "rgba(255,255,255,0.13)"}
-      />
-    </svg>
+    <div style={{ display: "flex", gap: 3 }} aria-label={`${count}/${total}`}>
+      {Array.from({ length: total }).map((_, s) => (
+        <svg key={s} width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path
+            d="M8 1.5l1.76 3.57 3.94.57-2.85 2.78.67 3.93L8 10.35l-3.52 1.85.67-3.93L2.3 5.64l3.94-.57L8 1.5z"
+            fill={s < count ? LIME : "rgba(255,255,255,0.12)"}
+          />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+type Level = {
+  num: string;
+  name: string;
+  stars: number;
+  tag: string;
+  body: string;
+};
+
+/* ── Shared text block ── */
+function LevelText({ lv, large }: { lv: Level; large?: boolean }) {
+  return (
+    <div style={{ position: "relative" }}>
+      <StarRow count={lv.stars} size={large ? 22 : 18} />
+      <h3
+        style={{
+          fontFamily: "var(--font-barlow), sans-serif",
+          fontWeight: 900,
+          fontSize: large ? "clamp(48px, 5.6vw, 88px)" : "clamp(38px, 9vw, 56px)",
+          lineHeight: 0.9,
+          textTransform: "uppercase",
+          color: "#fff",
+          letterSpacing: "-0.01em",
+          margin: "16px 0 20px",
+        }}
+      >
+        {lv.name}
+      </h3>
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 9,
+          background: "rgba(132,204,22,0.08)",
+          border: "1px solid rgba(132,204,22,0.22)",
+          borderRadius: 9,
+          padding: "9px 16px",
+          marginBottom: 22,
+        }}
+      >
+        <span style={{ width: 7, height: 7, borderRadius: "50%", background: LIME, flexShrink: 0 }} />
+        <span
+          style={{
+            fontFamily: "var(--font-barlow), sans-serif",
+            fontSize: 13,
+            fontWeight: 700,
+            letterSpacing: "0.07em",
+            textTransform: "uppercase",
+            color: LIME,
+          }}
+        >
+          {lv.tag}
+        </span>
+      </div>
+      <p
+        style={{
+          color: "rgba(255,255,255,0.58)",
+          fontSize: large ? 17 : 15.5,
+          lineHeight: 1.72,
+          maxWidth: 440,
+        }}
+      >
+        {lv.body}
+      </p>
+    </div>
   );
 }
 
 export default function GameLevels() {
   const { t, lang } = useLang();
-  const [active, setActive] = useState(0);
-  const [imgVisible, setImgVisible] = useState(true);
-  const [revealed, setRevealed] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-  const tabsRef = useRef<HTMLDivElement>(null);
+  const levels = t.levels.items as unknown as Level[];
+  const n = levels.length;
+  const imgs = IMGS[lang];
 
+  const [mode, setMode] = useState<"pinned" | "native">("pinned");
+  const [active, setActive] = useState(0);
+  const [headerRevealed, setHeaderRevealed] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const fillRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const lastIdx = useRef(0);
+  const rafPending = useRef(false);
+
+  /* Decide mode: pinned on desktop, native scroll-snap on mobile / reduced-motion */
   useEffect(() => {
-    const el = sectionRef.current;
+    const small = window.matchMedia("(max-width: 980px)");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setMode(small.matches || reduce.matches ? "native" : "pinned");
+    update();
+    small.addEventListener("change", update);
+    reduce.addEventListener("change", update);
+    return () => {
+      small.removeEventListener("change", update);
+      reduce.removeEventListener("change", update);
+    };
+  }, []);
+
+  /* Header reveal */
+  useEffect(() => {
+    const el = headerRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setRevealed(true); },
-      { threshold: 0.08 }
+      ([e]) => { if (e.isIntersecting) setHeaderRevealed(true); },
+      { threshold: 0.2 }
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
-  const select = (idx: number) => {
-    if (idx === active) return;
-    setImgVisible(false);
-    setTimeout(() => { setActive(idx); setImgVisible(true); }, 200);
-    // Scroll tab into view on mobile
-    const tab = tabsRef.current?.children[idx] as HTMLElement | undefined;
-    tab?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-  };
+  /* ── Pinned horizontal scroll driver ── */
+  const onScroll = useCallback(() => {
+    if (rafPending.current) return;
+    rafPending.current = true;
+    requestAnimationFrame(() => {
+      rafPending.current = false;
+      const container = containerRef.current;
+      const track = trackRef.current;
+      if (!container || !track) return;
 
-  const levels = t.levels.items;
-  const cur = levels[active];
-  const imgs = IMGS[lang];
+      const vw = window.innerWidth;
+      const scrollable = container.offsetHeight - window.innerHeight;
+      const scrolled = Math.min(Math.max(-container.getBoundingClientRect().top, 0), scrollable);
+      const progress = scrollable > 0 ? scrolled / scrollable : 0;
+
+      const maxX = (n - 1) * vw;
+      const x = progress * maxX;
+      track.style.transform = `translate3d(${-x}px,0,0)`;
+
+      if (fillRef.current) fillRef.current.style.width = `${progress * 100}%`;
+
+      // Depth: scale + opacity per panel based on distance from viewport center
+      for (let i = 0; i < n; i++) {
+        const panel = panelRefs.current[i];
+        if (!panel) continue;
+        const d = Math.abs(i * vw - x) / vw; // 0 = centered
+        const close = Math.max(0, 1 - d);
+        panel.style.opacity = String(0.32 + 0.68 * close);
+        const inner = panel.firstElementChild as HTMLElement | null;
+        if (inner) inner.style.transform = `scale(${0.93 + 0.07 * close})`;
+      }
+
+      const idx = Math.round(progress * (n - 1));
+      if (idx !== lastIdx.current) {
+        lastIdx.current = idx;
+        setActive(idx);
+      }
+    });
+  }, [n]);
+
+  useEffect(() => {
+    if (mode !== "pinned") return;
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [mode, onScroll]);
+
+  /* ── Native (mobile) active dot tracking ── */
+  const nativeRef = useRef<HTMLDivElement>(null);
+  const onNativeScroll = useCallback(() => {
+    const el = nativeRef.current;
+    if (!el) return;
+    const idx = Math.round(el.scrollLeft / (el.clientWidth * 0.86));
+    setActive(Math.min(n - 1, Math.max(0, idx)));
+  }, [n]);
 
   const titleParts = t.levels.title.split("\n");
 
+  /* ── Section header (shared) ── */
+  const Header = (
+    <div
+      ref={headerRef}
+      style={{
+        textAlign: "center",
+        maxWidth: 560,
+        margin: "0 auto",
+        padding: "0 24px",
+        opacity: headerRevealed ? 1 : 0,
+        transform: headerRevealed ? "translateY(0)" : "translateY(26px)",
+        transition: "opacity 0.75s ease, transform 0.75s cubic-bezier(0.16,1,0.3,1)",
+      }}
+    >
+      <span className="section-label" style={{ display: "inline-block", marginBottom: 18 }}>
+        {t.levels.label}
+      </span>
+      <h2
+        style={{
+          fontFamily: "var(--font-barlow), sans-serif",
+          fontWeight: 900,
+          fontSize: "clamp(44px, 6.5vw, 84px)",
+          lineHeight: 0.93,
+          textTransform: "uppercase",
+          color: "#fff",
+          letterSpacing: "-0.01em",
+          marginBottom: 18,
+        }}
+      >
+        {titleParts[0]}
+        <br />
+        <span className="gradient-text">{titleParts[1]}</span>
+      </h2>
+      <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 17, lineHeight: 1.65 }}>{t.levels.sub}</p>
+    </div>
+  );
+
   return (
     <section
-      ref={sectionRef}
       id="levels"
-      style={{ padding: "110px 24px", background: "#06070f", position: "relative", overflow: "hidden" }}
+      style={{ background: "#06070f", position: "relative", paddingTop: 110 }}
     >
       {/* Ambient glow */}
-      <div style={{
-        position: "absolute", inset: 0, pointerEvents: "none",
-        background: "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(132,204,22,0.07) 0%, transparent 65%)",
-      }} />
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          background: "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(132,204,22,0.07) 0%, transparent 60%)",
+        }}
+      />
 
-      <div style={{ maxWidth: 1120, margin: "0 auto", position: "relative" }}>
+      {Header}
 
-        {/* ── Header ── */}
-        <div style={{
-          textAlign: "center", marginBottom: 52,
-          opacity: revealed ? 1 : 0,
-          transform: revealed ? "translateY(0)" : "translateY(28px)",
-          transition: "opacity 0.75s ease, transform 0.75s cubic-bezier(0.16,1,0.3,1)",
-        }}>
-          <span className="section-label" style={{ display: "inline-block", marginBottom: 18 }}>
-            {t.levels.label}
-          </span>
-          <h2 style={{
-            fontFamily: "var(--font-barlow), sans-serif",
-            fontWeight: 900,
-            fontSize: "clamp(44px, 6.5vw, 84px)",
-            lineHeight: 0.93,
-            textTransform: "uppercase",
-            color: "#fff",
-            letterSpacing: "-0.01em",
-            marginBottom: 18,
-          }}>
-            {titleParts[0]}
-            <br />
-            <span className="gradient-text">{titleParts[1]}</span>
-          </h2>
-          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 17, lineHeight: 1.65, maxWidth: 500, margin: "0 auto" }}>
-            {t.levels.sub}
-          </p>
-        </div>
-
-        {/* ── Level tabs ── */}
+      {mode === "pinned" ? (
+        /* ───────────── DESKTOP: pinned horizontal scroll ───────────── */
         <div
-          ref={tabsRef}
-          role="tablist"
-          aria-label={t.levels.label}
-          style={{
-            display: "flex",
-            marginBottom: 40,
-            overflowX: "auto",
-            scrollSnapType: "x mandatory",
-            WebkitOverflowScrolling: "touch",
-            scrollbarWidth: "none",
-            opacity: revealed ? 1 : 0,
-            transform: revealed ? "translateY(0)" : "translateY(16px)",
-            transition: "opacity 0.75s 0.12s ease, transform 0.75s 0.12s cubic-bezier(0.16,1,0.3,1)",
-          }}
+          ref={containerRef}
+          style={{ height: `${n * 88}vh`, position: "relative", marginTop: 56 }}
         >
-          {levels.map((lv, i) => {
-            const on = i === active;
-            return (
-              <button
-                key={lv.num}
-                role="tab"
-                aria-selected={on}
-                onClick={() => select(i)}
-                style={{
-                  flex: "1 0 auto",
-                  minWidth: 118,
-                  padding: "14px 10px 12px",
-                  cursor: "pointer",
-                  textAlign: "center",
-                  scrollSnapAlign: "start",
-                  background: on ? "rgba(132,204,22,0.09)" : "rgba(255,255,255,0.025)",
-                  border: `1px solid ${on ? "rgba(132,204,22,0.38)" : "rgba(255,255,255,0.07)"}`,
-                  borderRadius: i === 0 ? "12px 0 0 12px" : i === levels.length - 1 ? "0 12px 12px 0" : "0",
-                  borderLeft: i > 0 ? "none" : undefined,
-                  transition: "background 0.22s ease, border-color 0.22s ease",
-                  outline: "none",
-                }}
-                onFocus={(e) => { e.currentTarget.style.outline = "2px solid rgba(132,204,22,0.6)"; e.currentTarget.style.outlineOffset = "2px"; }}
-                onBlur={(e) => { e.currentTarget.style.outline = "none"; }}
-              >
-                <div style={{
-                  fontFamily: "var(--font-barlow), sans-serif",
-                  fontSize: 10, fontWeight: 700,
-                  letterSpacing: "0.14em", textTransform: "uppercase",
-                  color: on ? "#84cc16" : "rgba(255,255,255,0.3)",
-                  marginBottom: 4,
-                  transition: "color 0.22s ease",
-                }}>
-                  N°{lv.num}
-                </div>
-                <div style={{
-                  fontFamily: "var(--font-barlow), sans-serif",
-                  fontWeight: 800, fontSize: 13,
-                  textTransform: "uppercase", letterSpacing: "0.04em",
-                  color: on ? "#fff" : "rgba(255,255,255,0.45)",
-                  marginBottom: 7,
-                  transition: "color 0.22s ease",
-                }}>
-                  {lv.name}
-                </div>
-                <div style={{ display: "flex", gap: 2, justifyContent: "center" }}>
-                  {Array.from({ length: 6 }).map((_, s) => <Star key={s} on={s < lv.stars} />)}
-                </div>
-              </button>
-            );
-          })}
-        </div>
+          <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}>
+            {/* Track */}
+            <div
+              ref={trackRef}
+              style={{
+                display: "flex",
+                height: "100%",
+                width: `${n * 100}vw`,
+                willChange: "transform",
+              }}
+            >
+              {levels.map((lv, i) => (
+                <div
+                  key={lv.num}
+                  ref={(el) => { panelRefs.current[i] = el; }}
+                  style={{
+                    flex: "0 0 100vw",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "0 6vw",
+                    opacity: i === 0 ? 1 : 0.32,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "100%",
+                      maxWidth: 1180,
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1.12fr",
+                      gap: 56,
+                      alignItems: "center",
+                      willChange: "transform",
+                      transition: "transform 0.1s linear",
+                    }}
+                  >
+                    {/* Left: text + watermark */}
+                    <div style={{ position: "relative" }}>
+                      <div
+                        aria-hidden="true"
+                        style={{
+                          position: "absolute",
+                          top: -70,
+                          left: -20,
+                          fontFamily: "var(--font-barlow), sans-serif",
+                          fontWeight: 900,
+                          fontSize: "clamp(150px, 16vw, 230px)",
+                          lineHeight: 1,
+                          color: "rgba(132,204,22,0.05)",
+                          userSelect: "none",
+                          pointerEvents: "none",
+                          letterSpacing: "-0.05em",
+                        }}
+                      >
+                        {lv.num}
+                      </div>
+                      <div style={{ position: "relative" }}>
+                        <LevelText lv={lv} large />
+                      </div>
+                    </div>
 
-        {/* ── Content ── */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-          gap: 40, alignItems: "center",
-          opacity: revealed ? 1 : 0,
-          transform: revealed ? "translateY(0)" : "translateY(20px)",
-          transition: "opacity 0.75s 0.22s ease, transform 0.75s 0.22s cubic-bezier(0.16,1,0.3,1)",
-        }}>
-
-          {/* Left: info */}
-          <div style={{ position: "relative", paddingTop: 16 }}>
-            {/* Giant faded number watermark */}
-            <div aria-hidden="true" style={{
-              position: "absolute", top: -32, left: -16,
-              fontFamily: "var(--font-barlow), sans-serif",
-              fontWeight: 900,
-              fontSize: "clamp(120px, 18vw, 200px)",
-              lineHeight: 1,
-              color: "rgba(132,204,22,0.05)",
-              userSelect: "none", pointerEvents: "none",
-              letterSpacing: "-0.05em",
-              transition: "opacity 0.2s ease",
-              opacity: imgVisible ? 1 : 0,
-            }}>
-              {cur.num}
+                    {/* Right: image */}
+                    <div
+                      style={{
+                        position: "relative",
+                        borderRadius: 18,
+                        overflow: "hidden",
+                        border: "1px solid rgba(255,255,255,0.07)",
+                        boxShadow: "0 32px 80px rgba(0,0,0,0.55)",
+                        aspectRatio: "16/9",
+                      }}
+                    >
+                      <Image
+                        src={imgs[lv.num]}
+                        alt={`${lv.name} — ${lv.tag}`}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        sizes="56vw"
+                        priority={i === 0}
+                      />
+                      <div
+                        aria-hidden="true"
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          pointerEvents: "none",
+                          background: "linear-gradient(135deg, rgba(132,204,22,0.05) 0%, transparent 42%)",
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div style={{ position: "relative" }}>
-              {/* Stars row */}
+            {/* Progress UI (stays fixed while pinned) */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 44,
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "min(560px, 78vw)",
+              }}
+            >
               <div
                 style={{
-                  display: "flex", gap: 4, marginBottom: 16,
-                  opacity: imgVisible ? 1 : 0,
-                  transform: imgVisible ? "translateX(0)" : "translateX(-8px)",
-                  transition: "opacity 0.28s ease, transform 0.28s ease",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-end",
+                  marginBottom: 14,
                 }}
-                aria-label={`${cur.stars} étoiles sur 6`}
               >
-                {Array.from({ length: 6 }).map((_, s) => (
-                  <svg key={s} width="22" height="22" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path
-                      d="M8 1.5l1.76 3.57 3.94.57-2.85 2.78.67 3.93L8 10.35l-3.52 1.85.67-3.93L2.3 5.64l3.94-.57L8 1.5z"
-                      fill={s < cur.stars ? "#84cc16" : "rgba(255,255,255,0.1)"}
-                    />
-                  </svg>
-                ))}
-              </div>
-
-              {/* Level name */}
-              <h3 style={{
-                fontFamily: "var(--font-barlow), sans-serif",
-                fontWeight: 900,
-                fontSize: "clamp(44px, 6vw, 76px)",
-                lineHeight: 0.92,
-                textTransform: "uppercase",
-                color: "#fff",
-                letterSpacing: "-0.01em",
-                marginBottom: 22,
-                opacity: imgVisible ? 1 : 0,
-                transform: imgVisible ? "translateY(0)" : "translateY(10px)",
-                transition: "opacity 0.25s 0.04s ease, transform 0.25s 0.04s ease",
-              }}>
-                {cur.name}
-              </h3>
-
-              {/* Rule badge */}
-              <div style={{
-                display: "inline-flex", alignItems: "center", gap: 9,
-                background: "rgba(132,204,22,0.08)",
-                border: "1px solid rgba(132,204,22,0.22)",
-                borderRadius: 9, padding: "9px 16px",
-                marginBottom: 22,
-                opacity: imgVisible ? 1 : 0,
-                transition: "opacity 0.25s 0.08s ease",
-              }}>
-                <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#84cc16", flexShrink: 0 }} />
-                <span style={{
-                  fontFamily: "var(--font-barlow), sans-serif",
-                  fontSize: 13, fontWeight: 700,
-                  letterSpacing: "0.08em", textTransform: "uppercase",
-                  color: "#84cc16",
-                }}>
-                  {cur.tag}
+                <span
+                  style={{
+                    fontFamily: "var(--font-barlow), sans-serif",
+                    fontWeight: 700,
+                    fontSize: 12,
+                    letterSpacing: "0.16em",
+                    color: LIME,
+                  }}
+                >
+                  N°{levels[active].num}
+                </span>
+                <span
+                  style={{
+                    fontFamily: "var(--font-barlow), sans-serif",
+                    fontWeight: 800,
+                    fontSize: 14,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.85)",
+                  }}
+                >
+                  {levels[active].name}
                 </span>
               </div>
-
-              {/* Body */}
-              <p style={{
-                color: "rgba(255,255,255,0.58)",
-                fontSize: 16, lineHeight: 1.72,
-                maxWidth: 420, marginBottom: 32,
-                opacity: imgVisible ? 1 : 0,
-                transform: imgVisible ? "translateY(0)" : "translateY(6px)",
-                transition: "opacity 0.25s 0.1s ease, transform 0.25s 0.1s ease",
-              }}>
-                {cur.body}
-              </p>
-
-              {/* Prev / Next buttons */}
-              <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <button
-                  onClick={() => select(Math.max(0, active - 1))}
-                  disabled={active === 0}
-                  aria-label={t.levels.prev}
+              {/* Line + fill */}
+              <div style={{ position: "relative", height: 2, background: "rgba(255,255,255,0.1)", borderRadius: 2 }}>
+                <div
+                  ref={fillRef}
                   style={{
-                    width: 48, height: 48, borderRadius: 12,
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.09)",
-                    cursor: active === 0 ? "not-allowed" : "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    opacity: active === 0 ? 0.28 : 1,
-                    transition: "opacity 0.2s ease, background 0.2s ease",
-                    flexShrink: 0,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    height: "100%",
+                    width: "0%",
+                    background: LIME,
+                    borderRadius: 2,
+                    boxShadow: `0 0 12px ${LIME}`,
                   }}
-                  onMouseEnter={(e) => { if (active > 0) e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                    <path d="M11 14L6 9l5-5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-
-                <button
-                  onClick={() => select(Math.min(levels.length - 1, active + 1))}
-                  disabled={active === levels.length - 1}
-                  aria-label={t.levels.next}
-                  style={{
-                    height: 48, padding: "0 22px",
-                    borderRadius: 12,
-                    background: active < levels.length - 1 ? "rgba(132,204,22,0.12)" : "rgba(255,255,255,0.04)",
-                    border: `1px solid ${active < levels.length - 1 ? "rgba(132,204,22,0.3)" : "rgba(255,255,255,0.09)"}`,
-                    cursor: active === levels.length - 1 ? "not-allowed" : "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                    opacity: active === levels.length - 1 ? 0.28 : 1,
-                    transition: "opacity 0.2s ease, background 0.2s ease",
-                    fontFamily: "var(--font-barlow), sans-serif",
-                    fontWeight: 700, fontSize: 13,
-                    letterSpacing: "0.08em", textTransform: "uppercase",
-                    color: active < levels.length - 1 ? "#84cc16" : "rgba(255,255,255,0.5)",
-                  }}
-                  onMouseEnter={(e) => { if (active < levels.length - 1) e.currentTarget.style.background = "rgba(132,204,22,0.2)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = active < levels.length - 1 ? "rgba(132,204,22,0.12)" : "rgba(255,255,255,0.04)"; }}
-                >
-                  {t.levels.next}
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
+                />
+                {/* Ticks */}
+                <div style={{ position: "absolute", inset: 0, display: "flex", justifyContent: "space-between" }}>
+                  {levels.map((_, i) => (
+                    <span
+                      key={i}
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        marginTop: -3,
+                        background: i <= active ? LIME : "rgba(255,255,255,0.2)",
+                        transition: "background 0.3s ease",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+              {/* Hint */}
+              <div
+                aria-hidden="true"
+                style={{
+                  marginTop: 16,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 8,
+                  color: "rgba(255,255,255,0.32)",
+                  fontFamily: "var(--font-barlow), sans-serif",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                }}
+              >
+                <span>{t.levels.next}</span>
+                <svg width="22" height="14" viewBox="0 0 22 14" fill="none" className="scroll-hint-arrow">
+                  <path d="M2 7h17m0 0l-5-5m5 5l-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </div>
             </div>
           </div>
-
-          {/* Right: image */}
-          <div style={{
-            position: "relative",
-            borderRadius: 18,
-            overflow: "hidden",
-            border: "1px solid rgba(255,255,255,0.07)",
-            boxShadow: "0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(132,204,22,0.06)",
-            aspectRatio: "16/9",
-            opacity: imgVisible ? 1 : 0,
-            transform: imgVisible ? "scale(1) translateY(0)" : "scale(0.97) translateY(8px)",
-            transition: "opacity 0.28s ease, transform 0.28s cubic-bezier(0.16,1,0.3,1)",
-          }}>
-            <Image
-              src={imgs[cur.num]}
-              alt={`${cur.name} — ${cur.tag}`}
-              fill
-              style={{ objectFit: "cover", objectPosition: "center" }}
-              sizes="(max-width: 768px) 100vw, 58vw"
-              priority={active === 0}
-            />
-            {/* Subtle lime corner accent */}
-            <div aria-hidden="true" style={{
-              position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(135deg, rgba(132,204,22,0.05) 0%, transparent 40%)",
-            }} />
+        </div>
+      ) : (
+        /* ───────────── MOBILE: native scroll-snap carousel ───────────── */
+        <div style={{ marginTop: 44, paddingBottom: 90 }}>
+          <div
+            ref={nativeRef}
+            onScroll={onNativeScroll}
+            style={{
+              display: "flex",
+              gap: 16,
+              overflowX: "auto",
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+              scrollbarWidth: "none",
+              padding: "0 24px 8px",
+            }}
+          >
+            {levels.map((lv, i) => (
+              <div
+                key={lv.num}
+                style={{
+                  flex: "0 0 86%",
+                  scrollSnapAlign: "center",
+                  background: "rgba(255,255,255,0.025)",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                  borderRadius: 18,
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <div style={{ position: "relative", aspectRatio: "16/9", width: "100%" }}>
+                  <Image
+                    src={imgs[lv.num]}
+                    alt={`${lv.name} — ${lv.tag}`}
+                    fill
+                    style={{ objectFit: "cover" }}
+                    sizes="86vw"
+                    priority={i === 0}
+                  />
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      top: 12,
+                      left: 14,
+                      fontFamily: "var(--font-barlow), sans-serif",
+                      fontWeight: 900,
+                      fontSize: 40,
+                      lineHeight: 1,
+                      color: "rgba(255,255,255,0.9)",
+                      textShadow: "0 2px 16px rgba(0,0,0,0.7)",
+                    }}
+                  >
+                    {lv.num}
+                  </span>
+                </div>
+                <div style={{ padding: "22px 22px 26px" }}>
+                  <LevelText lv={lv} />
+                </div>
+              </div>
+            ))}
           </div>
 
+          {/* Mobile dots */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 24 }} aria-hidden="true">
+            {levels.map((_, i) => (
+              <span
+                key={i}
+                style={{
+                  width: i === active ? 24 : 8,
+                  height: 8,
+                  borderRadius: 4,
+                  background: i === active ? LIME : "rgba(255,255,255,0.18)",
+                  transition: "width 0.3s cubic-bezier(0.16,1,0.3,1), background 0.3s ease",
+                }}
+              />
+            ))}
+          </div>
         </div>
-
-        {/* ── Progress dots ── */}
-        <div style={{
-          display: "flex", justifyContent: "center", gap: 8, marginTop: 40,
-          opacity: revealed ? 1 : 0,
-          transition: "opacity 0.75s 0.3s ease",
-        }}
-          aria-hidden="true"
-        >
-          {levels.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => select(i)}
-              style={{
-                width: i === active ? 24 : 8,
-                height: 8, borderRadius: 4,
-                background: i === active ? "#84cc16" : "rgba(255,255,255,0.15)",
-                border: "none", cursor: "pointer", padding: 0,
-                transition: "width 0.3s cubic-bezier(0.16,1,0.3,1), background 0.3s ease",
-              }}
-            />
-          ))}
-        </div>
-
-      </div>
+      )}
     </section>
   );
 }
