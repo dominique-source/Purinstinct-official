@@ -7,7 +7,7 @@ le brancher en 5 minutes.
 ## 1. Créer le Google Sheet
 1. Va sur https://sheets.new
 2. Nomme-le « PurInstinct — Guides téléchargés »
-3. Dans la ligne 1, mets les entêtes : `Date` | `Courriel` | `Langue`
+3. Dans la ligne 1, mets les entêtes : `Date` | `Nom` | `Organisation` | `Courriel` | `Langue`
 
 ## 2. Ajouter le script
 1. Menu **Extensions → Apps Script**
@@ -20,6 +20,8 @@ function doPost(e) {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
     sheet.appendRow([
       new Date(data.date || new Date()),
+      data.name || '',
+      data.org || '',
       data.email || '',
       data.lang || ''
     ]);

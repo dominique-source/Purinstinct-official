@@ -140,7 +140,9 @@ export const translations = {
     cta: {
       label: "Le guide de jeu",
       title: "Prêt à jouer ?",
-      sub: "Entre ton courriel et reçois le guide de jeu officiel gratuitement.",
+      sub: "Remplis le formulaire et reçois le guide de jeu officiel gratuitement.",
+      placeholderName: "Ton nom",
+      placeholderOrg: "École ou organisation (facultatif)",
       placeholder: "Ton adresse courriel",
       btn: "Recevoir le guide",
       success: "Téléchargement lancé !",
@@ -308,7 +310,9 @@ export const translations = {
     cta: {
       label: "The game guide",
       title: "Ready to play?",
-      sub: "Enter your email and get the official game guide for free.",
+      sub: "Fill out the form and get the official game guide for free.",
+      placeholderName: "Your name",
+      placeholderOrg: "School or organization (optional)",
       placeholder: "Your email address",
       btn: "Get the guide",
       success: "Download started!",

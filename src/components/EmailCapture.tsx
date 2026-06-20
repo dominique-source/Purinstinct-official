@@ -14,6 +14,8 @@ const SHEET_ENDPOINT =
 
 export default function EmailCapture() {
   const { t, lang } = useLang();
+  const [name, setName] = useState("");
+  const [org, setOrg] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -29,7 +31,7 @@ export default function EmailCapture() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !name) return;
     setLoading(true);
     try {
       if (SHEET_ENDPOINT.startsWith("http")) {
@@ -37,7 +39,7 @@ export default function EmailCapture() {
           method: "POST",
           mode: "no-cors",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ email, lang, date: new Date().toISOString() }),
+          body: JSON.stringify({ name, org, email, lang, date: new Date().toISOString() }),
         });
       }
     } catch {
@@ -75,18 +77,25 @@ export default function EmailCapture() {
             </a>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexWrap: "wrap", gap: 10, maxWidth: 520, margin: "0 auto", justifyContent: "center" }}>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t.cta.placeholder}
-              style={{ flex: "1 1 240px", height: 58, padding: "0 20px", borderRadius: 11, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", fontSize: 16, outline: "none", transition: "border-color 0.2s" }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(132,204,22,0.5)")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)")}
-            />
-            <button type="submit" disabled={loading} className="btn-primary" style={{ height: 58, fontSize: 15, padding: "0 30px", boxShadow: "0 0 32px rgba(132,204,22,0.35)", opacity: loading ? 0.7 : 1 }}>
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 460, margin: "0 auto" }}>
+            {[
+              { val: name, set: setName, ph: t.cta.placeholderName, type: "text", req: true },
+              { val: org, set: setOrg, ph: t.cta.placeholderOrg, type: "text", req: false },
+              { val: email, set: setEmail, ph: t.cta.placeholder, type: "email", req: true },
+            ].map((f, i) => (
+              <input
+                key={i}
+                type={f.type}
+                required={f.req}
+                value={f.val}
+                onChange={(e) => f.set(e.target.value)}
+                placeholder={f.ph}
+                style={{ width: "100%", height: 56, padding: "0 20px", borderRadius: 11, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", fontSize: 16, outline: "none", transition: "border-color 0.2s", fontFamily: "var(--font-dm), sans-serif" }}
+                onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(132,204,22,0.5)")}
+                onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)")}
+              />
+            ))}
+            <button type="submit" disabled={loading} className="btn-primary" style={{ height: 56, fontSize: 15, justifyContent: "center", marginTop: 4, boxShadow: "0 0 32px rgba(132,204,22,0.35)", opacity: loading ? 0.7 : 1 }}>
               {loading ? "..." : (
                 <>
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v9m0 0l-3.5-3.5M9 11l3.5-3.5M3 14h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
