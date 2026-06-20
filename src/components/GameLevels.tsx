@@ -10,7 +10,7 @@ const IMGS: Record<string, Record<string, string>> = {
     "03": "/images/level-3-fr.png",
     "04": "/images/level-4-fr.png",
     "05": "/images/level-5-fr.png",
-    "06": "/images/levels-overview-fr.png",
+    "06": "/images/level-6-fr.png",
   },
   en: {
     "01": "/images/level-1-en.png",
@@ -18,7 +18,7 @@ const IMGS: Record<string, Record<string, string>> = {
     "03": "/images/level-3-en.png",
     "04": "/images/level-4-en.png",
     "05": "/images/level-5-en.png",
-    "06": "/images/levels-overview-en.png",
+    "06": "/images/level-6-en.png",
   },
 };
 
