@@ -252,7 +252,7 @@ export default function GameLevels() {
   return (
     <section
       id="levels"
-      style={{ background: "#06070f", position: "relative", paddingTop: 110 }}
+      style={{ background: "#06070f", position: "relative", paddingTop: mode === "native" ? 110 : 0 }}
     >
       {/* Ambient glow */}
       <div
@@ -265,15 +265,35 @@ export default function GameLevels() {
         }}
       />
 
-      {Header}
-
       {mode === "pinned" ? (
         /* ───────────── DESKTOP: pinned horizontal scroll ───────────── */
         <div
           ref={containerRef}
-          style={{ height: `${n * 88}vh`, position: "relative", marginTop: 56 }}
+          style={{ height: `${n * 88}vh`, position: "relative" }}
         >
-          <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}>
+          <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+            {/* Compact header — pinned with the cards */}
+            <div style={{ flexShrink: 0, textAlign: "center", padding: "clamp(82px, 11vh, 116px) 24px 0" }}>
+              <span className="section-label" style={{ display: "inline-block", marginBottom: 14 }}>
+                {t.levels.label}
+              </span>
+              <h2
+                style={{
+                  fontFamily: "var(--font-barlow), sans-serif",
+                  fontWeight: 900,
+                  fontSize: "clamp(32px, 4.4vw, 58px)",
+                  lineHeight: 0.95,
+                  textTransform: "uppercase",
+                  color: "#fff",
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                {titleParts[0]} <span className="gradient-text">{titleParts[1]}</span>
+              </h2>
+            </div>
+
+            {/* Track wrapper fills remaining height */}
+            <div style={{ flex: 1, minHeight: 0, position: "relative", overflow: "hidden" }}>
             {/* Track */}
             <div
               ref={trackRef}
@@ -368,6 +388,7 @@ export default function GameLevels() {
                 </div>
               ))}
             </div>
+            </div>{/* /track wrapper */}
 
             {/* Progress UI (stays fixed while pinned) */}
             <div
@@ -470,7 +491,9 @@ export default function GameLevels() {
         </div>
       ) : (
         /* ───────────── MOBILE: native scroll-snap carousel ───────────── */
-        <div style={{ marginTop: 44, paddingBottom: 90 }}>
+        <div style={{ paddingBottom: 90 }}>
+          {Header}
+          <div style={{ height: 36 }} />
           <div
             ref={nativeRef}
             onScroll={onNativeScroll}
