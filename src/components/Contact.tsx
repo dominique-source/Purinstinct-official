@@ -66,33 +66,16 @@ export default function Contact() {
             {t.contact.sub}
           </p>
 
-          {/* Contact rows */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            {[
-              { label: t.contact.phoneLabel, value: t.contact.phone, href: `tel:${t.contact.phone.replace(/[^0-9+]/g, "")}`, icon: "M3 5a2 2 0 012-2h2l2 5-2 1a11 11 0 005 5l1-2 5 2v2a2 2 0 01-2 2A16 16 0 013 5z" },
-              { label: t.contact.emailLabel, value: t.contact.email, href: `mailto:${t.contact.email}`, icon: "M3 5h18v14H3V5zm0 0l9 7 9-7" },
-            ].map((row) => (
-              <a key={row.label} href={row.href} style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none" }}>
-                <span style={{ width: 44, height: 44, borderRadius: 11, background: "rgba(132,204,22,0.1)", border: "1px solid rgba(132,204,22,0.22)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d={row.icon} /></svg>
-                </span>
-                <span>
-                  <span style={{ display: "block", fontFamily: "var(--font-barlow), sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)" }}>{row.label}</span>
-                  <span style={{ display: "block", color: "#fff", fontSize: 16, marginTop: 2 }}>{row.value}</span>
-                </span>
-              </a>
-            ))}
-            {/* City */}
-            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <span style={{ width: 44, height: 44, borderRadius: 11, background: "rgba(132,204,22,0.1)", border: "1px solid rgba(132,204,22,0.22)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s-6-5.5-6-10a6 6 0 1112 0c0 4.5-6 10-6 10z" /><circle cx="12" cy="11" r="2" /></svg>
-              </span>
-              <span>
-                <span style={{ display: "block", fontFamily: "var(--font-barlow), sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)" }}>Lieu</span>
-                <span style={{ display: "block", color: "#fff", fontSize: 16, marginTop: 2 }}>{t.contact.city}</span>
-              </span>
-            </div>
-          </div>
+          {/* Email only */}
+          <a href={`mailto:${t.contact.email}`} style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none" }}>
+            <span style={{ width: 44, height: 44, borderRadius: 11, background: "rgba(132,204,22,0.1)", border: "1px solid rgba(132,204,22,0.22)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 5h18v14H3V5zm0 0l9 7 9-7" /></svg>
+            </span>
+            <span>
+              <span style={{ display: "block", fontFamily: "var(--font-barlow), sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)" }}>{t.contact.emailLabel}</span>
+              <span style={{ display: "block", color: "#fff", fontSize: 16, marginTop: 2 }}>{t.contact.email}</span>
+            </span>
+          </a>
         </div>
 
         {/* Right — form */}

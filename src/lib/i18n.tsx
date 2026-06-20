@@ -23,7 +23,7 @@ export const translations = {
     what: {
       label: "Comment ça marche",
       title: "Simple à apprendre,\nimpossible à maîtriser",
-      sub: "Un match de 5 minutes qui met à l'épreuve chaque qualité athlétique.",
+      sub: "Un match qui met à l'épreuve chaque qualité athlétique.",
       steps: [
         {
           num: "01",
@@ -58,7 +58,7 @@ export const translations = {
           color: "#84cc16",
           name: "PurInstinct",
           tag: "Zone principale",
-          desc: "Match 5 min · 2×6 joueurs · 3 contre 2",
+          desc: "2×6 joueurs · 3 contre 2",
           pts: "Victoire +10 pts",
         },
         {
@@ -188,7 +188,7 @@ export const translations = {
     what: {
       label: "How it works",
       title: "Simple to learn,\nimpossible to master",
-      sub: "A 5-minute match that tests every athletic quality.",
+      sub: "A match that tests every athletic quality.",
       steps: [
         {
           num: "01",
@@ -223,7 +223,7 @@ export const translations = {
           color: "#84cc16",
           name: "PurInstinct",
           tag: "Main zone",
-          desc: "5 min match · 2×6 players · 3 vs 2",
+          desc: "2×6 players · 3 vs 2",
           pts: "Win +10 pts",
         },
         {

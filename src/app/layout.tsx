@@ -18,7 +18,7 @@ const dm = DM_Sans({
 export const metadata: Metadata = {
   title: "PurInstinct — Le sport à l'état pur",
   description:
-    "PurInstinct est un sport révolutionnaire qui combine vitesse, habileté et intelligence. 2 équipes, 5 minutes, pur instinct.",
+    "PurInstinct est un sport révolutionnaire qui combine vitesse, habileté et intelligence de jeu. 2 équipes, pur instinct.",
   keywords: ["PurInstinct", "sport", "athlétique", "Québec", "jeu", "championnat"],
   openGraph: {
     title: "PurInstinct — Le sport à l'état pur",
