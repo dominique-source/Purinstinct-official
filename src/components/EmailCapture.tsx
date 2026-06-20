@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useLang } from "@/lib/i18n";
 
 const GUIDES: Record<string, string> = {
@@ -6,61 +7,95 @@ const GUIDES: Record<string, string> = {
   en: "/guides/purinstinct-guide-en.pdf",
 };
 
+// Google Apps Script Web App URL — receives {email, lang, date} and appends
+// a row to the PurInstinct Google Sheet. Set via env or replace below.
+const SHEET_ENDPOINT =
+  process.env.NEXT_PUBLIC_SHEET_ENDPOINT || "REPLACE_WITH_GOOGLE_APPS_SCRIPT_URL";
+
 export default function EmailCapture() {
   const { t, lang } = useLang();
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const triggerDownload = () => {
+    const a = document.createElement("a");
+    a.href = GUIDES[lang];
+    a.download = "";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setLoading(true);
+    try {
+      if (SHEET_ENDPOINT.startsWith("http")) {
+        await fetch(SHEET_ENDPOINT, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ email, lang, date: new Date().toISOString() }),
+        });
+      }
+    } catch {
+      // Even if logging fails, still deliver the guide.
+    }
+    triggerDownload();
+    setDone(true);
+    setLoading(false);
+  };
 
   return (
-    <section
-      id="cta"
-      style={{ padding: "110px 24px", background: "#06070f", position: "relative", overflow: "hidden" }}
-    >
-      {/* Background glow */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "radial-gradient(ellipse 60% 70% at 50% 100%, rgba(132,204,22,0.09) 0%, transparent 65%)",
-          pointerEvents: "none",
-        }}
-      />
+    <section id="cta" style={{ padding: "110px 24px", background: "#06070f", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 70% at 50% 100%, rgba(132,204,22,0.09) 0%, transparent 65%)", pointerEvents: "none" }} />
 
       <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center", position: "relative" }}>
-        <span className="section-label" style={{ display: "inline-block", marginBottom: 20 }}>
-          {t.cta.label}
-        </span>
+        <span className="section-label" style={{ display: "inline-block", marginBottom: 20 }}>{t.cta.label}</span>
 
-        <h2
-          style={{
-            fontFamily: "var(--font-barlow), sans-serif",
-            fontWeight: 900,
-            fontSize: "clamp(48px, 7vw, 84px)",
-            lineHeight: 0.92,
-            textTransform: "uppercase",
-            color: "#fff",
-            marginBottom: 20,
-            letterSpacing: "-0.01em",
-          }}
-        >
+        <h2 style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: "clamp(48px, 7vw, 84px)", lineHeight: 0.92, textTransform: "uppercase", color: "#fff", marginBottom: 20, letterSpacing: "-0.01em" }}>
           {t.cta.title.split("?")[0]}
           <span className="gradient-text">?</span>
         </h2>
 
-        <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 17, lineHeight: 1.65, marginBottom: 40, maxWidth: 480, margin: "0 auto 40px" }}>
+        <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 17, lineHeight: 1.65, maxWidth: 480, margin: "0 auto 40px" }}>
           {t.cta.sub}
         </p>
 
-        {/* Direct download — serves the guide in the selected language */}
-        <a
-          href={GUIDES[lang]}
-          download
-          className="btn-primary"
-          style={{ fontSize: 16, padding: "18px 38px", boxShadow: "0 0 40px rgba(132,204,22,0.35)" }}
-        >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M9 2v9m0 0l-3.5-3.5M9 11l3.5-3.5M3 14h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          {t.cta.btn}
-        </a>
+        {done ? (
+          <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(132,204,22,0.12)", border: "1px solid rgba(132,204,22,0.3)", borderRadius: 12, padding: "14px 26px", color: "#84cc16", fontWeight: 600, fontSize: 16 }}>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10l5 5 7-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              {t.cta.success}
+            </div>
+            <a href={GUIDES[lang]} download style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, textDecoration: "underline" }}>
+              {t.cta.retry}
+            </a>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexWrap: "wrap", gap: 10, maxWidth: 520, margin: "0 auto", justifyContent: "center" }}>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t.cta.placeholder}
+              style={{ flex: "1 1 240px", height: 58, padding: "0 20px", borderRadius: 11, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", fontSize: 16, outline: "none", transition: "border-color 0.2s" }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(132,204,22,0.5)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)")}
+            />
+            <button type="submit" disabled={loading} className="btn-primary" style={{ height: 58, fontSize: 15, padding: "0 30px", boxShadow: "0 0 32px rgba(132,204,22,0.35)", opacity: loading ? 0.7 : 1 }}>
+              {loading ? "..." : (
+                <>
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v9m0 0l-3.5-3.5M9 11l3.5-3.5M3 14h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  {t.cta.btn}
+                </>
+              )}
+            </button>
+          </form>
+        )}
 
         <p style={{ marginTop: 18, color: "rgba(255,255,255,0.3)", fontSize: 12, letterSpacing: "0.04em" }}>
           {t.cta.disclaimer}

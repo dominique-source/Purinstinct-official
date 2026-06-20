@@ -140,9 +140,12 @@ export const translations = {
     cta: {
       label: "Le guide de jeu",
       title: "Prêt à jouer ?",
-      sub: "Télécharge le guide de jeu officiel, gratuitement, et apprends à jouer dès aujourd'hui.",
-      btn: "Télécharger le guide",
-      disclaimer: "Gratuit · PDF · Aucune inscription requise.",
+      sub: "Entre ton courriel et reçois le guide de jeu officiel gratuitement.",
+      placeholder: "Ton adresse courriel",
+      btn: "Recevoir le guide",
+      success: "Téléchargement lancé !",
+      retry: "Le téléchargement n'a pas démarré ? Clique ici.",
+      disclaimer: "Gratuit · PDF · On t'informera des prochains événements.",
     },
     contact: {
       label: "Contact",
@@ -305,9 +308,12 @@ export const translations = {
     cta: {
       label: "The game guide",
       title: "Ready to play?",
-      sub: "Download the official game guide, free, and learn to play today.",
-      btn: "Download the guide",
-      disclaimer: "Free · PDF · No sign-up required.",
+      sub: "Enter your email and get the official game guide for free.",
+      placeholder: "Your email address",
+      btn: "Get the guide",
+      success: "Download started!",
+      retry: "Download didn't start? Click here.",
+      disclaimer: "Free · PDF · We'll keep you posted on upcoming events.",
     },
     contact: {
       label: "Contact",
