@@ -89,31 +89,6 @@ export default function Hero() {
 
       {/* Content */}
       <div style={{ position: "relative", zIndex: 3, maxWidth: 860, width: "100%" }}>
-        {/* Label */}
-        <div className="anim-fade-up" style={{ marginBottom: 28 }}>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: "rgba(132,204,22,0.12)",
-              border: "1px solid rgba(132,204,22,0.3)",
-              borderRadius: 20,
-              padding: "6px 18px",
-              backdropFilter: "blur(8px)",
-              fontFamily: "var(--font-barlow), sans-serif",
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#84cc16",
-            }}
-          >
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#84cc16", display: "inline-block", animation: "pulse-dot 1.6s ease-in-out infinite" }} />
-            {t.hero.label}
-          </span>
-        </div>
-
         {/* Headline */}
         <h1
           className="anim-fade-up delay-100"
