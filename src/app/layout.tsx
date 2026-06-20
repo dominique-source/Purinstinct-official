@@ -16,12 +16,12 @@ const dm = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "PurInstinct — Le sport le plus athlétique au monde",
+  title: "PurInstinct — Le sport à l'état pur",
   description:
     "PurInstinct est un sport révolutionnaire qui combine vitesse, habileté et intelligence. 2 équipes, 5 minutes, pur instinct.",
   keywords: ["PurInstinct", "sport", "athlétique", "Québec", "jeu", "championnat"],
   openGraph: {
-    title: "PurInstinct — Le sport le plus athlétique au monde",
+    title: "PurInstinct — Le sport à l'état pur",
     description:
       "Un jeu révolutionnaire qui combine vitesse, habileté et intelligence. Découvrez PurInstinct.",
     url: "https://purinstinct.com",
@@ -33,14 +33,14 @@ export const metadata: Metadata = {
         url: "https://purinstinct.com/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "PurInstinct — Le sport le plus athlétique au monde",
+        alt: "PurInstinct — Le sport à l'état pur",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     site: "@purinstincthq",
-    title: "PurInstinct — Le sport le plus athlétique au monde",
+    title: "PurInstinct — Le sport à l'état pur",
     description: "Un jeu révolutionnaire qui combine vitesse, habileté et intelligence.",
   },
   alternates: { canonical: "https://purinstinct.com" },

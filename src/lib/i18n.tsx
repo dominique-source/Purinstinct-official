@@ -146,7 +146,7 @@ export const translations = {
       disclaimer: "Gratuit. Sans spam. Désabonnement en un clic.",
     },
     footer: {
-      tagline: "Le sport le plus athlétique au monde.",
+      tagline: "Le sport à l'état pur.",
       links: [
         { label: "Apprendre", href: "#how" },
         { label: "Boutique", href: "https://purinstinct.com/boutique/" },
@@ -297,7 +297,7 @@ export const translations = {
       disclaimer: "Free. No spam. Unsubscribe anytime.",
     },
     footer: {
-      tagline: "The world's most athletic sport.",
+      tagline: "Sport at its purest.",
       links: [
         { label: "Learn", href: "#how" },
         { label: "Shop", href: "https://purinstinct.com/boutique/" },
