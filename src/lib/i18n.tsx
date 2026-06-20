@@ -298,22 +298,24 @@ export const translations = {
   },
 } as const;
 
+type TranslationShape = (typeof translations)[Lang];
+
 interface LangCtx {
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: (typeof translations)["fr"];
+  t: TranslationShape;
 }
 
 const LangContext = createContext<LangCtx>({
   lang: "fr",
   setLang: () => {},
-  t: translations.fr,
+  t: translations.fr as TranslationShape,
 });
 
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("fr");
   return (
-    <LangContext.Provider value={{ lang, setLang, t: translations[lang] }}>
+    <LangContext.Provider value={{ lang, setLang, t: translations[lang] as TranslationShape }}>
       {children}
     </LangContext.Provider>
   );
