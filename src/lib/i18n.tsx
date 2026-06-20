@@ -123,7 +123,7 @@ export const translations = {
         {
           icon: "🏆",
           title: "Championnats",
-          body: "Rejoignez le circuit officiel. Championnats régionaux, provinciaux, et prix jusqu'à 10 000 $.",
+          body: "Rejoignez le circuit officiel. Championnats régionaux et provinciaux à travers le Québec.",
           cta: "Voir les championnats",
         },
       ],
@@ -274,7 +274,7 @@ export const translations = {
         {
           icon: "🏆",
           title: "Championships",
-          body: "Join the official circuit. Regional and provincial championships with prizes up to $10,000.",
+          body: "Join the official circuit. Regional and provincial championships across Québec.",
           cta: "View championships",
         },
       ],
