@@ -2,7 +2,6 @@ import { LangProvider } from "@/lib/i18n";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
-import Zones from "@/components/Zones";
 import ForWhom from "@/components/ForWhom";
 import EmailCapture from "@/components/EmailCapture";
 import Footer from "@/components/Footer";
@@ -14,7 +13,6 @@ export default function Home() {
       <main>
         <Hero />
         <HowItWorks />
-        <Zones />
         <ForWhom />
         <EmailCapture />
       </main>

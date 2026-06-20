@@ -113,7 +113,7 @@ export default function Hero() {
             flexWrap: "wrap",
             gap: 12,
             justifyContent: "center",
-            marginBottom: 64,
+            marginBottom: 0,
           }}
         >
           <a href="#how" className="btn-primary" style={{ fontSize: 15, padding: "16px 32px" }}>
@@ -127,48 +127,6 @@ export default function Hero() {
           </a>
         </div>
 
-        {/* Stats strip */}
-        <div
-          className="anim-fade-up delay-400"
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 0,
-            justifyContent: "center",
-            borderTop: "1px solid rgba(255,255,255,0.07)",
-            paddingTop: 32,
-          }}
-        >
-          {[
-            { value: "5 000+", label: "Joueurs actifs" },
-            { value: "5 min", label: "Par match" },
-            { value: "6", label: "Zones de jeu" },
-            { value: "$10K", label: "Prix championnat" },
-          ].map((s, i) => (
-            <div
-              key={i}
-              style={{
-                flex: "1 1 120px",
-                padding: "0 24px",
-                textAlign: "center",
-                borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "var(--font-barlow), sans-serif",
-                  fontWeight: 900,
-                  fontSize: 28,
-                  color: "#84cc16",
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                {s.value}
-              </div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Scroll cue */}

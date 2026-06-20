@@ -143,7 +143,6 @@ export const translations = {
       tagline: "Le sport le plus athlétique au monde.",
       links: [
         { label: "Apprendre", href: "#how" },
-        { label: "Les zones", href: "#zones" },
         { label: "Boutique", href: "https://purinstinct.com/boutique/" },
         { label: "Contact", href: "https://purinstinct.com/contact-us-2/" },
       ],
@@ -289,7 +288,6 @@ export const translations = {
       tagline: "The world's most athletic sport.",
       links: [
         { label: "Learn", href: "#how" },
-        { label: "Zones", href: "#zones" },
         { label: "Shop", href: "https://purinstinct.com/boutique/" },
         { label: "Contact", href: "https://purinstinct.com/contact-us-2/" },
       ],
