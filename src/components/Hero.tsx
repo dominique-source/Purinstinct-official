@@ -43,12 +43,12 @@ export default function Hero() {
         }}
       >
         <Image
-          src="/images/hero-bg.jpg"
+          src="/images/hero-fbmr.jpg"
           alt="PurInstinct gameplay"
           fill
           priority
           sizes="100vw"
-          style={{ objectFit: "cover", objectPosition: "center 30%" }}
+          style={{ objectFit: "cover", objectPosition: "center 20%" }}
         />
       </div>
 
