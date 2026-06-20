@@ -84,23 +84,17 @@ export default function Nav() {
               {link.label}
             </a>
           ))}
-          {/* PurInstinct Games — external, coming soon */}
-          <a
-            href="https://purinstinctgames-web-f989.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
+          {/* PurInstinct Games — coming soon, not active */}
+          <span
             style={{
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              color: "rgba(255,255,255,0.65)",
-              textDecoration: "none",
+              color: "rgba(255,255,255,0.35)",
               fontSize: 14,
               fontWeight: 500,
-              transition: "color 0.2s",
+              cursor: "default",
             }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#fff")}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)")}
           >
             {t.nav.games}
             <span
@@ -120,7 +114,7 @@ export default function Nav() {
             >
               {t.nav.comingSoon}
             </span>
-          </a>
+          </span>
         </div>
 
         {/* Right controls */}
@@ -209,18 +203,13 @@ export default function Nav() {
               {link.label}
             </a>
           ))}
-          {/* PurInstinct Games — external, coming soon */}
-          <a
-            href="https://purinstinctgames-web-f989.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setOpen(false)}
+          {/* PurInstinct Games — coming soon, not active */}
+          <span
             style={{
               display: "flex",
               alignItems: "center",
               gap: 10,
-              color: "rgba(255,255,255,0.8)",
-              textDecoration: "none",
+              color: "rgba(255,255,255,0.35)",
               fontSize: 18,
               fontFamily: "var(--font-barlow), sans-serif",
               fontWeight: 700,
@@ -228,6 +217,7 @@ export default function Nav() {
               textTransform: "uppercase",
               padding: "12px 0",
               borderBottom: "1px solid rgba(255,255,255,0.06)",
+              cursor: "default",
             }}
           >
             {t.nav.games}
@@ -246,7 +236,7 @@ export default function Nav() {
             >
               {t.nav.comingSoon}
             </span>
-          </a>
+          </span>
           <a href="#cta" className="btn-primary" style={{ marginTop: 16, textAlign: "center", justifyContent: "center" }} onClick={() => setOpen(false)}>
             {t.nav.cta}
           </a>
