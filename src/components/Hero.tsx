@@ -92,7 +92,6 @@ export default function Hero() {
         {/* Label */}
         <div className="anim-fade-up" style={{ marginBottom: 28 }}>
           <span
-            className="section-label"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -102,6 +101,12 @@ export default function Hero() {
               borderRadius: 20,
               padding: "6px 18px",
               backdropFilter: "blur(8px)",
+              fontFamily: "var(--font-barlow), sans-serif",
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#84cc16",
             }}
           >
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#84cc16", display: "inline-block", animation: "pulse-dot 1.6s ease-in-out infinite" }} />

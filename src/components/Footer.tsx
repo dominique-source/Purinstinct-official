@@ -25,21 +25,22 @@ export default function Footer() {
         }}
       >
         {/* Brand */}
-        <div style={{ maxWidth: 280 }}>
+        <div style={{ maxWidth: 300 }}>
           <span
             style={{
               fontFamily: "var(--font-barlow), sans-serif",
               fontWeight: 900,
-              fontSize: 24,
+              fontSize: 32,
               letterSpacing: "0.02em",
+              textTransform: "uppercase",
               color: "#fff",
               display: "block",
-              marginBottom: 10,
+              marginBottom: 14,
             }}
           >
             Pur<span style={{ color: "#84cc16" }}>Instinct</span>
           </span>
-          <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 13, lineHeight: 1.6 }}>
+          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 15, lineHeight: 1.6 }}>
             {t.footer.tagline}
           </p>
         </div>

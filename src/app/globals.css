@@ -120,3 +120,34 @@ section { position: relative; }
   text-transform: uppercase;
   color: #84cc16;
 }
+/* Signature element: the near-vertical lime slash (speed / cut motif),
+   echoed on every section eyebrow for cross-site cohesion. */
+.section-label::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 0.95em;
+  background: #84cc16;
+  transform: skewX(-18deg);
+  margin-right: 10px;
+  vertical-align: -1px;
+}
+
+/* Standalone signature slash divider between sections */
+.slash-divider {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 0;
+  background: #06070f;
+}
+.slash-divider span {
+  display: block;
+  width: 4px;
+  height: 22px;
+  background: #84cc16;
+  transform: skewX(-18deg);
+  opacity: 0.9;
+}
+.slash-divider span:nth-child(2) { opacity: 0.5; }
+.slash-divider span:nth-child(3) { opacity: 0.22; }

@@ -73,7 +73,7 @@ function StepCard({ photo, pos, num, title, body, delay }: { photo: string; pos:
 }
 
 export default function HowItWorks() {
-  const { t, lang } = useLang();
+  const { t } = useLang();
   const headerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -109,17 +109,6 @@ export default function HowItWorks() {
           ))}
         </div>
 
-        {/* Rules video — switches with language */}
-        <div style={{ marginTop: 48, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)", background: "#000", position: "relative", aspectRatio: "16 / 9" }}>
-          <iframe
-            key={lang}
-            src={`https://www.youtube.com/embed/${lang === "fr" ? "DB-3cgM8Nq4" : "9Q1YW1LgouE"}?rel=0&modestbranding=1&color=white`}
-            title={lang === "fr" ? "Règles PurInstinct" : "PurInstinct Rules"}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
-          />
-        </div>
       </div>
 
       <style>{`.step-photo-wrap:hover { transform: scale(1.04); }`}</style>

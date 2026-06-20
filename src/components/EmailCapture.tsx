@@ -53,11 +53,12 @@ export default function EmailCapture() {
           style={{
             fontFamily: "var(--font-barlow), sans-serif",
             fontWeight: 900,
-            fontSize: "clamp(40px, 6vw, 72px)",
-            lineHeight: 0.95,
+            fontSize: "clamp(48px, 7vw, 84px)",
+            lineHeight: 0.92,
             textTransform: "uppercase",
             color: "#fff",
             marginBottom: 20,
+            letterSpacing: "-0.01em",
           }}
         >
           {t.cta.title.split("?")[0]}
@@ -117,13 +118,13 @@ export default function EmailCapture() {
               placeholder={t.cta.placeholder}
               style={{
                 flex: "1 1 240px",
-                height: 52,
-                padding: "0 18px",
-                borderRadius: 10,
+                height: 58,
+                padding: "0 20px",
+                borderRadius: 11,
                 background: "rgba(255,255,255,0.06)",
                 border: "1px solid rgba(255,255,255,0.12)",
                 color: "#fff",
-                fontSize: 15,
+                fontSize: 16,
                 outline: "none",
                 transition: "border-color 0.2s",
               }}
@@ -133,7 +134,7 @@ export default function EmailCapture() {
             <button
               type="submit"
               className="btn-primary"
-              style={{ height: 52, fontSize: 14, opacity: loading ? 0.7 : 1 }}
+              style={{ height: 58, fontSize: 15, padding: "0 30px", boxShadow: "0 0 32px rgba(132,204,22,0.35)", opacity: loading ? 0.7 : 1 }}
               disabled={loading}
             >
               {loading ? "..." : t.cta.btn}

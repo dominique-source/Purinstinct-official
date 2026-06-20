@@ -42,6 +42,12 @@ export const translations = {
         },
       ],
     },
+    rules: {
+      label: "Les règles",
+      titleA: "Apprends le sport en",
+      titleHighlight: "3 minutes",
+      sub: "Une vidéo, et tu es prêt à jouer.",
+    },
     zones: {
       label: "Les zones",
       title: "5 zones.\n1 arène.",
@@ -186,6 +192,12 @@ export const translations = {
           body: "Each stop gives 1 out to the defense. After 3 outs, the teams swap dynamically.",
         },
       ],
+    },
+    rules: {
+      label: "The rules",
+      titleA: "Learn the sport in",
+      titleHighlight: "3 minutes",
+      sub: "One video, and you're ready to play.",
     },
     zones: {
       label: "The zones",

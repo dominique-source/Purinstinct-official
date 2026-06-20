@@ -83,7 +83,7 @@ export default function ForWhom() {
   const headerRef = useReveal(0);
 
   return (
-    <section id="forwhom" style={{ padding: "110px 24px", background: "#06070f" }}>
+    <section id="forwhom" style={{ padding: "110px 24px", background: "#0d1117" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         {/* Header */}
         <div
