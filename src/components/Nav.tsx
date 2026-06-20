@@ -57,8 +57,7 @@ export default function Nav() {
         <div style={{ display: "flex", alignItems: "center", gap: 32 }} className="hidden-mobile">
           {[
             { label: t.nav.learn, href: "#how" },
-                        { label: t.nav.shop, href: "https://purinstinct.com/boutique/" },
-            { label: t.nav.contact, href: "https://purinstinct.com/contact-us-2/" },
+            { label: t.nav.contact, href: "#contact" },
           ].map((link) => (
             <a
               key={link.label}
@@ -143,8 +142,7 @@ export default function Nav() {
         >
           {[
             { label: t.nav.learn, href: "#how" },
-                        { label: t.nav.shop, href: "https://purinstinct.com/boutique/" },
-            { label: t.nav.contact, href: "https://purinstinct.com/contact-us-2/" },
+            { label: t.nav.contact, href: "#contact" },
           ].map((link) => (
             <a
               key={link.label}

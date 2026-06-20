@@ -5,6 +5,7 @@ import HowItWorks from "@/components/HowItWorks";
 import RulesVideo from "@/components/RulesVideo";
 import ForWhom from "@/components/ForWhom";
 import EmailCapture from "@/components/EmailCapture";
+import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
         <RulesVideo />
         <ForWhom />
         <EmailCapture />
+        <Contact />
       </main>
       <Footer />
     </LangProvider>
