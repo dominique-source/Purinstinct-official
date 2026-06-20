@@ -128,6 +128,21 @@ export const translations = {
         },
       ],
     },
+    levels: {
+      label: "Progression de jeu",
+      title: "Un sport,\n6 façons de jouer",
+      sub: "Commence à ton niveau. Maîtrise les règles une à une, jusqu'au jeu complet.",
+      prev: "Niveau précédent",
+      next: "Niveau suivant",
+      items: [
+        { num: "01", name: "Débutant", stars: 1, tag: "Toutes les passes autorisées", body: "Apprends les bases du jeu et marque des points. Toutes les passes sont permises — concentre-toi sur le mouvement, la coordination et le timing." },
+        { num: "02", name: "Explorateur", stars: 2, tag: "Passe finale interdite", body: "Découvre toutes les façons de marquer des points sans passe finale. Course, punch, kick, redirection — à toi de créer le jeu." },
+        { num: "03", name: "Stratège", stars: 3, tag: "Passes avant derrière la ligne centrale seulement", body: "Les passes vers l'avant sont autorisées uniquement derrière la ligne centrale. La lecture du terrain et le positionnement deviennent essentiels." },
+        { num: "04", name: "Tacticien", stars: 4, tag: "Aucune passe avant dans l'aire de jeu", body: "Seuls les punches, coups de pied et redirections font avancer le ballon. Chaque décision compte — la stratégie collective prime." },
+        { num: "05", name: "Discipliné", stars: 5, tag: "Poke interdit vers joueur en zone des buts", body: "Aucun poke vers un joueur déjà dans la zone des buts. La précision, l'anticipation et le timing deviennent les armes décisives." },
+        { num: "06", name: "Maître", stars: 6, tag: "Règles complètes PurInstinct", body: "Le jeu dans sa forme ultime. Instinct pur, anticipation maximale, timing parfait. Six niveaux franchis — bienvenue à l'élite." },
+      ],
+    },
     stats: {
       label: "PurInstinct en chiffres",
       items: [
@@ -296,6 +311,21 @@ export const translations = {
           body: "Join the official circuit. Regional and provincial championships across Québec.",
           cta: "View championships",
         },
+      ],
+    },
+    levels: {
+      label: "Game Progression",
+      title: "One sport,\n6 ways to play",
+      sub: "Start at your level. Master the rules one by one, all the way to the full game.",
+      prev: "Previous level",
+      next: "Next level",
+      items: [
+        { num: "01", name: "Beginner", stars: 1, tag: "All passes allowed", body: "Learn the basics and score points. All passes are permitted — focus on movement, coordination and timing." },
+        { num: "02", name: "Explorer", stars: 2, tag: "No final pass", body: "Discover every way to score without a final pass. Run, punch, kick, redirect — create the play your way." },
+        { num: "03", name: "Strategist", stars: 3, tag: "Forward pass behind centre line only", body: "Forward passes are allowed only behind the centre line. Reading the field and positioning become essential." },
+        { num: "04", name: "Tactician", stars: 4, tag: "No forward pass in the playing area", body: "Only punches, kicks and redirections can advance the ball. Every decision matters — collective strategy takes over." },
+        { num: "05", name: "Disciplined", stars: 5, tag: "No poke to player in the scoring zone", body: "No poke toward a player already in the scoring zone. Precision, anticipation and timing become the decisive weapons." },
+        { num: "06", name: "Master", stars: 6, tag: "Full PurInstinct rules", body: "The game in its ultimate form. Pure instinct, maximum anticipation, perfect timing. Six levels cleared — welcome to the elite." },
       ],
     },
     stats: {
