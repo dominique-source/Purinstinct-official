@@ -9,6 +9,8 @@ export const translations = {
       learn: "Apprendre",
       shop: "Boutique",
       contact: "Contact",
+      games: "PurInstinct Games",
+      comingSoon: "Bientôt",
       cta: "Commencer",
     },
     hero: {
@@ -194,6 +196,8 @@ export const translations = {
       learn: "Learn",
       shop: "Shop",
       contact: "Contact",
+      games: "PurInstinct Games",
+      comingSoon: "Soon",
       cta: "Get started",
     },
     hero: {
