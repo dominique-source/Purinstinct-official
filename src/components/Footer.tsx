@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useLang } from "@/lib/i18n";
 
 export default function Footer() {
@@ -26,20 +27,13 @@ export default function Footer() {
       >
         {/* Brand */}
         <div style={{ maxWidth: 300 }}>
-          <span
-            style={{
-              fontFamily: "var(--font-barlow), sans-serif",
-              fontWeight: 900,
-              fontSize: 32,
-              letterSpacing: "0.02em",
-              textTransform: "uppercase",
-              color: "#fff",
-              display: "block",
-              marginBottom: 14,
-            }}
-          >
-            Pur<span style={{ color: "#84cc16" }}>Instinct</span>
-          </span>
+          <Image
+            src="/logo-full.png"
+            alt="PurInstinct"
+            width={108}
+            height={112}
+            style={{ width: 100, height: "auto", display: "block", marginBottom: 16 }}
+          />
           <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 15, lineHeight: 1.6 }}>
             {t.footer.tagline}
           </p>

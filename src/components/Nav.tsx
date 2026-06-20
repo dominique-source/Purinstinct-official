@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useLang } from "@/lib/i18n";
 
 export default function Nav() {
@@ -39,7 +40,15 @@ export default function Nav() {
         }}
       >
         {/* Logo */}
-        <a href="#" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
+        <a href="#" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }} aria-label="PurInstinct — accueil">
+          <Image
+            src="/logo-icon.png"
+            alt=""
+            width={32}
+            height={31}
+            priority
+            style={{ height: 30, width: "auto", display: "block" }}
+          />
           <span
             style={{
               fontFamily: "var(--font-barlow), sans-serif",
