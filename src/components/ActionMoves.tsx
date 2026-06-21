@@ -4,10 +4,12 @@ import Image from "next/image";
 import { useLang } from "@/lib/i18n";
 
 const LIME = "#84cc16";
-const ACCENTS = [LIME, "#f97316", "#38bdf8"] as const;
+const ACCENTS = [LIME, "#f97316", "#a855f7", "#eab308", "#38bdf8"] as const;
 const ATHLETES = [
   "/images/running no background.png",
   "/images/pass lateral no background.png",
+  "/images/poke.png",
+  "/images/kick.png",
   "/images/redirection no background.png",
 ] as const;
 

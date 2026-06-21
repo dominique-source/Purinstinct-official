@@ -52,11 +52,13 @@ export const translations = {
     },
     moves: {
       label: "Gestes essentiels",
-      title: "3 gestes.\nÀ maîtriser.",
+      title: "5 gestes.\nÀ maîtriser.",
       items: [
-        { frame: "01/03", tag: "Fondamentaux", title: "Courir", sub: "La base de tout. Traverse le terrain, évite les défenseurs et garde le ballon en main." },
-        { frame: "02/03", tag: "Technique", title: "Passe latérale", sub: "La passe latérale et la passe arrière créent des espaces et déstabilise la défense instantanément." },
-        { frame: "03/03", tag: "Maîtrise", title: "Redirection", sub: "Le geste d'élite. Change la trajectoire du ballon en une fraction de seconde.", special: "Pouvoir spécial : une redirection empêche l'adversaire de toucher le porteur du ballon." },
+        { frame: "01/05", tag: "Fondamentaux", title: "Courir", sub: "La base de tout. Traverse le terrain, évite les défenseurs et garde le ballon en main." },
+        { frame: "02/05", tag: "Technique", title: "Passe latérale", sub: "La passe latérale et la passe arrière créent des espaces et déstabilise la défense instantanément." },
+        { frame: "03/05", tag: "Puissance", title: "Poke", sub: "Frapper le ballon avec le poing pour le faire avancer. Direct, explosif, imprévisible." },
+        { frame: "04/05", tag: "Portée", title: "Kick", sub: "Botte le ballon pour faire de longues passes. L'arme ultime pour traverser le terrain en un instant." },
+        { frame: "05/05", tag: "Maîtrise", title: "Redirection", sub: "Le geste d'élite. Change la trajectoire du ballon en une fraction de seconde.", special: "Pouvoir spécial : une redirection empêche l'adversaire de toucher le porteur du ballon." },
       ],
     },
     zones: {
@@ -248,11 +250,13 @@ export const translations = {
     },
     moves: {
       label: "Essential moves",
-      title: "3 moves.\nMaster them.",
+      title: "5 moves.\nMaster them.",
       items: [
-        { frame: "01/03", tag: "Fundamentals", title: "Running", sub: "The foundation of everything. Cross the field, avoid defenders, keep the ball in hand." },
-        { frame: "02/03", tag: "Technique", title: "Lateral pass", sub: "Shift the play. The lateral pass and the backward pass create space and unsettle the defense in an instant." },
-        { frame: "03/03", tag: "Mastery", title: "Redirection", sub: "The elite move. Change the ball's trajectory in a fraction of a second.", special: "Special power: a redirection prevents the opponent from tagging the ball carrier." },
+        { frame: "01/05", tag: "Fundamentals", title: "Running", sub: "The foundation of everything. Cross the field, avoid defenders, keep the ball in hand." },
+        { frame: "02/05", tag: "Technique", title: "Lateral pass", sub: "The lateral pass and the backward pass create space and unsettle the defense in an instant." },
+        { frame: "03/05", tag: "Power", title: "Poke", sub: "Strike the ball with your fist to push it forward. Direct, explosive, unpredictable." },
+        { frame: "04/05", tag: "Range", title: "Kick", sub: "Boot the ball for long passes. The ultimate weapon to cross the field in an instant." },
+        { frame: "05/05", tag: "Mastery", title: "Redirection", sub: "The elite move. Change the ball's trajectory in a fraction of a second.", special: "Special power: a redirection prevents the opponent from tagging the ball carrier." },
       ],
     },
     zones: {
