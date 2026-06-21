@@ -138,7 +138,8 @@ export default function GameLevels() {
     };
   }, []);
 
-  /* Header reveal */
+  /* Header reveal — re-run when `mode` changes so the observer attaches
+     once the shared Header (mobile/native branch) is actually in the DOM */
   useEffect(() => {
     const el = headerRef.current;
     if (!el) return;
@@ -148,7 +149,7 @@ export default function GameLevels() {
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [mode]);
 
   /* ── Pinned horizontal scroll driver ── */
   const onScroll = useCallback(() => {
