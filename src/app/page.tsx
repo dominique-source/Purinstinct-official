@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
 import RulesVideo from "@/components/RulesVideo";
+import CoreRules from "@/components/CoreRules";
 import ActionMoves from "@/components/ActionMoves";
 import GameLevels from "@/components/GameLevels";
 import ForWhom from "@/components/ForWhom";
@@ -18,6 +19,7 @@ export default function Home() {
         <Hero />
         <HowItWorks />
         <RulesVideo />
+        <CoreRules />
         <ActionMoves />
         <GameLevels />
         <ForWhom />

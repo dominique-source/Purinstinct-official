@@ -50,6 +50,18 @@ export const translations = {
       titleHighlight: "3 minutes",
       sub: "Une vidéo, et tu es prêt à jouer.",
     },
+    play: {
+      label: "Les 3 règles d'or",
+      title: "Le jeu en\n3 règles",
+      sub: "Clique sur chaque règle pour la voir en action.",
+      cta: "Règle suivante",
+      live: "En direct",
+      steps: [
+        { n: "01", tag: "Objectif", title: "Marque dans la zone", desc: "Amène le ballon dans la zone adverse à 3 contre 2. L'attaque a l'avantage numérique — à toi d'en profiter.", hint: "3 vs 2", badge: "But !" },
+        { n: "02", tag: "Survie", title: "Ne te fais pas toucher", desc: "Avec le ballon en main, un seul contact d'un défenseur t'arrête net. Esquive, feinte, reste insaisissable.", hint: "0 contact", badge: "Sauf !" },
+        { n: "03", tag: "Contrôle", title: "N'échappe pas le ballon", desc: "Un ballon au sol, c'est un retrait. Garde-le sous contrôle à chaque passe et chaque course.", hint: "0 échappé", badge: "Sécurisé !" },
+      ],
+    },
     moves: {
       label: "Gestes essentiels",
       title: "5 gestes.\nÀ maîtriser.",
@@ -247,6 +259,18 @@ export const translations = {
       titleA: "Learn the sport in",
       titleHighlight: "3 minutes",
       sub: "One video, and you're ready to play.",
+    },
+    play: {
+      label: "The 3 golden rules",
+      title: "The game in\n3 rules",
+      sub: "Click each rule to see it in action.",
+      cta: "Next rule",
+      live: "Live",
+      steps: [
+        { n: "01", tag: "Objective", title: "Score in the end zone", desc: "Carry the ball into the opponent's end zone, 3 against 2. The offense has the numbers — make them count.", hint: "3 vs 2", badge: "Score!" },
+        { n: "02", tag: "Survival", title: "Don't get tagged", desc: "While holding the ball, a single touch from a defender stops you cold. Dodge, fake, stay untouchable.", hint: "0 contact", badge: "Safe!" },
+        { n: "03", tag: "Control", title: "Don't drop the ball", desc: "A ball on the ground is an out. Keep it under control on every pass and every run.", hint: "0 drops", badge: "Secured!" },
+      ],
     },
     moves: {
       label: "Essential moves",
