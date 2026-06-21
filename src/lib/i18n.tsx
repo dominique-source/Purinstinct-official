@@ -55,7 +55,7 @@ export const translations = {
       title: "3 gestes.\nÀ maîtriser.",
       items: [
         { frame: "01/03", tag: "Fondamentaux", title: "Courir", sub: "La base de tout. Traverse le terrain, évite les défenseurs et garde le ballon en main." },
-        { frame: "02/03", tag: "Technique", title: "Passe latérale", sub: "Décale le jeu. La passe latérale et la passe arrière créent des espaces et déstabilisent la défense instantanément." },
+        { frame: "02/03", tag: "Technique", title: "Passe latérale", sub: "La passe latérale et la passe arrière créent des espaces et déstabilise la défense instantanément." },
         { frame: "03/03", tag: "Maîtrise", title: "Redirection", sub: "Le geste d'élite. Change la trajectoire du ballon en une fraction de seconde.", special: "Pouvoir spécial : une redirection empêche l'adversaire de toucher le porteur du ballon." },
       ],
     },
