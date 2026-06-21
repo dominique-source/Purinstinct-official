@@ -221,7 +221,9 @@ function MoveCard({ idx, content, accent, athlete }: {
                 fill
                 style={{
                   objectFit: "contain",
-                  objectPosition: "center 88%",
+                  objectPosition: "center 85%",
+                  transform: "scale(1.35)",
+                  transformOrigin: "center 85%",
                   filter: "drop-shadow(0 12px 32px rgba(0,0,0,0.85))",
                 }}
                 sizes="(max-width: 768px) 92vw, 56vw"
