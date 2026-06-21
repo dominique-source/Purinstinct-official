@@ -63,7 +63,7 @@ function ServiceCard({ photo, pos, icon, title, body, cta, delay }: { photo: str
         <h3 style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 26, textTransform: "uppercase", letterSpacing: "0.03em", color: "#fff", marginBottom: 14, lineHeight: 1.1 }}>{title}</h3>
         <p style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.65, fontSize: 15, marginBottom: 24 }}>{body}</p>
         <a
-          href="https://purinstinct.com/contact-us-2/"
+          href="#contact"
           style={{ display: "inline-flex", alignItems: "center", gap: 7, color: "#84cc16", fontSize: 14, fontWeight: 600, textDecoration: "none", transition: "gap 0.2s" }}
           onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.gap = "12px")}
           onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.gap = "7px")}
