@@ -132,7 +132,7 @@ export const translations = {
     },
     levels: {
       label: "Progression de jeu",
-      title: "Un sport,\n6 façons de jouer",
+      title: "Un sport.\n6 niveaux de difficulté",
       sub: "Commence à ton niveau. Maîtrise les règles une à une, jusqu'au jeu complet.",
       prev: "Niveau précédent",
       next: "Niveau suivant",
@@ -319,7 +319,7 @@ export const translations = {
     },
     levels: {
       label: "Game Progression",
-      title: "One sport,\n6 ways to play",
+      title: "One sport.\n6 levels of difficulty",
       sub: "Start at your level. Master the rules one by one, all the way to the full game.",
       prev: "Previous level",
       next: "Next level",
