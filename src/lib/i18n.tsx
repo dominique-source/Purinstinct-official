@@ -50,6 +50,15 @@ export const translations = {
       titleHighlight: "3 minutes",
       sub: "Une vidéo, et tu es prêt à jouer.",
     },
+    moves: {
+      label: "Gestes essentiels",
+      title: "3 gestes.\nÀ maîtriser.",
+      items: [
+        { frame: "01/03", tag: "Fondamentaux", title: "Courir", sub: "La base de tout. Traverse le terrain, évite les défenseurs et garde le ballon en main." },
+        { frame: "02/03", tag: "Technique", title: "Passe latérale", sub: "Décale le jeu. La passe latérale crée des espaces et déstabilise la défense instantanément." },
+        { frame: "03/03", tag: "Maîtrise", title: "Redirection", sub: "Le geste d'élite. Change la trajectoire du ballon en une fraction de seconde." },
+      ],
+    },
     zones: {
       label: "Les zones",
       title: "5 zones.\n1 arène.",
@@ -236,6 +245,15 @@ export const translations = {
       titleA: "Learn the sport in",
       titleHighlight: "3 minutes",
       sub: "One video, and you're ready to play.",
+    },
+    moves: {
+      label: "Essential moves",
+      title: "3 moves.\nMaster them.",
+      items: [
+        { frame: "01/03", tag: "Fundamentals", title: "Running", sub: "The foundation of everything. Cross the field, avoid defenders, keep the ball in hand." },
+        { frame: "02/03", tag: "Technique", title: "Lateral pass", sub: "Shift the play. The lateral pass creates space and unsettles the defense in an instant." },
+        { frame: "03/03", tag: "Mastery", title: "Redirection", sub: "The elite move. Change the ball's trajectory in a fraction of a second." },
+      ],
     },
     zones: {
       label: "The zones",
