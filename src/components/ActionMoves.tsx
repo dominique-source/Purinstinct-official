@@ -12,6 +12,7 @@ const ATHLETES = [
   "/images/kick.png",
   "/images/redirection no background.png",
 ] as const;
+const IMG_SCALES = [1.35, 1.35, 1.35, 1.0, 1.0] as const;
 
 function CornerBrackets({ color }: { color: string }) {
   const b = `1.5px solid ${color}55`;
@@ -29,11 +30,12 @@ function CornerBrackets({ color }: { color: string }) {
 
 interface MoveContent { frame: string; tag: string; title: string; sub: string; special?: string; }
 
-function MoveCard({ idx, content, accent, athlete }: {
+function MoveCard({ idx, content, accent, athlete, imgScale }: {
   idx: number;
   content: MoveContent;
   accent: string;
   athlete: string;
+  imgScale: number;
 }) {
   const isAlt = idx % 2 === 1;
   const cardRef = useRef<HTMLDivElement>(null);
@@ -222,7 +224,7 @@ function MoveCard({ idx, content, accent, athlete }: {
                 style={{
                   objectFit: "contain",
                   objectPosition: "center 85%",
-                  transform: "scale(1.35)",
+                  transform: `scale(${imgScale})`,
                   transformOrigin: "center 85%",
                   filter: "drop-shadow(0 12px 32px rgba(0,0,0,0.85))",
                 }}
@@ -300,7 +302,7 @@ export default function ActionMoves() {
       {/* Cards */}
       <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexDirection: "column", gap: 32 }}>
         {moves.map((mv, i) => (
-          <MoveCard key={i} idx={i} content={mv} accent={ACCENTS[i]} athlete={ATHLETES[i]} />
+          <MoveCard key={i} idx={i} content={mv} accent={ACCENTS[i]} athlete={ATHLETES[i]} imgScale={IMG_SCALES[i]} />
         ))}
       </div>
 
