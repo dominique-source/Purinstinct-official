@@ -73,7 +73,7 @@ function SceneScore({ badge }: { badge: string }) {
       <Pawn x={72} y={95} fill={LIME} label="1" cls="cr-s1-o1" />
       {/* ball starts at O1's shoulder */}
       <Ball x={91} y={86} cls="cr-s1-ball" />
-      <Check x={355} y={64} text={badge} color={LIME} cls="cr-s1-badge" />
+      <Check x={340} y={150} text={badge} color={LIME} cls="cr-s1-badge" />
     </Field>
   );
 }
@@ -270,16 +270,19 @@ export default function CoreRules() {
         /* ── Rule 1: 3v2 → score ── */
         .cr-s1-o1 { animation: s1o1 3.8s cubic-bezier(0.16,1,0.3,1) infinite; }
         @keyframes s1o1 { 0% { transform: translateX(0); } 26%,100% { transform: translateX(58px); } }
+        /* O2 receives the pass on the bottom lane and scores */
         .cr-s1-o2 { animation: s1o2 3.8s cubic-bezier(0.16,1,0.3,1) infinite; }
-        @keyframes s1o2 { 0% { transform: translate(0,0); } 26%,100% { transform: translate(52px,-10px); } }
+        @keyframes s1o2 { 0% { transform: translate(0,0); } 26% { transform: translate(58px,0); } 46% { transform: translate(58px,0); } 82%,100% { transform: translate(316px,5px); } }
+        /* O3 stays centre as a decoy to pull the defenders in */
         .cr-s1-o3 { animation: s1o3 3.8s cubic-bezier(0.16,1,0.3,1) infinite; }
-        @keyframes s1o3 { 0% { transform: translateX(0); } 26% { transform: translateX(55px); } 46% { transform: translateX(55px); } 82%,100% { transform: translateX(228px); } }
+        @keyframes s1o3 { 0% { transform: translateX(0); } 26%,100% { transform: translateX(55px); } }
         .cr-s1-ball { animation: s1ball 3.8s cubic-bezier(0.16,1,0.3,1) infinite; }
-        @keyframes s1ball { 0% { transform: translate(0,0); } 26% { transform: translate(58px,0); } 46% { transform: translate(141px,45px); } 82%,100% { transform: translate(314px,45px); } }
+        @keyframes s1ball { 0% { transform: translate(0,0); } 26% { transform: translate(58px,0); } 46% { transform: translate(58px,105px); } 82%,100% { transform: translate(316px,110px); } }
+        /* defenders collapse onto the decoy, leaving the bottom lane open */
         .cr-s1-d1 { animation: s1d1 3.8s ease-in-out infinite; }
-        @keyframes s1d1 { 0% { transform: translate(0,0); } 50% { transform: translate(-12px,26px); } 100% { transform: translate(-26px,48px); } }
+        @keyframes s1d1 { 0% { transform: translate(0,0); } 50% { transform: translate(-14px,28px); } 100% { transform: translate(-26px,44px); } }
         .cr-s1-d2 { animation: s1d2 3.8s ease-in-out infinite; }
-        @keyframes s1d2 { 0% { transform: translate(0,0); } 50% { transform: translate(-12px,-24px); } 100% { transform: translate(-22px,-40px); } }
+        @keyframes s1d2 { 0% { transform: translate(0,0); } 50% { transform: translate(-16px,-28px); } 100% { transform: translate(-28px,-46px); } }
         .cr-s1-badge { opacity: 0; animation: s1badge 3.8s ease infinite; }
         @keyframes s1badge { 0%,72% { opacity: 0; transform: scale(0.6); } 82% { opacity: 1; transform: scale(1.12); } 90%,100% { opacity: 1; transform: scale(1); } }
 
