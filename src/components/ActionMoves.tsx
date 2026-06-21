@@ -25,7 +25,7 @@ function CornerBrackets({ color }: { color: string }) {
   );
 }
 
-interface MoveContent { frame: string; tag: string; title: string; sub: string; }
+interface MoveContent { frame: string; tag: string; title: string; sub: string; special?: string; }
 
 function MoveCard({ idx, content, accent, athlete }: {
   idx: number;
@@ -177,6 +177,28 @@ function MoveCard({ idx, content, accent, athlete }: {
               transform: vis ? "translateY(0)" : "translateY(10px)",
               transition: `opacity 0.6s ease ${delay + 0.26}s, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${delay + 0.26}s`,
             }}>{content.sub}</p>
+
+            {/* Special power callout */}
+            {content.special && (
+              <div style={{
+                marginTop: 18,
+                marginLeft: 4,
+                paddingLeft: 12,
+                borderLeft: "2px solid #38bdf855",
+                opacity: vis ? 1 : 0,
+                transform: vis ? "translateY(0)" : "translateY(10px)",
+                transition: `opacity 0.6s ease ${delay + 0.36}s, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${delay + 0.36}s`,
+              }}>
+                <p style={{
+                  color: "#38bdf8cc",
+                  fontSize: "clamp(12.5px, 1.2vw, 14px)",
+                  lineHeight: 1.7,
+                  maxWidth: 320,
+                  fontStyle: "italic",
+                  letterSpacing: "0.01em",
+                }}>{content.special}</p>
+              </div>
+            )}
           </div>
         </div>
 

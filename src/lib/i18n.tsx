@@ -56,7 +56,7 @@ export const translations = {
       items: [
         { frame: "01/03", tag: "Fondamentaux", title: "Courir", sub: "La base de tout. Traverse le terrain, évite les défenseurs et garde le ballon en main." },
         { frame: "02/03", tag: "Technique", title: "Passe latérale", sub: "Décale le jeu. La passe latérale crée des espaces et déstabilise la défense instantanément." },
-        { frame: "03/03", tag: "Maîtrise", title: "Redirection", sub: "Le geste d'élite. Change la trajectoire du ballon en une fraction de seconde. Pouvoir spécial : une redirection empêche l'adversaire de toucher le porteur du ballon." },
+        { frame: "03/03", tag: "Maîtrise", title: "Redirection", sub: "Le geste d'élite. Change la trajectoire du ballon en une fraction de seconde.", special: "Pouvoir spécial : une redirection empêche l'adversaire de toucher le porteur du ballon." },
       ],
     },
     zones: {
@@ -252,7 +252,7 @@ export const translations = {
       items: [
         { frame: "01/03", tag: "Fundamentals", title: "Running", sub: "The foundation of everything. Cross the field, avoid defenders, keep the ball in hand." },
         { frame: "02/03", tag: "Technique", title: "Lateral pass", sub: "Shift the play. The lateral pass creates space and unsettles the defense in an instant." },
-        { frame: "03/03", tag: "Mastery", title: "Redirection", sub: "The elite move. Change the ball's trajectory in a fraction of a second. Special power: a redirection prevents the opponent from tagging the ball carrier." },
+        { frame: "03/03", tag: "Mastery", title: "Redirection", sub: "The elite move. Change the ball's trajectory in a fraction of a second.", special: "Special power: a redirection prevents the opponent from tagging the ball carrier." },
       ],
     },
     zones: {
