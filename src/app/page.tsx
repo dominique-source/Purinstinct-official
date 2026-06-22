@@ -5,6 +5,7 @@ import HowItWorks from "@/components/HowItWorks";
 import RulesVideo from "@/components/RulesVideo";
 import CoreRules from "@/components/CoreRules";
 import ActionMoves from "@/components/ActionMoves";
+import Transition from "@/components/Transition";
 import GameLevels from "@/components/GameLevels";
 import ForWhom from "@/components/ForWhom";
 import EmailCapture from "@/components/EmailCapture";
@@ -21,6 +22,7 @@ export default function Home() {
         <RulesVideo />
         <CoreRules />
         <ActionMoves />
+        <Transition />
         <GameLevels />
         <ForWhom />
         <EmailCapture />

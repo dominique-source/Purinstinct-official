@@ -62,6 +62,20 @@ export const translations = {
         { n: "03", tag: "Contrôle", title: "N'échappe pas le ballon", desc: "Un ballon au sol, c'est un retrait. Garde-le sous contrôle à chaque passe et chaque course.", hint: "0 échappé", badge: "Sécurisé !" },
       ],
     },
+    transition: {
+      label: "La rotation",
+      title: "La transition",
+      sub: "Après 3 retraits, les 12 joueurs basculent en une seule rotation fluide.",
+      trigger: "3 retraits",
+      frame: "Rotation",
+      zones: { end: "Zone de but", play: "Aire de jeu", start: "Zone de départ", def: "Déf", off: "Off", cone: "Cône" },
+      legend: [
+        { count: "3", title: "Attaquants du terrain", desc: "Filent directement dans la boîte défensive." },
+        { count: "2", title: "Défenseurs du terrain", desc: "Filent directement dans la boîte offensive." },
+        { count: "4", title: "En attente · boîte déf.", desc: "Sprintent à travers le terrain, contournent le cône, puis boîte offensive." },
+        { count: "3", title: "En attente · boîte off.", desc: "Sprintent à travers le terrain, contournent le cône, puis boîte défensive." },
+      ],
+    },
     moves: {
       label: "Gestes essentiels",
       title: "5 gestes.\nÀ maîtriser.",
@@ -270,6 +284,20 @@ export const translations = {
         { n: "01", tag: "Objective", title: "Score in the end zone", desc: "Carry the ball into the opponent's end zone, 3 against 2. The offense has the numbers — make them count.", hint: "3 vs 2", badge: "Score!" },
         { n: "02", tag: "Survival", title: "Don't get tagged", desc: "While holding the ball, a single touch from a defender stops you cold. Dodge, fake, stay untouchable.", hint: "0 contact", badge: "Safe!" },
         { n: "03", tag: "Control", title: "Don't drop the ball", desc: "A ball on the ground is an out. Keep it under control on every pass and every run.", hint: "0 drops", badge: "Secured!" },
+      ],
+    },
+    transition: {
+      label: "The rotation",
+      title: "The transition",
+      sub: "After 3 outs, all 12 players swap in one fluid rotation.",
+      trigger: "3 outs",
+      frame: "Rotation",
+      zones: { end: "End zone", play: "Play area", start: "Start zone", def: "Def", off: "Off", cone: "Cone" },
+      legend: [
+        { count: "3", title: "On-field attackers", desc: "Move straight into the defensive box." },
+        { count: "2", title: "On-field defenders", desc: "Move straight into the offensive box." },
+        { count: "4", title: "Waiting · def. box", desc: "Sprint across the field, round the cone, then offensive box." },
+        { count: "3", title: "Waiting · off. box", desc: "Sprint across the field, round the cone, then defensive box." },
       ],
     },
     moves: {
