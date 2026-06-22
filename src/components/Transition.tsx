@@ -4,6 +4,8 @@ import { useLang } from "@/lib/i18n";
 
 const COLORS = ["#84cc16", "#ef4444", "#38bdf8", "#f59e0b"] as const;
 const DELAYS = [0, 0, 0.2, 0.2] as const;
+// Live mode: 2 team colours — lime = offense (groups 0+3), red = defense (groups 1+2)
+const LIVE_COLORS = ["#84cc16", "#ef4444", "#ef4444", "#84cc16"] as const;
 
 /* viewBox 0 0 340 470 — wider field, def box near centre,
    left cone bottom-left at the teal/maroon intersection.
@@ -17,10 +19,10 @@ const PATHS: string[][] = [
     "M185,158 C120,205 76,248 58,254",
     "M120,200 C92,225 66,250 52,260",
   ],
-  // on-field defense → OFF box (right-outside, lower ≈ 305,405)
+  // on-field defense → OFF box (right-outside, lower ≈ 305,405) — starts at same spot as on-field offense
   [
-    "M150,330 C210,360 270,386 300,402",
-    "M195,330 C240,360 285,388 308,408",
+    "M155,175 C195,250 255,340 300,402",
+    "M185,162 C222,244 264,342 308,408",
   ],
   // waiting DEF box (mid-left) → sprint across → round RIGHT cone (facing DEF box) → OFF box
   [
@@ -125,7 +127,7 @@ export default function Transition() {
             <div style={{ position: "absolute", top: 16, right: 18, zIndex: 4, fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", color: "rgba(56,189,248,0.85)", textTransform: "uppercase" }}>{tr.frame}</div>
 
             {/* key forces SMIL restart when the selected category changes */}
-            <svg key={sel ?? "all"} viewBox="0 0 340 470" width="100%" style={{ display: "block", maxHeight: "66vh" }} role="img" aria-label={tr.title}>
+            <svg key={sel === null ? "all" : sel === 4 ? "live" : sel} viewBox="0 0 340 470" width="100%" style={{ display: "block", maxHeight: "66vh" }} role="img" aria-label={tr.title}>
               {/* zones */}
               <rect x="72" y="24" width="196" height="98" fill={TEAL} />
               <rect x="72" y="122" width="196" height="226" fill={MAROON} />
@@ -144,29 +146,40 @@ export default function Transition() {
               <Cone x={52} y={348} />
 
               {/* faint route guides (filtered) */}
-              {!reduced && PATHS.map((grp, gi) =>
-                (sel === null || sel === gi) && grp.map((p, pi) => (
-                  <path key={`g${gi}-${pi}`} d={p} fill="none" stroke={COLORS[gi]} strokeOpacity={sel === gi ? 0.4 : 0.16} strokeWidth="1.3" strokeDasharray="2 5" strokeLinecap="round" />
-                ))
-              )}
+              {!reduced && PATHS.map((grp, gi) => {
+                const visible = sel === null || sel === 4 || sel === gi;
+                const color = sel === 4 ? LIVE_COLORS[gi] : COLORS[gi];
+                return visible && grp.map((p, pi) => (
+                  <path key={`g${gi}-${pi}`} d={p} fill="none" stroke={color} strokeOpacity={sel === gi ? 0.4 : 0.16} strokeWidth="1.3" strokeDasharray="2 5" strokeLinecap="round" />
+                ));
+              })}
 
               {/* players (filtered) */}
-              {PATHS.map((grp, gi) =>
-                (sel === null || sel === gi) && grp.map((p, pi) => (
-                  <Player key={`p${gi}-${pi}`} path={p} color={COLORS[gi]} delay={DELAYS[gi]} reduced={reduced} />
-                ))
-              )}
+              {PATHS.map((grp, gi) => {
+                const visible = sel === null || sel === 4 || sel === gi;
+                const color = sel === 4 ? LIVE_COLORS[gi] : COLORS[gi];
+                return visible && grp.map((p, pi) => (
+                  <Player key={`p${gi}-${pi}`} path={p} color={color} delay={DELAYS[gi]} reduced={reduced} />
+                ));
+              })}
             </svg>
           </div>
 
           {/* ── Legend / clickable tabs ── */}
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
               <button
                 onClick={() => setSel(null)}
                 style={{ cursor: "pointer", fontFamily: "var(--font-barlow), sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "7px 16px", borderRadius: 999, border: `1px solid ${sel === null ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.15)"}`, background: sel === null ? "rgba(255,255,255,0.1)" : "transparent", color: sel === null ? "#fff" : "rgba(255,255,255,0.55)", transition: "all 0.2s ease" }}
               >
                 {tr.all}
+              </button>
+              <button
+                onClick={() => setSel(sel === 4 ? null : 4)}
+                style={{ cursor: "pointer", fontFamily: "var(--font-barlow), sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "7px 16px", borderRadius: 999, border: `1px solid ${sel === 4 ? "#ef4444" : "rgba(255,255,255,0.15)"}`, background: sel === 4 ? "rgba(239,68,68,0.12)" : "transparent", color: sel === 4 ? "#ef4444" : "rgba(255,255,255,0.55)", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: 6 }}
+              >
+                {sel === 4 && <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", boxShadow: "0 0 6px #ef4444", display: "inline-block" }} />}
+                {tr.live}
               </button>
               <span style={{ fontSize: 12.5, color: "rgba(255,255,255,0.4)" }}>{tr.hint}</span>
             </div>
