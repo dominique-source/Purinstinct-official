@@ -167,19 +167,37 @@ export default function Transition() {
 
           {/* ── Legend / clickable tabs ── */}
           <div>
+            {/* Live button — hero CTA above the legend */}
+            <button
+              onClick={() => setSel(sel === 4 ? null : 4)}
+              className="tr-live-btn"
+              style={{
+                width: "100%", cursor: "pointer", marginBottom: 18,
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+                padding: "14px 20px", borderRadius: 14,
+                background: sel === 4
+                  ? "linear-gradient(135deg, rgba(239,68,68,0.22) 0%, rgba(239,68,68,0.08) 100%)"
+                  : "linear-gradient(135deg, rgba(239,68,68,0.10) 0%, rgba(239,68,68,0.03) 100%)",
+                border: `1.5px solid ${sel === 4 ? "#ef4444" : "rgba(239,68,68,0.35)"}`,
+                boxShadow: sel === 4 ? "0 0 28px rgba(239,68,68,0.28), inset 0 0 20px rgba(239,68,68,0.06)" : "none",
+                transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
+              }}
+            >
+              <span className="tr-live-dot" style={{ width: 9, height: 9, borderRadius: "50%", background: "#ef4444", boxShadow: "0 0 10px #ef4444", flexShrink: 0 }} />
+              <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 15, letterSpacing: "0.18em", textTransform: "uppercase", color: sel === 4 ? "#fff" : "rgba(239,68,68,0.85)" }}>
+                {tr.live}
+              </span>
+              <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase" }}>
+                — 12 joueurs
+              </span>
+            </button>
+
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
               <button
                 onClick={() => setSel(null)}
                 style={{ cursor: "pointer", fontFamily: "var(--font-barlow), sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "7px 16px", borderRadius: 999, border: `1px solid ${sel === null ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.15)"}`, background: sel === null ? "rgba(255,255,255,0.1)" : "transparent", color: sel === null ? "#fff" : "rgba(255,255,255,0.55)", transition: "all 0.2s ease" }}
               >
                 {tr.all}
-              </button>
-              <button
-                onClick={() => setSel(sel === 4 ? null : 4)}
-                style={{ cursor: "pointer", fontFamily: "var(--font-barlow), sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "7px 16px", borderRadius: 999, border: `1px solid ${sel === 4 ? "#ef4444" : "rgba(255,255,255,0.15)"}`, background: sel === 4 ? "rgba(239,68,68,0.12)" : "transparent", color: sel === 4 ? "#ef4444" : "rgba(255,255,255,0.55)", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: 6 }}
-              >
-                {sel === 4 && <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", boxShadow: "0 0 6px #ef4444", display: "inline-block" }} />}
-                {tr.live}
               </button>
               <span style={{ fontSize: 12.5, color: "rgba(255,255,255,0.4)" }}>{tr.hint}</span>
             </div>
@@ -229,6 +247,9 @@ export default function Transition() {
         .tr-tab:hover { border-color: ${"rgba(255,255,255,0.4)"} !important; }
         .tr-pulse { animation: trPulse 1.4s ease-in-out infinite; }
         @keyframes trPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+        .tr-live-dot { animation: trLiveDot 1.2s ease-in-out infinite; }
+        @keyframes trLiveDot { 0%,100% { box-shadow: 0 0 10px #ef4444; opacity: 1; } 50% { box-shadow: 0 0 20px #ef4444, 0 0 36px rgba(239,68,68,0.4); opacity: 0.7; } }
+        .tr-live-btn:hover { box-shadow: 0 0 36px rgba(239,68,68,0.22) !important; border-color: #ef4444 !important; }
         @media (max-width: 820px) {
           .tr-grid { grid-template-columns: 1fr; }
           .tr-field { max-width: 380px; margin: 0 auto; }
