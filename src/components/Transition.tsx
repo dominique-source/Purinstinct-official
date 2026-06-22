@@ -11,25 +11,29 @@ const DELAYS = [0, 0, 0.2, 0.2] as const;
    2 = waiting def box → round RIGHT cone → off box,
    3 = waiting off box → round LEFT cone → def box. */
 const PATHS: string[][] = [
+  // on-field offense → DEF box (left-outside, lower third ≈ 48,305)
   [
-    "M150,165 C148,220 145,270 140,296",
-    "M185,150 C175,215 155,272 146,300",
-    "M120,185 C124,235 132,276 134,304",
+    "M150,175 C100,230 70,290 58,302",
+    "M185,158 C120,230 78,294 60,300",
+    "M120,200 C90,252 68,296 54,306",
   ],
+  // on-field defense → OFF box (right-outside, lower ≈ 305,405)
   [
     "M150,330 C210,360 270,386 300,402",
     "M195,330 C240,360 285,388 308,408",
   ],
+  // waiting DEF box (lower-left) → round RIGHT cone → OFF box
   [
-    "M130,292 C205,296 272,300 294,336 C304,352 300,362 305,400",
-    "M150,292 C215,298 278,302 298,338 C308,354 304,364 309,402",
-    "M130,308 C205,312 272,316 296,344 C306,360 300,368 305,404",
-    "M150,308 C215,314 278,318 300,346 C310,362 306,370 309,406",
+    "M40,300 C140,300 250,320 292,342 C304,354 300,362 305,400",
+    "M56,300 C150,304 258,324 296,344 C308,356 304,364 309,402",
+    "M40,314 C140,316 250,332 294,348 C306,360 300,368 305,404",
+    "M56,314 C150,318 258,336 298,350 C310,362 306,370 309,406",
   ],
+  // waiting OFF box (lower-right) → round LEFT cone (bottom-left) → DEF box (lower-left)
   [
-    "M296,400 C180,366 80,360 46,342 C40,356 56,368 88,356 C112,344 128,322 138,302",
-    "M306,406 C190,372 86,364 50,346 C44,360 60,372 92,360 C116,348 132,326 142,304",
-    "M300,412 C182,378 80,368 44,350 C38,364 54,376 86,364 C110,352 126,330 136,306",
+    "M296,400 C190,366 90,358 48,344 C40,356 54,360 66,350 C56,332 50,318 48,310",
+    "M306,406 C200,372 96,362 52,348 C44,360 58,364 70,354 C60,336 54,322 52,314",
+    "M300,412 C192,378 88,366 46,352 C38,364 52,368 64,358 C54,340 48,326 46,318",
   ],
 ];
 
@@ -133,7 +137,7 @@ export default function Transition() {
               <text x="170" y="402" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="12" letterSpacing="0.14em">{tr.zones.start.toUpperCase()}</text>
 
               {/* boxes + cones */}
-              <Box x={140} y={300} color={COLORS[2]} label={tr.zones.def} labelDy={26} />
+              <Box x={48} y={305} color={COLORS[2]} label={tr.zones.def} labelDy={28} />
               <Box x={305} y={405} color={COLORS[1]} label={tr.zones.off} labelDy={28} />
               <Cone x={288} y={348} />
               <Cone x={52} y={348} />
