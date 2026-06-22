@@ -11,29 +11,29 @@ const DELAYS = [0, 0, 0.2, 0.2] as const;
    2 = waiting def box → round RIGHT cone → off box,
    3 = waiting off box → round LEFT cone → def box. */
 const PATHS: string[][] = [
-  // on-field offense → DEF box (left-outside, lower third ≈ 48,305)
+  // on-field offense → DEF box (left-outside, ~40% up the play area ≈ 48,258)
   [
-    "M150,175 C100,230 70,290 58,302",
-    "M185,158 C120,230 78,294 60,300",
-    "M120,200 C90,252 68,296 54,306",
+    "M150,175 C100,210 68,245 56,256",
+    "M185,158 C120,205 76,248 58,254",
+    "M120,200 C92,225 66,250 52,260",
   ],
   // on-field defense → OFF box (right-outside, lower ≈ 305,405)
   [
     "M150,330 C210,360 270,386 300,402",
     "M195,330 C240,360 285,388 308,408",
   ],
-  // waiting DEF box (lower-left) → round RIGHT cone → OFF box
+  // waiting DEF box (mid-left) → round RIGHT cone → OFF box
   [
-    "M40,300 C140,300 250,320 292,342 C304,354 300,362 305,400",
-    "M56,300 C150,304 258,324 296,344 C308,356 304,364 309,402",
-    "M40,314 C140,316 250,332 294,348 C306,360 300,368 305,404",
-    "M56,314 C150,318 258,336 298,350 C310,362 306,370 309,406",
+    "M40,252 C140,270 250,310 292,342 C304,354 300,362 305,400",
+    "M56,252 C150,272 258,314 296,344 C308,356 304,364 309,402",
+    "M40,266 C140,286 250,326 294,348 C306,360 300,368 305,404",
+    "M56,266 C150,288 258,330 298,350 C310,362 306,370 309,406",
   ],
-  // waiting OFF box (lower-right) → round LEFT cone (bottom-left) → DEF box (lower-left)
+  // waiting OFF box (lower-right) → round LEFT cone (bottom-left) → DEF box (mid-left)
   [
-    "M296,400 C190,366 90,358 48,344 C40,356 54,360 66,350 C56,332 50,318 48,310",
-    "M306,406 C200,372 96,362 52,348 C44,360 58,364 70,354 C60,336 54,322 52,314",
-    "M300,412 C192,378 88,366 46,352 C38,364 52,368 64,358 C54,340 48,326 46,318",
+    "M296,400 C190,366 90,358 48,344 C40,356 56,360 68,350 C58,320 50,285 48,266",
+    "M306,406 C200,372 96,362 52,348 C44,360 60,364 72,354 C62,324 54,289 52,270",
+    "M300,412 C192,378 88,366 46,352 C38,364 54,368 66,358 C56,328 48,293 46,274",
   ],
 ];
 
@@ -137,7 +137,7 @@ export default function Transition() {
               <text x="170" y="402" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="12" letterSpacing="0.14em">{tr.zones.start.toUpperCase()}</text>
 
               {/* boxes + cones */}
-              <Box x={48} y={305} color={COLORS[2]} label={tr.zones.def} labelDy={28} />
+              <Box x={48} y={258} color={COLORS[2]} label={tr.zones.def} labelDy={28} />
               <Box x={305} y={405} color={COLORS[1]} label={tr.zones.off} labelDy={28} />
               <Cone x={288} y={348} />
               <Cone x={52} y={348} />
