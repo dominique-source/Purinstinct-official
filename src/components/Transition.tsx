@@ -22,12 +22,12 @@ const PATHS: string[][] = [
     "M150,330 C210,360 270,386 300,402",
     "M195,330 C240,360 285,388 308,408",
   ],
-  // waiting DEF box (mid-left) → round RIGHT cone → OFF box
+  // waiting DEF box (mid-left) → sprint across → round RIGHT cone (facing DEF box) → OFF box
   [
-    "M40,252 C140,270 250,310 292,342 C304,354 300,362 305,400",
-    "M56,252 C150,272 258,314 296,344 C308,356 304,364 309,402",
-    "M40,266 C140,286 250,326 294,348 C306,360 300,368 305,404",
-    "M56,266 C150,288 258,330 298,350 C310,362 306,370 309,406",
+    "M40,252 C140,248 250,250 284,250 C300,252 302,266 290,268 C298,310 305,358 305,400",
+    "M56,252 C150,250 256,252 288,252 C304,254 306,268 294,270 C302,312 309,360 309,402",
+    "M40,266 C140,262 250,262 286,260 C302,262 304,276 292,278 C300,318 305,362 305,404",
+    "M56,266 C150,262 256,264 290,262 C306,264 308,278 296,280 C304,320 309,364 309,406",
   ],
   // waiting OFF box (lower-right) → round LEFT cone (bottom-left) → DEF box (mid-left)
   [
@@ -139,7 +139,7 @@ export default function Transition() {
               {/* boxes + cones */}
               <Box x={48} y={258} color={COLORS[2]} label={tr.zones.def} labelDy={28} />
               <Box x={305} y={405} color={COLORS[1]} label={tr.zones.off} labelDy={28} />
-              <Cone x={288} y={348} />
+              <Cone x={288} y={258} />
               <Cone x={52} y={348} />
 
               {/* faint route guides (filtered) */}
