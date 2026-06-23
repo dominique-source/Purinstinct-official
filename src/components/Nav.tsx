@@ -119,6 +119,29 @@ export default function Nav() {
 
         {/* Right controls */}
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {/* Guide link */}
+          <a
+            href="/guide"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden-mobile"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 7,
+              fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700,
+              fontSize: 13, letterSpacing: "0.06em", textTransform: "uppercase",
+              color: "#84cc16", border: "1px solid rgba(132,204,22,0.35)",
+              background: "rgba(132,204,22,0.08)", borderRadius: 8,
+              padding: "8px 16px", textDecoration: "none",
+              transition: "background 0.2s, border-color 0.2s",
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(132,204,22,0.15)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(132,204,22,0.6)"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(132,204,22,0.08)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(132,204,22,0.35)"; }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            {t.nav.guide}
+          </a>
           {/* Lang toggle */}
           <button
             onClick={() => setLang(lang === "fr" ? "en" : "fr")}
@@ -237,6 +260,24 @@ export default function Nav() {
               {t.nav.comingSoon}
             </span>
           </span>
+          <a
+            href="/guide"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "flex", alignItems: "center", gap: 10,
+              color: "#84cc16", textDecoration: "none",
+              fontSize: 18, fontFamily: "var(--font-barlow), sans-serif",
+              fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase",
+              padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.06)",
+            }}
+            onClick={() => setOpen(false)}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            {t.nav.guide}
+          </a>
           <a href="#cta" className="btn-primary" style={{ marginTop: 16, textAlign: "center", justifyContent: "center" }} onClick={() => setOpen(false)}>
             {t.nav.cta}
           </a>

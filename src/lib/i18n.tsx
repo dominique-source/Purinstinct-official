@@ -12,6 +12,7 @@ export const translations = {
       games: "PurInstinct Games",
       comingSoon: "Bientôt",
       cta: "Commencer",
+      guide: "Le Guide",
     },
     hero: {
       label: "Le mouvement",
@@ -239,6 +240,7 @@ export const translations = {
       games: "PurInstinct Games",
       comingSoon: "Soon",
       cta: "Get started",
+      guide: "The Guide",
     },
     hero: {
       label: "The movement",
