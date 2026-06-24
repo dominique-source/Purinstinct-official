@@ -31,10 +31,6 @@ function Field({ children }: { children: React.ReactNode }) {
 function SceneEarlyEntry({ lang }: { lang: "fr" | "en" }) {
   return (
     <Field>
-      {/* Ball at center — on the ground, not yet picked up */}
-      <circle cx="220" cy="140" r="9" fill="#eaffd1" stroke={LIME} strokeWidth="2.5" />
-      <circle cx="220" cy="140" r="2.6" fill={LIME} />
-
       {/* Defenders — in play area, facing the offense */}
       <g transform="translate(270,110)">
         <circle r="15" fill={RED} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
