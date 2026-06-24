@@ -144,15 +144,19 @@ function SceneDefPenalty({ lang }: { lang: "fr" | "en" }) {
         </text>
       </g>
 
-      {/* +1 retrait result badge */}
-      <g className="pen2-result-badge">
-        <rect x="-80" y="-24" width="160" height="48" rx="18" fill={`${ORANGE}14`} stroke={ORANGE} strokeWidth="1.5" />
-        <text y="-4" textAnchor="middle" fill={ORANGE} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="11" letterSpacing="0.14em">
-          {lang === "fr" ? "+1 RETRAIT DÉF." : "+1 DEF. WITHDRAWAL"}
+      {/* Permanent scoreboard — shows 3 retraits always, changes to 4 on foul */}
+      <g className="pen2-scoreboard">
+        <rect x="-54" y="-30" width="108" height="58" rx="10" fill="rgba(6,7,15,0.55)" stroke="rgba(255,255,255,0.09)" strokeWidth="1" />
+        <text y="-13" textAnchor="middle" fill="rgba(255,255,255,0.22)" fontFamily="var(--font-barlow), sans-serif" fontWeight="700" fontSize="7.5" letterSpacing="0.16em">
+          {lang === "fr" ? "RETRAITS DÉF." : "DEF. WITHDRAWALS"}
         </text>
-        <text y="16" textAnchor="middle" fill={LIME} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="16" letterSpacing="0.02em">
-          3 → 4
-        </text>
+        <text className="pen2-score-3" y="16" textAnchor="middle" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="28">3</text>
+        <text className="pen2-score-4" y="16" textAnchor="middle" fill={ORANGE} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="28">4</text>
+      </g>
+
+      {/* +1 floats up from the scoreboard on foul */}
+      <g className="pen2-plus-one">
+        <text y="0" textAnchor="middle" fill={ORANGE} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="22" letterSpacing="-0.02em">+1</text>
       </g>
     </Field>
   );
@@ -523,12 +527,27 @@ export default function Penalties() {
           68%,100% { opacity: 1; transform: translate(50%, 22.143%) scale(1); }
         }
 
-        /* ── +1 retrait badge at (220,232) → translate(50%, 82.857%) ── */
-        .pen2-result-badge { opacity: 0; transform-box: view-box; animation: pen2result 6s ease infinite; }
-        @keyframes pen2result {
-          0%,75%   { opacity: 0; transform: translate(50%, 82.857%) scale(0.5); }
-          83%      { opacity: 1; transform: translate(50%, 82.857%) scale(1.1); }
-          90%,100% { opacity: 1; transform: translate(50%, 82.857%) scale(1); }
+        /* ── Scoreboard — always visible at (220,232), "3" fades to "4" on foul ── */
+        .pen2-scoreboard { transform-box: view-box; transform: translate(50%, 82.857%); }
+        .pen2-score-3 { fill: rgba(255,255,255,0.28); animation: pen2s3 6s ease infinite; }
+        @keyframes pen2s3 {
+          0%,72%   { fill: rgba(255,255,255,0.28); }
+          82%,100% { fill: rgba(255,255,255,0.06); }
+        }
+        .pen2-score-4 { opacity: 0; animation: pen2s4 6s ease infinite; }
+        @keyframes pen2s4 {
+          0%,72% { opacity: 0; }
+          80%    { opacity: 1; }
+          100%   { opacity: 1; }
+        }
+
+        /* ── +1 floats up from scoreboard ── */
+        .pen2-plus-one { transform-box: view-box; opacity: 0; animation: pen2plus 6s ease infinite; }
+        @keyframes pen2plus {
+          0%,68%  { opacity: 0; transform: translate(50%, 80%); }
+          76%     { opacity: 1; transform: translate(50%, 72%); }
+          88%     { opacity: 0.7; transform: translate(50%, 65%); }
+          96%,100% { opacity: 0; transform: translate(50%, 60%); }
         }
 
         /* ── Reduced motion ── */
@@ -537,7 +556,10 @@ export default function Penalties() {
           .pen1-foul-badge, .pen1-result-badge, .pen1-o2-out { opacity: 1 !important; transform: scale(1) !important; }
           .pen1-o2-pawn { opacity: 0 !important; }
           .pen1-line-flash { stroke-opacity: 0 !important; }
-          .pen2-foul-badge, .pen2-result-badge, .pen2-d2-warn { opacity: 1 !important; transform: scale(1) !important; }
+          .pen2-foul-badge, .pen2-d2-warn { opacity: 1 !important; transform: scale(1) !important; }
+          .pen2-score-3 { fill: rgba(255,255,255,0.06) !important; }
+          .pen2-score-4 { opacity: 1 !important; }
+          .pen2-plus-one { opacity: 0 !important; }
           .pen2-def-flash { stroke-opacity: 0 !important; }
         }
       `}</style>
