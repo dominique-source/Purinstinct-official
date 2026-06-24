@@ -91,6 +91,73 @@ function SceneEarlyEntry({ lang }: { lang: "fr" | "en" }) {
   );
 }
 
+function SceneDefPenalty({ lang }: { lang: "fr" | "en" }) {
+  return (
+    <Field>
+      {/* Defensive start zone buffer (1m from offensive line) */}
+      <rect x="80" y="8" width="40" height="264" fill="rgba(239,68,68,0.05)" />
+      <line x1="120" y1="8" x2="120" y2="272" stroke={RED} strokeOpacity="0.4" strokeWidth="2" strokeDasharray="5 4" />
+      <text x="100" y="275" fill={RED} fillOpacity="0.5" fontFamily="var(--font-barlow), sans-serif" fontWeight="700" fontSize="8" letterSpacing="0.1em" textAnchor="middle">
+        {lang === "fr" ? "DÉPART DÉF." : "DEF. START"}
+      </text>
+
+      {/* O1 O2 O3 static in offensive start zone */}
+      <g transform="translate(52,140)">
+        <circle r="15" fill={LIME} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
+        <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">1</text>
+      </g>
+      <g transform="translate(52,95)">
+        <circle r="15" fill={LIME} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
+        <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">2</text>
+      </g>
+      <g transform="translate(52,185)">
+        <circle r="15" fill={LIME} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
+        <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">3</text>
+      </g>
+
+      {/* D1 static — stays behind defensive line */}
+      <g transform="translate(270,110)">
+        <circle r="15" fill={RED} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
+        <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">D</text>
+      </g>
+
+      {/* D2 animated — crosses defensive start line early */}
+      <g className="pen2-d2-group">
+        <circle r="15" fill={RED} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
+        <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">D</text>
+        <g className="pen2-d2-warn">
+          <circle r="20" fill="none" stroke={ORANGE} strokeWidth="2.5" strokeDasharray="4 3" />
+          <text y="-28" textAnchor="middle" fill={ORANGE} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="9" letterSpacing="0.12em">
+            {lang === "fr" ? "AVERT." : "WARN."}
+          </text>
+        </g>
+      </g>
+
+      {/* Defensive line warning flash */}
+      <line className="pen2-def-flash" x1="120" y1="8" x2="120" y2="272" stroke={RED} strokeWidth="3" strokeOpacity="0" />
+
+      {/* FAUTE badge */}
+      <g className="pen2-foul-badge">
+        <rect x="-58" y="-18" width="116" height="36" rx="18" fill={RED} />
+        <text y="6" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="17" letterSpacing="0.04em">
+          {lang === "fr" ? "FAUTE !" : "FOUL!"}
+        </text>
+      </g>
+
+      {/* +1 retrait result badge */}
+      <g className="pen2-result-badge">
+        <rect x="-80" y="-24" width="160" height="48" rx="18" fill={`${ORANGE}14`} stroke={ORANGE} strokeWidth="1.5" />
+        <text y="-4" textAnchor="middle" fill={ORANGE} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="11" letterSpacing="0.14em">
+          {lang === "fr" ? "+1 RETRAIT DÉF." : "+1 DEF. WITHDRAWAL"}
+        </text>
+        <text y="16" textAnchor="middle" fill={LIME} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="16" letterSpacing="0.02em">
+          3 → 4
+        </text>
+      </g>
+    </Field>
+  );
+}
+
 export default function Penalties() {
   const { lang } = useLang();
   const fr = lang === "fr";
@@ -149,8 +216,8 @@ export default function Penalties() {
           </h2>
           <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 17, lineHeight: 1.65, maxWidth: 500, margin: "0 auto" }}>
             {fr
-              ? "Certaines actions sont interdites. Voici les pénalités offensives et leurs conséquences directes sur le jeu."
-              : "Some actions are forbidden. Here are the offensive penalties and their direct impact on play."}
+              ? "Certaines actions sont interdites. Voici les pénalités et leurs conséquences directes sur le jeu."
+              : "Some actions are forbidden. Here are the penalties and their direct impact on play."}
           </p>
         </div>
 
@@ -248,6 +315,92 @@ export default function Penalties() {
             </div>
           </div>
         </div>
+
+        {/* ── Separator ── */}
+        <div style={{ margin: "clamp(40px,5vw,64px) 0", height: 1, background: "rgba(255,255,255,0.07)" }} />
+
+        {/* ── Penalty 2 card: defensive early entry ── */}
+        <div className="pen-grid">
+
+          {/* Animated field */}
+          <div style={{
+            borderRadius: 22, overflow: "hidden", background: "#0c0d17",
+            border: `1px solid ${RED}22`, boxShadow: "0 30px 80px rgba(0,0,0,0.55)",
+            position: "relative",
+          }}>
+            {(["top","bottom"] as const).flatMap((v) =>
+              (["left","right"] as const).map((h) => (
+                <div key={`${v}${h}`} aria-hidden style={{
+                  position: "absolute", [v]: 14, [h]: 14, width: 18, height: 18,
+                  [`border${v[0].toUpperCase() + v.slice(1)}`]: `1.5px solid ${RED}55`,
+                  [`border${h[0].toUpperCase() + h.slice(1)}`]: `1.5px solid ${RED}55`,
+                  zIndex: 3, pointerEvents: "none",
+                } as React.CSSProperties} />
+              ))
+            )}
+            <div style={{ position: "absolute", top: 16, left: 18, zIndex: 4, display: "inline-flex", alignItems: "center", gap: 7 }}>
+              <span className="pen-dot" style={{ width: 7, height: 7, borderRadius: "50%", background: RED, display: "inline-block" }} />
+              <span style={{ fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase" }}>
+                {fr ? "PÉNALITÉ DÉFENSIVE" : "DEFENSIVE PENALTY"}
+              </span>
+            </div>
+            <div style={{ position: "absolute", top: 16, right: 18, zIndex: 4, fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: `${RED}90` }}>
+              TYPE 02/02
+            </div>
+            <div style={{ padding: "clamp(40px,5vw,56px) clamp(20px,3vw,32px) clamp(24px,3vw,32px)" }}>
+              <div key={lang} className="pen-scene">
+                <SceneDefPenalty lang={lang} />
+              </div>
+            </div>
+          </div>
+
+          {/* Description panel */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <span style={{
+                width: 48, height: 48, borderRadius: 13, flexShrink: 0,
+                display: "grid", placeItems: "center",
+                background: `${RED}18`, border: `1px solid ${RED}44`,
+                fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 20, color: RED,
+              }}>2</span>
+              <div>
+                <p style={{ margin: 0, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: RED, marginBottom: 4 }}>
+                  {fr ? "Type 2 · Pénalité défensive" : "Type 2 · Defensive penalty"}
+                </p>
+                <h3 style={{ margin: 0, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: "clamp(20px,2.5vw,28px)", textTransform: "uppercase", color: "#fff", letterSpacing: "-0.01em", lineHeight: 1.05 }}>
+                  {fr ? "Entrée anticipée" : "Early entry"}
+                </h3>
+              </div>
+            </div>
+
+            <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 16, padding: "20px 22px" }}>
+              <p style={{ margin: "0 0 10px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
+                {fr ? "La faute" : "The foul"}
+              </p>
+              <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
+                {fr
+                  ? "Un joueur défensif (D) dépasse la ligne de départ défensive (à 1m de la ligne offensive) avant que le ballon soit touché par l'attaquant."
+                  : "A defensive player (D) crosses the defensive start line (1m from the offensive line) before the ball is touched by the attacker."}
+              </p>
+            </div>
+
+            <div style={{ background: `${ORANGE}0c`, border: `1px solid ${ORANGE}2e`, borderRadius: 16, padding: "20px 22px" }}>
+              <p style={{ margin: "0 0 10px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: ORANGE }}>
+                {fr ? "Conséquence" : "Consequence"}
+              </p>
+              <p style={{ margin: "0 0 16px", color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
+                {fr
+                  ? "La défense doit effectuer un retrait supplémentaire. Le nombre de retraits à faire passe de 3 à 4."
+                  : "The defense must perform one additional withdrawal. The required number of withdrawals increases from 3 to 4."}
+              </p>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: "10px 18px" }}>
+                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: "rgba(255,255,255,0.7)", letterSpacing: "-0.02em" }}>3 retraits</span>
+                <span style={{ color: "rgba(255,255,255,0.25)", fontSize: 20, lineHeight: 1 }}>→</span>
+                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: ORANGE, letterSpacing: "-0.02em" }}>4 retraits</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <style>{`
@@ -329,12 +482,63 @@ export default function Penalties() {
           90%,100% { opacity: 1; transform: translate(50%, 82.857%) scale(1); }
         }
 
+        /*
+          pen2 positions:
+          D2  start:(270,170) → translate(61.364%, 60.714%)
+          D2  end:  (88,170)  → translate(20%, 60.714%)
+          FAUTE  (220,62)  → 50%, 22.143%
+          RESULT (220,232) → 50%, 82.857%
+        */
+
+        /* ── D2 group: rushes past defensive start line ── */
+        .pen2-d2-group { transform-box: view-box; animation: pen2d2 6s cubic-bezier(0.16,1,0.3,1) infinite; }
+        @keyframes pen2d2 {
+          0%,35%   { transform: translate(61.364%, 60.714%); }
+          50%,100% { transform: translate(20%, 60.714%); }
+        }
+
+        /* ── D2 warning ring: appears after violation ── */
+        .pen2-d2-warn { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pen2warn 6s ease infinite; }
+        @keyframes pen2warn {
+          0%,60%   { opacity: 0; transform: scale(0.4); }
+          70%      { opacity: 1; transform: scale(1.1); }
+          78%,100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* ── Defensive line warning flash ── */
+        .pen2-def-flash { animation: pen2flash 6s ease infinite; }
+        @keyframes pen2flash {
+          0%,47%  { stroke-opacity: 0; }
+          51%     { stroke-opacity: 0.85; }
+          55%     { stroke-opacity: 0.15; }
+          59%     { stroke-opacity: 0.85; }
+          63%,100% { stroke-opacity: 0; }
+        }
+
+        /* ── FAUTE badge at (220,62) → translate(50%, 22.143%) ── */
+        .pen2-foul-badge { opacity: 0; transform-box: view-box; animation: pen2foul 6s ease infinite; }
+        @keyframes pen2foul {
+          0%,53% { opacity: 0; transform: translate(50%, 22.143%) scale(0.5); }
+          61%    { opacity: 1; transform: translate(50%, 22.143%) scale(1.1); }
+          68%,100% { opacity: 1; transform: translate(50%, 22.143%) scale(1); }
+        }
+
+        /* ── +1 retrait badge at (220,232) → translate(50%, 82.857%) ── */
+        .pen2-result-badge { opacity: 0; transform-box: view-box; animation: pen2result 6s ease infinite; }
+        @keyframes pen2result {
+          0%,75%   { opacity: 0; transform: translate(50%, 82.857%) scale(0.5); }
+          83%      { opacity: 1; transform: translate(50%, 82.857%) scale(1.1); }
+          90%,100% { opacity: 1; transform: translate(50%, 82.857%) scale(1); }
+        }
+
         /* ── Reduced motion ── */
         @media (prefers-reduced-motion: reduce) {
           .pen-scene *, .pen-dot { animation: none !important; }
           .pen1-foul-badge, .pen1-result-badge, .pen1-o2-out { opacity: 1 !important; transform: scale(1) !important; }
           .pen1-o2-pawn { opacity: 0 !important; }
           .pen1-line-flash { stroke-opacity: 0 !important; }
+          .pen2-foul-badge, .pen2-result-badge, .pen2-d2-warn { opacity: 1 !important; transform: scale(1) !important; }
+          .pen2-def-flash { stroke-opacity: 0 !important; }
         }
       `}</style>
     </section>
