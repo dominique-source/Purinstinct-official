@@ -108,7 +108,7 @@ export default function TransitionPenalties() {
             <div style={{ position: "absolute", top: 16, left: 18, zIndex: 4, display: "inline-flex", alignItems: "center", gap: 7 }}>
               <span className="trpen-dot" style={{ width: 7, height: 7, borderRadius: "50%", background: ORANGE, display: "inline-block" }} />
               <span style={{ fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase" }}>
-                {fr ? "PÉNALITÉ TRANSITION OFF." : "OFFENSIVE TRANSITION PENALTY"}
+                {fr ? "PÉNALITÉ TRANSITION DÉF." : "DEFENSIVE TRANSITION PENALTY"}
               </span>
             </div>
             <div style={{ position: "absolute", top: 16, right: 18, zIndex: 4, fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: `${ORANGE}90` }}>
@@ -218,7 +218,7 @@ export default function TransitionPenalties() {
               }}>1</span>
               <div>
                 <p style={{ margin: 0, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: ORANGE, marginBottom: 4 }}>
-                  {fr ? "Type 1 · Pénalité offensive de transition" : "Type 1 · Offensive transition penalty"}
+                  {fr ? "Type 1 · Pénalité de transition défensive" : "Type 1 · Defensive transition penalty"}
                 </p>
                 <h3 style={{ margin: 0, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: "clamp(20px,2.5vw,28px)", textTransform: "uppercase", color: "#fff", letterSpacing: "-0.01em", lineHeight: 1.05 }}>
                   {fr ? "Contournement du cône" : "Cone bypass"}
@@ -232,8 +232,8 @@ export default function TransitionPenalties() {
               </p>
               <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
                 {fr
-                  ? "Un joueur offensif en transition (en bleu) ne contourne pas le cône et passe de l'autre côté au lieu de le longer par l'extérieur."
-                  : "An offensive player in transition (blue) does not go around the cone and cuts through the inside instead of going around the outside."}
+                  ? "Un joueur défensif en transition (en bleu) ne contourne pas le cône et passe de l'autre côté au lieu de le longer par l'extérieur."
+                  : "A defensive player in transition (blue) does not go around the cone and cuts through the inside instead of going around the outside."}
               </p>
             </div>
 
@@ -280,7 +280,7 @@ export default function TransitionPenalties() {
             <div style={{ position: "absolute", top: 16, left: 18, zIndex: 4, display: "inline-flex", alignItems: "center", gap: 7 }}>
               <span className="trpen-dot" style={{ width: 7, height: 7, borderRadius: "50%", background: RED, display: "inline-block" }} />
               <span style={{ fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase" }}>
-                {fr ? "PÉNALITÉ TRANSITION DÉF." : "DEFENSIVE TRANSITION PENALTY"}
+                {fr ? "PÉNALITÉ TRANSITION OFF." : "OFFENSIVE TRANSITION PENALTY"}
               </span>
             </div>
             <div style={{ position: "absolute", top: 16, right: 18, zIndex: 4, fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: `${RED}90` }}>
@@ -387,7 +387,7 @@ export default function TransitionPenalties() {
               }}>2</span>
               <div>
                 <p style={{ margin: 0, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: RED, marginBottom: 4 }}>
-                  {fr ? "Type 2 · Pénalité défensive de transition" : "Type 2 · Defensive transition penalty"}
+                  {fr ? "Type 2 · Pénalité de transition offensive" : "Type 2 · Offensive transition penalty"}
                 </p>
                 <h3 style={{ margin: 0, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: "clamp(20px,2.5vw,28px)", textTransform: "uppercase", color: "#fff", letterSpacing: "-0.01em", lineHeight: 1.05 }}>
                   {fr ? "Contournement du cône" : "Cone bypass"}
@@ -401,8 +401,8 @@ export default function TransitionPenalties() {
               </p>
               <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
                 {fr
-                  ? "Un joueur défensif en transition (en rouge) ne contourne pas le cône et passe de l'autre côté au lieu de le longer par l'extérieur."
-                  : "A defensive player in transition (red) does not go around the cone and cuts through the inside instead of going around the outside."}
+                  ? "Un joueur offensif en transition (en rouge) ne contourne pas le cône et passe de l'autre côté au lieu de le longer par l'extérieur."
+                  : "An offensive player in transition (red) does not go around the cone and cuts through the inside instead of going around the outside."}
               </p>
             </div>
 
