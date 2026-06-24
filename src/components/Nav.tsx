@@ -119,6 +119,29 @@ export default function Nav() {
 
         {/* Right controls */}
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {/* Animations link */}
+          <a
+            href="/animations"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden-mobile"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 7,
+              fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700,
+              fontSize: 13, letterSpacing: "0.06em", textTransform: "uppercase",
+              color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(255,255,255,0.04)", borderRadius: 8,
+              padding: "8px 16px", textDecoration: "none",
+              transition: "background 0.2s, border-color 0.2s, color 0.2s",
+            }}
+            onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.background = "rgba(255,255,255,0.08)"; el.style.color = "#fff"; }}
+            onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.background = "rgba(255,255,255,0.04)"; el.style.color = "rgba(255,255,255,0.55)"; }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Animations
+          </a>
           {/* Guide link */}
           <a
             href="/guide"
@@ -260,6 +283,24 @@ export default function Nav() {
               {t.nav.comingSoon}
             </span>
           </span>
+          <a
+            href="/animations"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "flex", alignItems: "center", gap: 10,
+              color: "rgba(255,255,255,0.6)", textDecoration: "none",
+              fontSize: 18, fontFamily: "var(--font-barlow), sans-serif",
+              fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase",
+              padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.06)",
+            }}
+            onClick={() => setOpen(false)}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Animations
+          </a>
           <a
             href="/guide"
             target="_blank"
