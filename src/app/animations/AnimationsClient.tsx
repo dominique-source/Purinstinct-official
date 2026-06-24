@@ -4,6 +4,7 @@ import { LangProvider } from "@/lib/i18n";
 
 const CoreRules = dynamic(() => import("@/components/CoreRules"), { ssr: false });
 const Transition = dynamic(() => import("@/components/Transition"), { ssr: false });
+const TransitionPenalties = dynamic(() => import("@/components/TransitionPenalties"), { ssr: false });
 const Penalties = dynamic(() => import("@/components/Penalties"), { ssr: false });
 
 const LIME = "#84cc16";
@@ -44,12 +45,14 @@ export default function AnimationsClient() {
           <div style={{ display: "flex", gap: 8 }}>
             <a href="#core-rules" style={chip}>Règles</a>
             <a href="#transition" style={chip}>Transition</a>
+            <a href="#transition-penalties" style={chip}>Punitions transit.</a>
             <a href="#penalties" style={chip}>Pénalités</a>
           </div>
         </nav>
 
         <div id="core-rules"><CoreRules /></div>
         <div id="transition"><Transition /></div>
+        <div id="transition-penalties"><TransitionPenalties /></div>
         <div id="penalties"><Penalties /></div>
 
       </div>
