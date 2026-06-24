@@ -32,31 +32,27 @@ function SceneEarlyEntry({ lang }: { lang: "fr" | "en" }) {
   return (
     <Field>
       {/* Ball at center — on the ground, not yet picked up */}
-      <ellipse cx="220" cy="149" rx="10" ry="3.5" fill="rgba(0,0,0,0.3)" />
-      <circle cx="220" cy="139" r="9" fill="#eaffd1" stroke={LIME} strokeWidth="2.5" />
-      <circle cx="220" cy="139" r="2.6" fill={LIME} />
-      <text x="220" y="122" textAnchor="middle" fill="rgba(255,255,255,0.22)" fontFamily="var(--font-barlow), sans-serif" fontWeight="700" fontSize="8" letterSpacing="0.12em">
-        {lang === "fr" ? "MISE EN JEU" : "CENTER"}
-      </text>
+      <circle cx="220" cy="140" r="9" fill="#eaffd1" stroke={LIME} strokeWidth="2.5" />
+      <circle cx="220" cy="140" r="2.6" fill={LIME} />
 
-      {/* Defenders — static on right side */}
-      <g transform="translate(305,105)">
+      {/* Defenders — in play area, facing the offense */}
+      <g transform="translate(270,110)">
         <circle r="15" fill={RED} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
         <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">D</text>
       </g>
-      <g transform="translate(305,175)">
+      <g transform="translate(270,170)">
         <circle r="15" fill={RED} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
         <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">D</text>
       </g>
 
-      {/* O1 — porteur, stays legal (slight lean only) */}
-      <g className="pen1-o1" transform="translate(44,140)">
+      {/* O1 — porteur, stays legal, centered facing D gap */}
+      <g className="pen1-o1" transform="translate(52,140)">
         <circle r="15" fill={LIME} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
         <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">1</text>
       </g>
 
-      {/* O2 — rushes in early, gets penalized */}
-      <g className="pen1-o2-group" transform="translate(44,95)">
+      {/* O2 — rushes in early, gets penalized, faces D1 */}
+      <g className="pen1-o2-group" transform="translate(52,95)">
         <g className="pen1-o2-pawn">
           <circle r="15" fill={LIME} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
           <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">2</text>
@@ -71,8 +67,8 @@ function SceneEarlyEntry({ lang }: { lang: "fr" | "en" }) {
         </g>
       </g>
 
-      {/* O3 — also rushes in early (no individual penalty, but shows the violation) */}
-      <g className="pen1-o3-group" transform="translate(44,185)">
+      {/* O3 — also rushes in early, faces D2 */}
+      <g className="pen1-o3-group" transform="translate(52,185)">
         <circle r="15" fill={LIME} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
         <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">3</text>
       </g>
