@@ -6,9 +6,31 @@ import dynamic from "next/dynamic";
 
 const CoreRules = dynamic(() => import("@/components/CoreRules"), { ssr: false });
 const Transition = dynamic(() => import("@/components/Transition"), { ssr: false });
+const Penalties = dynamic(() => import("@/components/Penalties"), { ssr: false });
 
 const LIME = "#84cc16";
 const CYAN = "#38bdf8";
+
+const SHEET_ENDPOINT = process.env.NEXT_PUBLIC_GUIDE_SHEET_ENDPOINT || "";
+
+const PDF_URLS: Record<string, string> = {
+  fr: "/guides/purinstinct-guide-fr.pdf",
+  en: "/guides/purinstinct-guide-en.pdf",
+};
+
+async function logToSheet(payload: Record<string, string>) {
+  if (!SHEET_ENDPOINT.startsWith("http")) return;
+  try {
+    await fetch(SHEET_ENDPOINT, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+    });
+  } catch {
+    // logging is best-effort — never block the user
+  }
+}
 
 /* ── Lock icon SVG ── */
 function LockIcon({ open }: { open: boolean }) {
@@ -142,9 +164,33 @@ export default function GuideClient() {
     if (!email.includes("@")) { setError(fr ? "Adresse courriel invalide." : "Invalid email address."); return; }
     setError("");
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 700));
+    await logToSheet({
+      name: name.trim(),
+      email: email.trim(),
+      lang,
+      wantPdf: wantPdf ? "Oui" : "Non",
+      pdfLang: "",
+      source: "guide-unlock",
+    });
     setLoading(false);
     setUnlocked(true);
+  }
+
+  function downloadPdf(pdfLang: string) {
+    logToSheet({
+      name: name.trim(),
+      email: email.trim(),
+      lang,
+      wantPdf: wantPdf ? "Oui" : "Non",
+      pdfLang: pdfLang.toUpperCase(),
+      source: `guide-pdf-${pdfLang}`,
+    });
+    const a = document.createElement("a");
+    a.href = PDF_URLS[pdfLang] || PDF_URLS.fr;
+    a.download = "";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   }
 
   return (
@@ -173,20 +219,20 @@ export default function GuideClient() {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {unlocked && (
-            <a
-              href="#"
+            <button
+              onClick={() => downloadPdf(lang)}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 13,
                 letterSpacing: "0.06em", textTransform: "uppercase",
                 color: "#06070f", background: LIME, borderRadius: 8,
-                padding: "8px 16px", textDecoration: "none",
+                padding: "8px 16px", border: "none", cursor: "pointer",
                 animation: "gFadeIn 0.5s ease both",
               }}
             >
               <DownloadIcon />
-              {fr ? "PDF" : "PDF"}
-            </a>
+              {fr ? "PDF FR" : "PDF EN"}
+            </button>
           )}
           <button
             onClick={() => setLang(lang === "fr" ? "en" : "fr")}
@@ -387,19 +433,19 @@ export default function GuideClient() {
               </p>
             </div>
             {wantPdf && (
-              <a
-                href="#"
+              <button
+                onClick={() => downloadPdf(lang)}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 7, flexShrink: 0,
                   fontFamily: "var(--font-barlow), sans-serif", fontWeight: 800, fontSize: 13,
                   letterSpacing: "0.06em", textTransform: "uppercase",
                   color: "#06070f", background: LIME, borderRadius: 10,
-                  padding: "10px 18px", textDecoration: "none",
+                  padding: "10px 18px", border: "none", cursor: "pointer",
                 }}
               >
                 <DownloadIcon />
-                {fr ? "Télécharger" : "Download"}
-              </a>
+                {fr ? "Télécharger FR" : "Download EN"}
+              </button>
             )}
           </div>
         </div>
@@ -419,7 +465,7 @@ export default function GuideClient() {
             fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10,
             letterSpacing: "0.12em", color: "rgba(255,255,255,0.2)",
           }}>
-            2 / 2 {fr ? "disponibles" : "available"}
+            3 / 3 {fr ? "disponibles" : "available"}
           </span>
         </div>
       </div>
@@ -440,6 +486,15 @@ export default function GuideClient() {
         badge={fr ? "Activation 02" : "Activation 02"}
       >
         <Transition />
+      </LockedSection>
+
+      {/* ── Activation 3: Penalties ── */}
+      <LockedSection
+        unlocked={unlocked}
+        title={fr ? "Débloque pour voir les pénalités" : "Unlock to see the penalties"}
+        badge={fr ? "Activation 03" : "Activation 03"}
+      >
+        <Penalties />
       </LockedSection>
 
       {/* ── Coming soon teaser ── */}
