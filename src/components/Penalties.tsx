@@ -46,18 +46,18 @@ function SceneEarlyEntry({ lang }: { lang: "fr" | "en" }) {
       </g>
 
       {/* O1 — porteur, stays legal, centered facing D gap */}
-      <g className="pen1-o1" transform="translate(52,140)">
+      <g className="pen1-o1">
         <circle r="15" fill={LIME} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
         <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">1</text>
       </g>
 
       {/* O2 — rushes in early, gets penalized, faces D1 */}
-      <g className="pen1-o2-group" transform="translate(52,95)">
+      <g className="pen1-o2-group">
         <g className="pen1-o2-pawn">
           <circle r="15" fill={LIME} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
           <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">2</text>
         </g>
-        <g className="pen1-o2-out" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
+        <g className="pen1-o2-out">
           <circle r="15" fill="rgba(6,7,15,0.85)" stroke={RED} strokeWidth="2.5" strokeDasharray="3 3" />
           <line x1="-8" y1="-8" x2="8" y2="8" stroke={RED} strokeWidth="2.5" strokeLinecap="round" />
           <line x1="8" y1="-8" x2="-8" y2="8" stroke={RED} strokeWidth="2.5" strokeLinecap="round" />
@@ -68,7 +68,7 @@ function SceneEarlyEntry({ lang }: { lang: "fr" | "en" }) {
       </g>
 
       {/* O3 — also rushes in early, faces D2 */}
-      <g className="pen1-o3-group" transform="translate(52,185)">
+      <g className="pen1-o3-group">
         <circle r="15" fill={LIME} stroke="rgba(255,255,255,0.85)" strokeWidth="2" />
         <text y="5.5" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15">3</text>
       </g>
@@ -76,16 +76,16 @@ function SceneEarlyEntry({ lang }: { lang: "fr" | "en" }) {
       {/* Start line warning flash */}
       <line className="pen1-line-flash" x1="80" y1="8" x2="80" y2="272" stroke={RED} strokeWidth="3" strokeOpacity="0" />
 
-      {/* FAUTE badge */}
-      <g className="pen1-foul-badge" transform="translate(220,62)" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
+      {/* FAUTE badge — positioned via CSS view-box % */}
+      <g className="pen1-foul-badge">
         <rect x="-58" y="-18" width="116" height="36" rx="18" fill={ORANGE} />
         <text y="6" textAnchor="middle" fill="#06070f" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="17" letterSpacing="0.04em">
           {lang === "fr" ? "FAUTE !" : "FOUL!"}
         </text>
       </g>
 
-      {/* 2 vs 2 result badge */}
-      <g className="pen1-result-badge" transform="translate(220,232)" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
+      {/* 2 vs 2 result badge — positioned via CSS view-box % */}
+      <g className="pen1-result-badge">
         <rect x="-66" y="-18" width="132" height="36" rx="18" fill={`${LIME}18`} stroke={LIME} strokeWidth="1.5" />
         <text y="6" textAnchor="middle" fill={LIME} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="17" letterSpacing="0.04em">
           2 vs 2
@@ -267,44 +267,75 @@ export default function Penalties() {
         .pen-dot { animation: penBlink 1.4s ease-in-out infinite; }
         @keyframes penBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
 
+        /*
+          Positions as % of viewBox (440×280).
+          transform-box:view-box makes translate(X%,Y%) use SVG viewport units.
+          O1  start:(52,140) end:(62,140)   → X:11.818%→14.091%  Y:50%
+          O2  start:(52,95)  end:(164,95)   → X:11.818%→37.273%  Y:33.929%
+          O3  start:(52,185) end:(164,185)  → X:11.818%→37.273%  Y:66.071%
+          FAUTE (220,62)  → 50%, 22.143%
+          RESULT (220,232)→ 50%, 82.857%
+        */
+
         /* ── O1: stays legal — only a slight lean ── */
-        .pen1-o1 { animation: pen1o1 4.5s cubic-bezier(0.16,1,0.3,1) infinite; }
-        @keyframes pen1o1 { 0%,15% { transform: translate(0,0); } 35%,100% { transform: translate(10px,0); } }
+        .pen1-o1 { transform-box: view-box; animation: pen1o1 6s cubic-bezier(0.16,1,0.3,1) infinite; }
+        @keyframes pen1o1 {
+          0%,35%   { transform: translate(11.818%, 50%); }
+          50%,100% { transform: translate(14.091%, 50%); }
+        }
 
         /* ── O2 group: rushes in early ── */
-        .pen1-o2-group { animation: pen1o2g 4.5s cubic-bezier(0.16,1,0.3,1) infinite; }
-        @keyframes pen1o2g { 0%,15% { transform: translate(0,0); } 42%,100% { transform: translate(112px,0); } }
+        .pen1-o2-group { transform-box: view-box; animation: pen1o2g 6s cubic-bezier(0.16,1,0.3,1) infinite; }
+        @keyframes pen1o2g {
+          0%,35%   { transform: translate(11.818%, 33.929%); }
+          50%,100% { transform: translate(37.273%, 33.929%); }
+        }
 
         /* ── O2 normal pawn: fades when penalized ── */
-        .pen1-o2-pawn { animation: pen1o2p 4.5s ease infinite; }
-        @keyframes pen1o2p { 0%,55% { opacity: 1; } 66%,100% { opacity: 0; } }
+        .pen1-o2-pawn { animation: pen1o2p 6s ease infinite; }
+        @keyframes pen1o2p { 0%,62% { opacity: 1; } 72%,100% { opacity: 0; } }
 
-        /* ── O2 "out" overlay: appears after foul ── */
-        .pen1-o2-out { opacity: 0; animation: pen1o2out 4.5s ease infinite; }
-        @keyframes pen1o2out { 0%,60% { opacity: 0; transform: scale(0.4); } 70% { opacity: 1; transform: scale(1.12); } 78%,100% { opacity: 1; transform: scale(1); } }
+        /* ── O2 "out" overlay: scales in after foul ── */
+        .pen1-o2-out { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pen1o2out 6s ease infinite; }
+        @keyframes pen1o2out {
+          0%,66% { opacity: 0; transform: scale(0.4); }
+          75%    { opacity: 1; transform: scale(1.12); }
+          82%,100% { opacity: 1; transform: scale(1); }
+        }
 
         /* ── O3 group: rushes in early (same timing as O2) ── */
-        .pen1-o3-group { animation: pen1o3g 4.5s cubic-bezier(0.16,1,0.3,1) infinite; }
-        @keyframes pen1o3g { 0%,15% { transform: translate(0,0); } 42%,100% { transform: translate(112px,0); } }
+        .pen1-o3-group { transform-box: view-box; animation: pen1o3g 6s cubic-bezier(0.16,1,0.3,1) infinite; }
+        @keyframes pen1o3g {
+          0%,35%   { transform: translate(11.818%, 66.071%); }
+          50%,100% { transform: translate(37.273%, 66.071%); }
+        }
 
         /* ── Start line warning flash ── */
-        .pen1-line-flash { animation: pen1flash 4.5s ease infinite; }
+        .pen1-line-flash { animation: pen1flash 6s ease infinite; }
         @keyframes pen1flash {
-          0%,40%  { stroke-opacity: 0; }
-          44%     { stroke-opacity: 0.85; }
-          48%     { stroke-opacity: 0.15; }
-          52%     { stroke-opacity: 0.85; }
-          57%     { stroke-opacity: 0; }
+          0%,47%  { stroke-opacity: 0; }
+          51%     { stroke-opacity: 0.85; }
+          55%     { stroke-opacity: 0.15; }
+          59%     { stroke-opacity: 0.85; }
+          63%     { stroke-opacity: 0; }
           100%    { stroke-opacity: 0; }
         }
 
-        /* ── FAUTE badge ── */
-        .pen1-foul-badge { opacity: 0; animation: pen1foul 4.5s ease infinite; }
-        @keyframes pen1foul { 0%,46% { opacity: 0; transform: scale(0.5); } 55% { opacity: 1; transform: scale(1.1); } 62%,100% { opacity: 1; transform: scale(1); } }
+        /* ── FAUTE badge at (220,62) → translate(50%, 22.143%) ── */
+        .pen1-foul-badge { opacity: 0; transform-box: view-box; animation: pen1foul 6s ease infinite; }
+        @keyframes pen1foul {
+          0%,53% { opacity: 0; transform: translate(50%, 22.143%) scale(0.5); }
+          61%    { opacity: 1; transform: translate(50%, 22.143%) scale(1.1); }
+          68%,100% { opacity: 1; transform: translate(50%, 22.143%) scale(1); }
+        }
 
-        /* ── 2 vs 2 result badge ── */
-        .pen1-result-badge { opacity: 0; animation: pen1result 4.5s ease infinite; }
-        @keyframes pen1result { 0%,70% { opacity: 0; transform: scale(0.5); } 80% { opacity: 1; transform: scale(1.1); } 87%,100% { opacity: 1; transform: scale(1); } }
+        /* ── 2 vs 2 result badge at (220,232) → translate(50%, 82.857%) ── */
+        .pen1-result-badge { opacity: 0; transform-box: view-box; animation: pen1result 6s ease infinite; }
+        @keyframes pen1result {
+          0%,75%   { opacity: 0; transform: translate(50%, 82.857%) scale(0.5); }
+          83%      { opacity: 1; transform: translate(50%, 82.857%) scale(1.1); }
+          90%,100% { opacity: 1; transform: translate(50%, 82.857%) scale(1); }
+        }
 
         /* ── Reduced motion ── */
         @media (prefers-reduced-motion: reduce) {
