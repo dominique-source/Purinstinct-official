@@ -194,12 +194,17 @@ export default function TransitionPenalties() {
                   </text>
                 </g>
 
-                {/* ── 3vs2→2vs2 result badge — 170,430 → translate(50%, 91.489%) ── */}
-                <g className="trpen-result">
-                  <rect x="-66" y="-18" width="132" height="36" rx="18" fill={`${RED}18`} stroke={RED} strokeWidth="1.5" />
-                  <text y="6" textAnchor="middle" fill={RED} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="17" letterSpacing="0.04em">
-                    2 vs 2
+                {/* ── Scoreboard: +1 retrait — 170,430 → translate(50%, 91.489%) ── */}
+                <g className="trpen-scoreboard">
+                  <rect x="-54" y="-30" width="108" height="58" rx="10" fill="rgba(6,7,15,0.55)" stroke="rgba(255,255,255,0.09)" strokeWidth="1" />
+                  <text y="-13" textAnchor="middle" fill="rgba(255,255,255,0.22)" fontFamily="var(--font-barlow), sans-serif" fontWeight="700" fontSize="7.5" letterSpacing="0.16em">
+                    {fr ? "RETRAITS DÉF." : "DEF. WITHDRAWALS"}
                   </text>
+                  <text className="trpen-score-3" y="16" textAnchor="middle" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="28">3</text>
+                  <text className="trpen-score-4" y="16" textAnchor="middle" fill={ORANGE} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="28">4</text>
+                </g>
+                <g className="trpen-plus-one">
+                  <text y="0" textAnchor="middle" fill={ORANGE} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="22" letterSpacing="-0.02em">+1</text>
                 </g>
 
               </svg>
@@ -237,19 +242,19 @@ export default function TransitionPenalties() {
               </p>
             </div>
 
-            <div style={{ background: `${RED}0c`, border: `1px solid ${RED}2e`, borderRadius: 16, padding: "20px 22px" }}>
-              <p style={{ margin: "0 0 10px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: RED }}>
+            <div style={{ background: `${ORANGE}0c`, border: `1px solid ${ORANGE}2e`, borderRadius: 16, padding: "20px 22px" }}>
+              <p style={{ margin: "0 0 10px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: ORANGE }}>
                 {fr ? "Conséquence" : "Consequence"}
               </p>
               <p style={{ margin: "0 0 16px", color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
                 {fr
-                  ? "Le joueur fautif doit se retirer de la prochaine séquence. L'équipe offensive joue à 2 contre 2 au lieu de 3 contre 2."
-                  : "The offending player must sit out the next sequence. The offensive team plays 2 vs 2 instead of 3 vs 2."}
+                  ? "La défense doit effectuer un retrait supplémentaire lors de la prochaine séquence. Le nombre de retraits passe de 3 à 4."
+                  : "The defense must perform one additional withdrawal in the next sequence. The required withdrawals increase from 3 to 4."}
               </p>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: "10px 18px" }}>
-                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: RED, letterSpacing: "-0.02em" }}>3 vs 2</span>
+                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: "rgba(255,255,255,0.7)", letterSpacing: "-0.02em" }}>3 retraits</span>
                 <span style={{ color: "rgba(255,255,255,0.25)", fontSize: 20, lineHeight: 1 }}>→</span>
-                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: LIME, letterSpacing: "-0.02em" }}>2 vs 2</span>
+                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: ORANGE, letterSpacing: "-0.02em" }}>4 retraits</span>
               </div>
             </div>
           </div>
@@ -358,18 +363,12 @@ export default function TransitionPenalties() {
                   </text>
                 </g>
 
-                {/* Scoreboard: 3 RETRAITS → 4 — 170,430 → translate(50%, 91.489%) */}
-                <g className="trpen2-scoreboard">
-                  <rect x="-54" y="-30" width="108" height="58" rx="10" fill="rgba(6,7,15,0.55)" stroke="rgba(255,255,255,0.09)" strokeWidth="1" />
-                  <text y="-13" textAnchor="middle" fill="rgba(255,255,255,0.22)" fontFamily="var(--font-barlow), sans-serif" fontWeight="700" fontSize="7.5" letterSpacing="0.16em">
-                    {fr ? "RETRAITS DÉF." : "DEF. WITHDRAWALS"}
+                {/* 3vs2 → 2vs2 result badge — 170,430 → translate(50%, 91.489%) */}
+                <g className="trpen2-result">
+                  <rect x="-66" y="-18" width="132" height="36" rx="18" fill={`${RED}18`} stroke={RED} strokeWidth="1.5" />
+                  <text y="6" textAnchor="middle" fill={RED} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="17" letterSpacing="0.04em">
+                    2 vs 2
                   </text>
-                  <text className="trpen2-score-3" y="16" textAnchor="middle" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="28">3</text>
-                  <text className="trpen2-score-4" y="16" textAnchor="middle" fill={ORANGE} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="28">4</text>
-                </g>
-                {/* +1 floats up */}
-                <g className="trpen2-plus-one">
-                  <text y="0" textAnchor="middle" fill={ORANGE} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="22" letterSpacing="-0.02em">+1</text>
                 </g>
 
               </svg>
@@ -412,13 +411,13 @@ export default function TransitionPenalties() {
               </p>
               <p style={{ margin: "0 0 16px", color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
                 {fr
-                  ? "La défense doit effectuer un retrait supplémentaire lors de la prochaine séquence. Le nombre de retraits passe de 3 à 4."
-                  : "The defense must perform one additional withdrawal in the next sequence. The required withdrawals increase from 3 to 4."}
+                  ? "Le joueur fautif doit se retirer de la prochaine séquence. L'équipe offensive joue à 2 contre 2 au lieu de 3 contre 2."
+                  : "The offending player must sit out the next sequence. The offensive team plays 2 vs 2 instead of 3 vs 2."}
               </p>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: "10px 18px" }}>
-                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: "rgba(255,255,255,0.7)", letterSpacing: "-0.02em" }}>3 retraits</span>
+                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: RED, letterSpacing: "-0.02em" }}>3 vs 2</span>
                 <span style={{ color: "rgba(255,255,255,0.25)", fontSize: 20, lineHeight: 1 }}>→</span>
-                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: ORANGE, letterSpacing: "-0.02em" }}>4 retraits</span>
+                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: LIME, letterSpacing: "-0.02em" }}>2 vs 2</span>
               </div>
             </div>
           </div>
@@ -463,12 +462,18 @@ export default function TransitionPenalties() {
           77%,100% { opacity: 1; transform: translate(50%, 10.638%) scale(1); }
         }
 
-        /* ── 2vs2 result badge ── */
-        .trpen-result { opacity: 0; transform-box: view-box; animation: trpenResult 7s ease infinite; }
-        @keyframes trpenResult {
-          0%,75%   { opacity: 0; transform: translate(50%, 91.489%) scale(0.5); }
-          83%      { opacity: 1; transform: translate(50%, 91.489%) scale(1.1); }
-          90%,100% { opacity: 1; transform: translate(50%, 91.489%) scale(1); }
+        /* ── Scoreboard: +1 retrait ── */
+        .trpen-scoreboard { transform-box: view-box; transform: translate(50%, 91.489%); }
+        .trpen-score-3 { fill: rgba(255,255,255,0.28); animation: trpens3 7s ease infinite; }
+        @keyframes trpens3 { 0%,72% { fill: rgba(255,255,255,0.28); } 82%,100% { fill: rgba(255,255,255,0.06); } }
+        .trpen-score-4 { opacity: 0; animation: trpens4 7s ease infinite; }
+        @keyframes trpens4 { 0%,72% { opacity: 0; } 80%,100% { opacity: 1; } }
+        .trpen-plus-one { transform-box: view-box; opacity: 0; animation: trpenplus 7s ease infinite; }
+        @keyframes trpenplus {
+          0%,68%   { opacity: 0; transform: translate(50%, 88%); }
+          76%      { opacity: 1; transform: translate(50%, 80%); }
+          88%      { opacity: 0.7; transform: translate(50%, 73%); }
+          96%,100% { opacity: 0; transform: translate(50%, 68%); }
         }
 
         /* ── Card 2: defensive — right cone at (288,258) ── */
@@ -490,29 +495,23 @@ export default function TransitionPenalties() {
           77%,100% { opacity: 1; transform: translate(50%, 10.638%) scale(1); }
         }
 
-        /* Scoreboard — 170,430 → translate(50%, 91.489%) */
-        .trpen2-scoreboard { transform-box: view-box; transform: translate(50%, 91.489%); }
-        .trpen2-score-3 { fill: rgba(255,255,255,0.28); animation: trpen2s3 7s ease infinite; }
-        @keyframes trpen2s3 { 0%,72% { fill: rgba(255,255,255,0.28); } 82%,100% { fill: rgba(255,255,255,0.06); } }
-        .trpen2-score-4 { opacity: 0; animation: trpen2s4 7s ease infinite; }
-        @keyframes trpen2s4 { 0%,72% { opacity: 0; } 80%,100% { opacity: 1; } }
-        .trpen2-plus-one { transform-box: view-box; opacity: 0; animation: trpen2plus 7s ease infinite; }
-        @keyframes trpen2plus {
-          0%,68%   { opacity: 0; transform: translate(50%, 88%); }
-          76%      { opacity: 1; transform: translate(50%, 80%); }
-          88%      { opacity: 0.7; transform: translate(50%, 73%); }
-          96%,100% { opacity: 0; transform: translate(50%, 68%); }
+        /* ── 2vs2 result badge ── */
+        .trpen2-result { opacity: 0; transform-box: view-box; animation: trpen2Result 7s ease infinite; }
+        @keyframes trpen2Result {
+          0%,75%   { opacity: 0; transform: translate(50%, 91.489%) scale(0.5); }
+          83%      { opacity: 1; transform: translate(50%, 91.489%) scale(1.1); }
+          90%,100% { opacity: 1; transform: translate(50%, 91.489%) scale(1); }
         }
 
         @media (prefers-reduced-motion: reduce) {
           .trpen-cone-ring, .trpen-dot, .trpen2-cone-ring { animation: none !important; stroke-opacity: 0 !important; }
           .trpen-cone-x, .trpen2-cone-x { opacity: 1 !important; animation: none !important; }
           .trpen-foul { opacity: 1 !important; animation: none !important; transform: translate(50%, 10.638%) scale(1); }
-          .trpen-result { opacity: 1 !important; animation: none !important; transform: translate(50%, 91.489%) scale(1); }
+          .trpen-score-3 { fill: rgba(255,255,255,0.06) !important; }
+          .trpen-score-4 { opacity: 1 !important; animation: none !important; }
+          .trpen-plus-one { opacity: 0 !important; animation: none !important; }
           .trpen2-foul { opacity: 1 !important; animation: none !important; transform: translate(50%, 10.638%) scale(1); }
-          .trpen2-score-3 { fill: rgba(255,255,255,0.06) !important; }
-          .trpen2-score-4 { opacity: 1 !important; animation: none !important; }
-          .trpen2-plus-one { opacity: 0 !important; animation: none !important; }
+          .trpen2-result { opacity: 1 !important; animation: none !important; transform: translate(50%, 91.489%) scale(1); }
         }
       `}</style>
     </section>
