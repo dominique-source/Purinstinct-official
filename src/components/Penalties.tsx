@@ -226,8 +226,8 @@ export default function Penalties() {
               </p>
               <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
                 {fr
-                  ? "Les joueurs offensifs (2 et 3) entrent dans l'aire de jeu avant que le porteur de ballon (joueur 1) touche le ballon au sol au centre du jeu."
-                  : "Offensive players (2 and 3) enter the playing area before the ball carrier (player 1) touches the ball on the ground at the center of play."}
+                  ? "Le joueur offensif (2) entre dans l'aire de jeu avant que le porteur de ballon (joueur 1) touche le ballon au sol au centre du jeu."
+                  : "Offensive player (2) enters the playing area before the ball carrier (player 1) touches the ball on the ground at the center of play."}
               </p>
             </div>
 
@@ -303,12 +303,8 @@ export default function Penalties() {
           82%,100% { opacity: 1; transform: scale(1); }
         }
 
-        /* ── O3 group: rushes in early (same timing as O2) ── */
-        .pen1-o3-group { transform-box: view-box; animation: pen1o3g 6s cubic-bezier(0.16,1,0.3,1) infinite; }
-        @keyframes pen1o3g {
-          0%,35%   { transform: translate(11.818%, 66.071%); }
-          50%,100% { transform: translate(37.273%, 66.071%); }
-        }
+        /* ── O3 stays in start zone — does not enter early ── */
+        .pen1-o3-group { transform-box: view-box; transform: translate(11.818%, 66.071%); }
 
         /* ── Start line warning flash ── */
         .pen1-line-flash { animation: pen1flash 6s ease infinite; }
