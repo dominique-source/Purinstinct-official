@@ -27,10 +27,9 @@ const DEF_WRONG = "M40,252 C170,248 264,254 306,300 C310,340 309,370 308,400";
 
 /* Slow player paths (entrée prématurée) — end AT the left cone (52,348) so players stop there */
 const SLOW_PATH = "M284,406 C200,388 120,372 80,360 C64,354 54,348 52,348";
-/* Terrain players (from play area → direct to DEF box, same as Transition.tsx PATHS[0]) */
-const TERRAIN_1 = "M150,175 C100,210 68,245 56,256";
-const TERRAIN_2 = "M185,158 C120,205 76,248 58,254";
-const TERRAIN_3 = "M120,200 C92,225 66,250 52,260";
+/* Entry paths: OFF box → cone → DEF box → continue INTO field (premature entry) */
+const ENTRY_PATH_1 = "M296,400 C190,372 96,366 70,356 C46,360 34,350 42,336 C46,310 48,290 48,268 C55,250 88,232 128,218";
+const ENTRY_PATH_2 = "M306,406 C200,378 102,370 74,360 C50,364 38,354 46,340 C50,314 52,294 52,272 C60,254 94,237 134,224";
 
 function Cone({ x, y }: { x: number; y: number }) {
   return (
@@ -324,57 +323,68 @@ export default function TransitionPenalties() {
                 {/* DEF box entry glow — lights up when D1+D2 arrive while D3 is still en route */}
                 <rect x={27} y={237} width="42" height="42" rx="5" fill="none" stroke={ORANGE} strokeWidth="2.5" className="trpen3-def-entry" />
 
-                {/* T1 — terrain player, direct to DEF box */}
+                {/* P1 — fast, OFF box → cone → DEF box (stays) */}
                 <g>
                   <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
                   <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
-                  <animateMotion dur="9s" repeatCount="indefinite" path={TERRAIN_1}
-                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.36;1"
+                  <animateMotion dur="9s" repeatCount="indefinite" path={CORRECT_PATH_1}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.43;1"
                     calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
                     values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
                 </g>
 
-                {/* T2 — terrain player, direct to DEF box */}
+                {/* P2 — fast, OFF box → cone → DEF box (stays) */}
                 <g>
                   <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
                   <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
-                  <animateMotion dur="9s" repeatCount="indefinite" path={TERRAIN_2}
-                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.38;1"
+                  <animateMotion dur="9s" repeatCount="indefinite" path={CORRECT_PATH_2}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.45;1"
                     calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
                     values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
                 </g>
 
-                {/* T3 — terrain player, direct to DEF box */}
+                {/* E1 — enters field prematurely (orange border) */}
                 <g>
-                  <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="7" fill={CYAN} stroke={ORANGE} strokeWidth="2.5" />
                   <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
-                  <animateMotion dur="9s" repeatCount="indefinite" path={TERRAIN_3}
-                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.40;1"
+                  <animateMotion dur="9s" repeatCount="indefinite" path={ENTRY_PATH_1}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.49;1"
                     calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
                     values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
                 </g>
 
-                {/* D4 — slow, freezes ~48% = near cone */}
+                {/* E2 — enters field prematurely (orange border) */}
+                <g>
+                  <circle r="7" fill={CYAN} stroke={ORANGE} strokeWidth="2.5" />
+                  <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
+                  <animateMotion dur="9s" repeatCount="indefinite" path={ENTRY_PATH_2}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.51;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
+                </g>
+
+                {/* SLOW — 1 lagging player, stops at cone */}
                 <g>
                   <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
                   <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.5" />
                   <animateMotion dur="9s" repeatCount="indefinite" path={SLOW_PATH}
-                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.55;1"
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.58;1"
                     calcMode="spline" keySplines="0 0 1 1;0.35 0 0.65 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
                     values="0;0.65;0.65;0;0" keyTimes="0;0.06;0.85;0.91;1" />
                 </g>
-                {/* Warning ring D4 */}
+                {/* Warning ring on lagging player */}
                 <g>
                   <circle r="18" fill="none" stroke={ORANGE} strokeWidth="2" strokeDasharray="4 3" />
                   <animateMotion dur="9s" repeatCount="indefinite" path={SLOW_PATH}
-                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.55;1"
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.58;1"
                     calcMode="spline" keySplines="0 0 1 1;0.35 0 0.65 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
-                    values="0;0;0;0.9;0.1;0.9;0;0" keyTimes="0;0.06;0.55;0.60;0.65;0.70;0.76;1" />
+                    values="0;0;0;0.9;0.1;0.9;0;0" keyTimes="0;0.06;0.58;0.63;0.68;0.73;0.79;1" />
                 </g>
 
 
@@ -424,8 +434,8 @@ export default function TransitionPenalties() {
               </p>
               <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
                 {fr
-                  ? "Trois joueurs défensifs venant du terrain se rendent directement au box défensif. Mais un joueur en attente (qui doit contourner le cône) n'a pas encore terminé sa transition lorsque les trois premiers prennent position."
-                  : "Three defensive players coming from the field go directly to the defensive box. But one waiting player (who must go around the cone) has not yet finished their transition when the first three take position."}
+                  ? "5 joueurs en attente contournent le cône gauche vers le box DÉF. Un joueur est plus lent et n'a pas terminé sa transition. Malgré cela, 2 joueurs entrent quand même dans l'aire de jeu avant que la transition soit complète."
+                  : "5 waiting players go around the left cone toward the DEF box. One player is slower and hasn't finished their transition. Despite this, 2 players enter the play area before the transition is complete."}
               </p>
             </div>
 
@@ -694,10 +704,10 @@ export default function TransitionPenalties() {
           animation: trpen3DefEntry 9s ease infinite;
         }
         @keyframes trpen3DefEntry {
-          0%,34%    { stroke-opacity: 0; }
-          38%       { stroke-opacity: 0.9; }
-          42%       { stroke-opacity: 0.3; }
-          55%,82%   { stroke-opacity: 0.55; }
+          0%,41%    { stroke-opacity: 0; }
+          45%       { stroke-opacity: 0.9; }
+          49%       { stroke-opacity: 0.3; }
+          58%,82%   { stroke-opacity: 0.55; }
           89%,100%  { stroke-opacity: 0; }
         }
 
