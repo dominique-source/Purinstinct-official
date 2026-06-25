@@ -5,6 +5,7 @@ import { useLang } from "@/lib/i18n";
 const LIME = "#84cc16";
 const CYAN = "#38bdf8";
 const RED = "#ef4444";
+const AMBER = "#f59e0b";
 const TOTAL = 16;
 const R = 52;
 const CIRC = 2 * Math.PI * R;
@@ -174,6 +175,9 @@ export default function Timer16s() {
                 </Card>
                 <Card color={CYAN} label={fr ? "Départ immédiat" : "Immediate start"} title={fr ? "Pas de pause entre les séquences" : "No break between sequences"}>
                   {fr ? "Le chrono repart à 16 dès la fin de la séquence précédente. Les joueurs doivent se dépêcher d'entrer en jeu — il n'y a pas d'attente." : "The clock restarts at 16 the moment the previous sequence ends. Players must rush onto the field — there is no wait."}
+                </Card>
+                <Card color={AMBER} label={fr ? "Interception" : "Interception"} title={fr ? "Chrono suspendu pour la séquence" : "Clock frozen for the sequence"}>
+                  {fr ? "Dès qu'une interception survient, le chrono s'arrête et reste figé jusqu'à la fin de la séquence — même si une deuxième interception se produit ensuite." : "As soon as an interception occurs, the clock stops and stays frozen until the end of the sequence — even if a second interception follows."}
                 </Card>
               </>
             ) : (
