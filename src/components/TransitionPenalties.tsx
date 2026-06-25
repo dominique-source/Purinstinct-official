@@ -118,7 +118,7 @@ export default function TransitionPenalties() {
               </span>
             </div>
             <div style={{ position: "absolute", top: 16, right: 18, zIndex: 4, fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: `${ORANGE}90` }}>
-              TYPE 01/03
+              TYPE 01/04
             </div>
             <div style={{ padding: "clamp(40px,5vw,56px) clamp(20px,3vw,32px) clamp(24px,3vw,32px)" }}>
               <svg viewBox="0 0 340 470" width="100%" style={{ display: "block", maxHeight: "66vh" }} role="img">
@@ -295,7 +295,7 @@ export default function TransitionPenalties() {
               </span>
             </div>
             <div style={{ position: "absolute", top: 16, right: 18, zIndex: 4, fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: `${ORANGE}90` }}>
-              TYPE 02/03
+              TYPE 02/04
             </div>
             <div style={{ padding: "clamp(40px,5vw,56px) clamp(20px,3vw,32px) clamp(24px,3vw,32px)" }}>
               <svg viewBox="0 0 340 470" width="100%" style={{ display: "block", maxHeight: "66vh" }} role="img">
@@ -491,7 +491,7 @@ export default function TransitionPenalties() {
               </span>
             </div>
             <div style={{ position: "absolute", top: 16, right: 18, zIndex: 4, fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: `${RED}90` }}>
-              TYPE 03/03
+              TYPE 03/04
             </div>
             <div style={{ padding: "clamp(40px,5vw,56px) clamp(20px,3vw,32px) clamp(24px,3vw,32px)" }}>
               <svg viewBox="0 0 340 470" width="100%" style={{ display: "block", maxHeight: "66vh" }} role="img">
@@ -624,6 +624,176 @@ export default function TransitionPenalties() {
             </div>
           </div>
         </div>
+
+        {/* ── Separator ── */}
+        <div style={{ margin: "clamp(40px,5vw,64px) 0", height: 1, background: "rgba(255,255,255,0.07)" }} />
+
+        {/* ── Card 4: TYPE 04/04 — Entrée prématurée offensive (transition déf→att) ── */}
+        <div className="trpen-grid">
+
+          {/* Animated field */}
+          <div style={{
+            borderRadius: 22, overflow: "hidden", background: "#0c0d17",
+            border: `1px solid ${LIME}22`, boxShadow: "0 30px 80px rgba(0,0,0,0.55)",
+            position: "relative",
+          }}>
+            {(["top","bottom"] as const).flatMap((v) =>
+              (["left","right"] as const).map((h) => (
+                <div key={`c4${v}${h}`} aria-hidden style={{
+                  position: "absolute", [v]: 14, [h]: 14, width: 18, height: 18,
+                  [`border${v[0].toUpperCase() + v.slice(1)}`]: `1.5px solid ${LIME}55`,
+                  [`border${h[0].toUpperCase() + h.slice(1)}`]: `1.5px solid ${LIME}55`,
+                  zIndex: 3, pointerEvents: "none",
+                } as React.CSSProperties} />
+              ))
+            )}
+            <div style={{ position: "absolute", top: 16, left: 18, zIndex: 4, display: "inline-flex", alignItems: "center", gap: 7 }}>
+              <span className="trpen-dot" style={{ width: 7, height: 7, borderRadius: "50%", background: LIME, display: "inline-block" }} />
+              <span style={{ fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase" }}>
+                {fr ? "PÉNALITÉ TRANSITION ATT." : "OFFENSIVE TRANSITION PENALTY"}
+              </span>
+            </div>
+            <div style={{ position: "absolute", top: 16, right: 18, zIndex: 4, fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: `${LIME}90` }}>
+              TYPE 04/04
+            </div>
+            <div style={{ padding: "clamp(40px,5vw,56px) clamp(20px,3vw,32px) clamp(24px,3vw,32px)" }}>
+              <svg viewBox="0 0 340 470" width="100%" style={{ display: "block", maxHeight: "66vh" }} role="img">
+
+                {/* Zones */}
+                <rect x="72" y="24" width="196" height="98" fill={TEAL} />
+                <rect x="72" y="122" width="196" height="226" fill={MAROON} />
+                <rect x="72" y="348" width="196" height="98" fill={TEAL} />
+                <rect x="72" y="24" width="196" height="422" fill="none" stroke="#fff" strokeOpacity="0.85" strokeWidth="2.5" />
+
+                {/* Zone labels */}
+                <text x="170" y="72" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="12" letterSpacing="0.14em">{fr ? "ZONE DE BUT" : "END ZONE"}</text>
+                <text x="170" y="235" textAnchor="middle" fill="#fff" fillOpacity="0.85" fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="12" letterSpacing="0.14em">{fr ? "AIRE DE JEU" : "PLAY AREA"}</text>
+                <text x="170" y="400" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="12" letterSpacing="0.14em">{fr ? "ZONE DE DÉPART" : "START ZONE"}</text>
+
+                {/* Lime boundary at AIRE DE JEU / ZONE DE BUT (y=122) — players must cross here */}
+                <line x1="72" y1="122" x2="268" y2="122" stroke={LIME} strokeOpacity="0.35" strokeWidth="1.5" strokeDasharray="4 4" />
+
+                {/* Orange flash around ZONE DE BUT on violation */}
+                <rect x="72" y="24" width="196" height="98" fill="none" stroke={ORANGE} strokeWidth="2.5" strokeDasharray="5 4" className="trpen4-zone-flash" />
+
+                {/* Center player — static in ZONE DE DÉPART, holds ball */}
+                <g transform="translate(170,385)">
+                  <circle r="8" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="2.5" cx="-2" cy="-2" fill="#fff" opacity="0.9" />
+                </g>
+
+                {/* Ball on ground near center player */}
+                <circle cx="170" cy="368" r="5" fill="#fff" fillOpacity="0.85" />
+                {/* Glow ring on pickup */}
+                <circle className="trpen4-ball-glow" cx="170" cy="368" r="11" fill="none" stroke={LIME} strokeWidth="2" />
+
+                {/* P1 — correct, reaches ZONE DE BUT left (dim ghost) */}
+                <g>
+                  <circle r="6" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="1.9" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.5" />
+                  <animateMotion dur="9s" repeatCount="indefinite"
+                    path="M110,420 C100,330 100,190 100,60"
+                    keyPoints="0;0;1;1" keyTimes="0;0.08;0.47;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.42 0 0.58 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;0.30;0.30;0;0" keyTimes="0;0.06;0.73;0.83;1" />
+                </g>
+
+                {/* P2 — correct, reaches ZONE DE BUT right (dim ghost) */}
+                <g>
+                  <circle r="6" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="1.9" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.5" />
+                  <animateMotion dur="9s" repeatCount="indefinite"
+                    path="M230,420 C240,330 240,190 240,60"
+                    keyPoints="0;0;1;1" keyTimes="0;0.08;0.47;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.42 0 0.58 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;0.30;0.30;0;0" keyTimes="0;0.06;0.73;0.83;1" />
+                </g>
+
+                {/* P3 — LATE, stops in AIRE DE JEU (highlighted) */}
+                <g>
+                  <circle r="7" fill={LIME} stroke={ORANGE} strokeWidth="2" />
+                  <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
+                  <animateMotion dur="9s" repeatCount="indefinite"
+                    path="M170,420 L170,215"
+                    keyPoints="0;0;1;1" keyTimes="0;0.08;0.43;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.42 0 0.58 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;1;1;0;0" keyTimes="0;0.06;0.81;0.88;1" />
+                </g>
+
+                {/* Orange violation ring around P3's stopped position (170, 215) */}
+                <circle className="trpen4-p3-ring" cx="170" cy="215" r="18" fill="none" stroke={ORANGE} strokeWidth="2.5" />
+
+                {/* FAUTE badge — top center (170, 50) via CSS transform-box */}
+                <g className="trpen4-foul">
+                  <rect x="-58" y="-18" width="116" height="36" rx="18" fill={RED} />
+                  <text y="6" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="17" letterSpacing="0.04em">
+                    {fr ? "FAUTE !" : "FOUL!"}
+                  </text>
+                </g>
+
+                {/* 2 vs 2 result — bottom center (170, 430) via CSS transform-box */}
+                <g className="trpen4-result">
+                  <rect x="-66" y="-18" width="132" height="36" rx="18" fill={`${RED}18`} stroke={RED} strokeWidth="1.5" />
+                  <text y="6" textAnchor="middle" fill={RED} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="17" letterSpacing="0.04em">
+                    2 vs 2
+                  </text>
+                </g>
+
+              </svg>
+            </div>
+          </div>
+
+          {/* Description panel */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <span style={{
+                width: 48, height: 48, borderRadius: 13, flexShrink: 0,
+                display: "grid", placeItems: "center",
+                background: `${LIME}18`, border: `1px solid ${LIME}44`,
+                fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 20, color: LIME,
+              }}>4</span>
+              <div>
+                <p style={{ margin: 0, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: LIME, marginBottom: 4 }}>
+                  {fr ? "Type 4 · Pénalité de transition offensive" : "Type 4 · Offensive transition penalty"}
+                </p>
+                <h3 style={{ margin: 0, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: "clamp(20px,2.5vw,28px)", textTransform: "uppercase", color: "#fff", letterSpacing: "-0.01em", lineHeight: 1.05 }}>
+                  {fr ? "Entrée prématurée" : "Premature entry"}
+                </h3>
+              </div>
+            </div>
+
+            <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 16, padding: "20px 22px" }}>
+              <p style={{ margin: "0 0 10px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
+                {fr ? "La faute" : "The foul"}
+              </p>
+              <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
+                {fr
+                  ? "Lors d'une transition défense → attaque, le joueur du centre prend le ballon alors qu'un coéquipier n'a pas encore atteint la zone de but."
+                  : "During a defense → attack transition, the center player picks up the ball while a teammate has not yet reached the end zone."}
+              </p>
+            </div>
+
+            <div style={{ background: `${ORANGE}0c`, border: `1px solid ${ORANGE}2e`, borderRadius: 16, padding: "20px 22px" }}>
+              <p style={{ margin: "0 0 10px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: ORANGE }}>
+                {fr ? "Conséquence" : "Consequence"}
+              </p>
+              <p style={{ margin: "0 0 16px", color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
+                {fr
+                  ? "Le jeu s'arrête immédiatement. Un joueur offensif doit se retirer. La prochaine séquence se joue à 2 contre 2."
+                  : "The game stops immediately. One offensive player must sit out. The next sequence is played 2 vs 2."}
+              </p>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: "10px 18px" }}>
+                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: LIME, letterSpacing: "-0.02em" }}>3 vs 2</span>
+                <span style={{ color: "rgba(255,255,255,0.25)", fontSize: 20, lineHeight: 1 }}>→</span>
+                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: RED, letterSpacing: "-0.02em" }}>2 vs 2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <style>{`
@@ -740,6 +910,47 @@ export default function TransitionPenalties() {
           96%,100% { opacity: 0; transform: translate(50%, 68%); }
         }
 
+        /* ── Card 4: TYPE 04/04 — Entrée prématurée offensive (9s cycle) ── */
+        .trpen4-zone-flash { stroke-opacity: 0; animation: trpen4ZoneFlash 9s ease infinite; }
+        @keyframes trpen4ZoneFlash {
+          0%,59%   { stroke-opacity: 0; }
+          65%,81%  { stroke-opacity: 0.55; }
+          91%,100% { stroke-opacity: 0; }
+        }
+
+        .trpen4-ball-glow { stroke-opacity: 0; animation: trpen4BallGlow 9s ease infinite; }
+        @keyframes trpen4BallGlow {
+          0%,50%   { stroke-opacity: 0; }
+          56%      { stroke-opacity: 0.85; }
+          64%,74%  { stroke-opacity: 0.25; }
+          84%,100% { stroke-opacity: 0; }
+        }
+
+        .trpen4-p3-ring { stroke-opacity: 0; animation: trpen4P3Ring 9s ease infinite; }
+        @keyframes trpen4P3Ring {
+          0%,59%   { stroke-opacity: 0; }
+          63%      { stroke-opacity: 0.9; }
+          67%      { stroke-opacity: 0.15; }
+          71%      { stroke-opacity: 0.9; }
+          75%,82%  { stroke-opacity: 0.55; }
+          89%,100% { stroke-opacity: 0; }
+        }
+
+        .trpen4-foul { opacity: 0; transform-box: view-box; animation: trpen4Foul 9s ease infinite; }
+        @keyframes trpen4Foul {
+          0%,61%   { opacity: 0; transform: translate(50%, 10.638%) scale(0.5); }
+          69%      { opacity: 1; transform: translate(50%, 10.638%) scale(1.1); }
+          76%,87%  { opacity: 1; transform: translate(50%, 10.638%) scale(1); }
+          93%,100% { opacity: 0; transform: translate(50%, 10.638%) scale(1); }
+        }
+
+        .trpen4-result { opacity: 0; transform-box: view-box; animation: trpen4Result 9s ease infinite; }
+        @keyframes trpen4Result {
+          0%,80%   { opacity: 0; transform: translate(50%, 91.489%) scale(0.5); }
+          88%      { opacity: 1; transform: translate(50%, 91.489%) scale(1.1); }
+          94%,100% { opacity: 1; transform: translate(50%, 91.489%) scale(1); }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .trpen-cone-ring, .trpen-dot, .trpen2-cone-ring { animation: none !important; stroke-opacity: 0 !important; }
           .trpen-cone-x, .trpen2-cone-x { opacity: 1 !important; animation: none !important; }
@@ -754,6 +965,11 @@ export default function TransitionPenalties() {
           .trpen3-score-3 { fill: rgba(255,255,255,0.06) !important; animation: none !important; }
           .trpen3-score-4 { opacity: 1 !important; animation: none !important; }
           .trpen3-plus-one { opacity: 0 !important; animation: none !important; }
+          .trpen4-zone-flash { stroke-opacity: 0.4 !important; animation: none !important; }
+          .trpen4-ball-glow { stroke-opacity: 0 !important; animation: none !important; }
+          .trpen4-p3-ring { stroke-opacity: 0.6 !important; animation: none !important; }
+          .trpen4-foul { opacity: 1 !important; animation: none !important; transform: translate(50%, 10.638%) scale(1); }
+          .trpen4-result { opacity: 1 !important; animation: none !important; transform: translate(50%, 91.489%) scale(1); }
         }
       `}</style>
     </section>
