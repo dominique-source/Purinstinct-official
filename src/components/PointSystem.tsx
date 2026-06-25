@@ -178,34 +178,72 @@ export default function PointSystem() {
             </div>
           </div>
 
-          {/* rules list */}
+          {/* rules */}
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <p style={{ margin: "0 0 8px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.28)" }}>
               {fr ? "Règles de pointage" : "Scoring rules"}
             </p>
-            {tier.rules.map((rule, i) => (
-              <div
-                key={i}
-                style={{
+
+            {active === "debutant" ? (
+              /* Score card grid — point value is dominant */
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                {tier.rules.map((rule, i) => (
+                  <div key={i} style={{
+                    borderRadius: 16, padding: "20px 18px",
+                    background: `${tier.color}0c`,
+                    border: `1px solid ${tier.color}28`,
+                    display: "flex", flexDirection: "column", gap: 10,
+                  }}>
+                    {/* point value — dominant */}
+                    <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
+                      <span style={{
+                        fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900,
+                        fontSize: 52, lineHeight: 1, color: tier.color,
+                      }}>
+                        {rule.badge.replace("+", "")}
+                      </span>
+                      <span style={{
+                        fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700,
+                        fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase",
+                        color: `${tier.color}99`,
+                      }}>
+                        {rule.badge.endsWith("+") ? "pts +" : parseInt(rule.badge) > 1 ? "pts" : "pt"}
+                      </span>
+                    </div>
+                    {/* action — supporting */}
+                    <span style={{
+                      fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700,
+                      fontSize: 13, color: "#fff", lineHeight: 1.45,
+                      textTransform: "uppercase", letterSpacing: "0.03em",
+                    }}>
+                      {fr ? rule.fr : rule.en}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              /* Standard list for intermediaire / avancé */
+              tier.rules.map((rule, i) => (
+                <div key={i} style={{
                   display: "flex", gap: 14, alignItems: "center",
                   padding: "16px 18px", borderRadius: 14,
                   background: i === 0 ? `${tier.color}0c` : "rgba(255,255,255,0.03)",
                   border: `1px solid ${i === 0 ? `${tier.color}30` : "rgba(255,255,255,0.06)"}`,
-                }}
-              >
-                <span style={{
-                  minWidth: 36, height: 32, borderRadius: 8, flexShrink: 0, padding: "0 6px",
-                  display: "grid", placeItems: "center",
-                  background: `${tier.color}18`, border: `1px solid ${tier.color}40`,
-                  fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 13, color: tier.color,
                 }}>
-                  {rule.badge}
-                </span>
-                <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 600, fontSize: 15, color: i === 0 ? "#fff" : "rgba(255,255,255,0.62)", lineHeight: 1.5 }}>
-                  {fr ? rule.fr : rule.en}
-                </span>
-              </div>
-            ))}
+                  <span style={{
+                    minWidth: 36, height: 32, borderRadius: 8, flexShrink: 0, padding: "0 6px",
+                    display: "grid", placeItems: "center",
+                    background: `${tier.color}18`, border: `1px solid ${tier.color}40`,
+                    fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 13, color: tier.color,
+                  }}>
+                    {rule.badge}
+                  </span>
+                  <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 600, fontSize: 15, color: i === 0 ? "#fff" : "rgba(255,255,255,0.62)", lineHeight: 1.5 }}>
+                    {fr ? rule.fr : rule.en}
+                  </span>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
