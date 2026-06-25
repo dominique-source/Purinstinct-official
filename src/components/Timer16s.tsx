@@ -182,14 +182,14 @@ export default function Timer16s() {
               </>
             ) : (
               <>
-                <Card color={CYAN} label={fr ? "Transition" : "Transition"} title={fr ? "16 secondes pour pivoter" : "16 seconds to rotate"}>
-                  {fr ? "Après 3 retraits, les 12 joueurs ont 16 secondes pour atteindre leurs nouvelles positions avant la reprise du jeu." : "After 3 outs, all 12 players have 16 seconds to reach their new positions before play resumes."}
+                <Card color={CYAN} label={fr ? "Transition" : "Transition"} title={fr ? "Chrono à l'arrêt" : "Clock not running"}>
+                  {fr ? "Pendant la transition, le chrono n'est pas en fonction. Les joueurs pivotent librement sans contrainte de temps." : "During the transition itself, the clock is not running. Players rotate freely without any time constraint."}
                 </Card>
-                <Card color={LIME} label={fr ? "Simultané" : "Simultaneous"} title={fr ? "Tous en même temps" : "Everyone at once"}>
-                  {fr ? "La transition complète — les 12 joueurs — se fait en une seule rotation fluide dans les 16 secondes." : "The full transition — all 12 players — happens in one fluid rotation within 16 seconds."}
+                <Card color={LIME} label={fr ? "Déclencheur" : "Trigger"} title={fr ? "La défense entre sur le terrain" : "Defense enters the field"}>
+                  {fr ? "Le chrono de 16 secondes se déclenche uniquement lorsque la défense entre sur le terrain lors de la transition. C'est ce moment qui lance la séquence." : "The 16-second clock only starts when the defense steps onto the field during the transition. That moment triggers the next sequence."}
                 </Card>
-                <Card color={RED} label={fr ? "Reprise auto" : "Auto resume"} title={fr ? "Le jeu repart à 16s" : "Play resumes at 16s"}>
-                  {fr ? "La prochaine séquence démarre automatiquement. Le chrono reprend à 16 dès que les équipes sont en position." : "The next sequence starts automatically. The clock resets to 16 as soon as teams are in position."}
+                <Card color={RED} label={fr ? "Urgence défensive" : "Defensive urgency"} title={fr ? "Entrer vite pour ne pas perdre du temps" : "Enter fast to avoid losing time"}>
+                  {fr ? "Plus la défense tarde à entrer, moins il reste de temps à l'attaque. Chaque seconde de retard est un avantage offensif direct." : "The longer the defense takes to enter, the less time the offense has. Every second of delay is a direct offensive advantage."}
                 </Card>
               </>
             )}
