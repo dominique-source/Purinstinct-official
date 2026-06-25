@@ -130,23 +130,24 @@ function SceneHold({ badge }: { badge: string }) {
 }
 
 /* ───────────────────────── Main ───────────────────────── */
-export default function CoreRules() {
+export default function CoreRules({ noAnimate }: { noAnimate?: boolean }) {
   const { t } = useLang();
   const steps = t.play.steps as unknown as Step[];
   const [line1, line2] = t.play.title.split("\n");
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [inView, setInView] = useState(false);
+  const [inView, setInView] = useState(noAnimate ? true : false);
   const sectionRef = useRef<HTMLElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    if (noAnimate) return;
     const el = sectionRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.25 });
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [noAnimate]);
 
   const go = useCallback((i: number) => setActive(((i % steps.length) + steps.length) % steps.length), [steps.length]);
 
@@ -168,6 +169,7 @@ export default function CoreRules() {
       ref={sectionRef}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      className={noAnimate ? "cr-no-anim" : undefined}
       style={{ background: "#0b0d18", padding: "clamp(80px,10vw,130px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}
     >
       {/* ambient glow follows active accent */}
@@ -317,6 +319,11 @@ export default function CoreRules() {
           .cr-s1-badge, .cr-s2-badge, .cr-s3-badge, .cr-s3-lock, .cr-s2-reach { opacity: 1 !important; }
           .cr-s2-ghost, .cr-s3-drop { opacity: 0 !important; }
         }
+        .cr-no-anim .cr-scene *, .cr-no-anim .cr-live-dot, .cr-no-anim .cr-progress { animation: none !important; transition: none !important; }
+        .cr-no-anim .cr-s1-badge, .cr-no-anim .cr-s2-badge, .cr-no-anim .cr-s3-badge, .cr-no-anim .cr-s3-lock, .cr-no-anim .cr-s2-reach { opacity: 1 !important; }
+        .cr-no-anim .cr-s2-ghost, .cr-no-anim .cr-s3-drop { opacity: 0 !important; }
+        .cr-no-anim .cr-step { transition: none !important; }
+        .cr-no-anim [style*="grid-template-rows"] { transition: none !important; }
       `}</style>
     </section>
   );

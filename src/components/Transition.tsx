@@ -82,7 +82,7 @@ function Box({ x, y, color, label, labelDy }: { x: number; y: number; color: str
   );
 }
 
-export default function Transition() {
+export default function Transition({ noAnimate }: { noAnimate?: boolean }) {
   const { t } = useLang();
   const tr = t.transition;
   const [reduced, setReduced] = useState(false);
@@ -96,12 +96,14 @@ export default function Transition() {
     return () => m.removeEventListener("change", u);
   }, []);
 
+  const noAnim = !!(noAnimate || reduced);
+
   const TEAL = "#15596b";
   const MAROON = "#7e2244";
   const counts = ["3", "2", "4", "3"];
 
   return (
-    <section id="transition" style={{ background: "#0b0d18", padding: "clamp(80px,10vw,130px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}>
+    <section id="transition" className={noAnimate ? "tr-no-anim" : undefined} style={{ background: "#0b0d18", padding: "clamp(80px,10vw,130px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}>
       <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse 50% 50% at 30% 40%, rgba(56,189,248,0.10) 0%, transparent 65%)" }} />
 
       <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
@@ -146,7 +148,7 @@ export default function Transition() {
               <Cone x={52} y={348} />
 
               {/* faint route guides (filtered) */}
-              {!reduced && PATHS.map((grp, gi) => {
+              {!noAnim && PATHS.map((grp, gi) => {
                 const visible = sel === null || sel === 4 || sel === gi;
                 const color = sel === 4 ? LIVE_COLORS[gi] : COLORS[gi];
                 return visible && grp.map((p, pi) => (
@@ -159,7 +161,7 @@ export default function Transition() {
                 const visible = sel === null || sel === 4 || sel === gi;
                 const color = sel === 4 ? LIVE_COLORS[gi] : COLORS[gi];
                 return visible && grp.map((p, pi) => (
-                  <Player key={`p${gi}-${pi}`} path={p} color={color} delay={DELAYS[gi]} reduced={reduced} />
+                  <Player key={`p${gi}-${pi}`} path={p} color={color} delay={DELAYS[gi]} reduced={noAnim} />
                 ));
               })}
             </svg>
@@ -254,6 +256,8 @@ export default function Transition() {
           .tr-grid { grid-template-columns: 1fr; }
           .tr-field { max-width: 380px; margin: 0 auto; }
         }
+        .tr-no-anim .tr-pulse, .tr-no-anim .tr-live-dot { animation: none !important; }
+        .tr-no-anim .tr-live-btn, .tr-no-anim .tr-tab { transition: none !important; }
       `}</style>
     </section>
   );
