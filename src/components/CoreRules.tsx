@@ -51,7 +51,7 @@ function Ball({ x, y, cls }: { x: number; y: number; cls?: string }) {
   );
 }
 
-function Check({ x, y, text, color, cls }: { x: number; y: number; text: string; color: string; cls: string }) {
+function Check({ x, y, text, color, cls }: { x: number; y: number; text: string; color: string; cls?: string }) {
   return (
     <g className={cls} transform={`translate(${x},${y})`} style={{ transformOrigin: `${x}px ${y}px` }}>
       <rect x="-52" y="-19" width="104" height="38" rx="19" fill={color} />
@@ -61,38 +61,31 @@ function Check({ x, y, text, color, cls }: { x: number; y: number; text: string;
 }
 
 /* ───────────────────────── Scenes ───────────────────────── */
-function SceneScore({ badge }: { badge: string }) {
+function SceneScore({ badge, na }: { badge: string; na?: boolean }) {
   return (
     <Field>
-      {/* defenders get beaten */}
-      <Pawn x={252} y={108} fill={RED} label="D" cls="cr-s1-d1" />
-      <Pawn x={252} y={188} fill={RED} label="D" cls="cr-s1-d2" />
-      {/* offense */}
-      <Pawn x={72} y={200} fill={LIME} label="2" cls="cr-s1-o2" />
-      <Pawn x={155} y={140} fill={LIME} label="3" cls="cr-s1-o3" />
-      <Pawn x={72} y={95} fill={LIME} label="1" cls="cr-s1-o1" />
-      {/* ball starts at O1's shoulder */}
-      <Ball x={91} y={86} cls="cr-s1-ball" />
-      <Check x={340} y={150} text={badge} color={LIME} cls="cr-s1-badge" />
+      <Pawn x={252} y={108} fill={RED} label="D" cls={na ? undefined : "cr-s1-d1"} />
+      <Pawn x={252} y={188} fill={RED} label="D" cls={na ? undefined : "cr-s1-d2"} />
+      <Pawn x={72} y={200} fill={LIME} label="2" cls={na ? undefined : "cr-s1-o2"} />
+      <Pawn x={155} y={140} fill={LIME} label="3" cls={na ? undefined : "cr-s1-o3"} />
+      <Pawn x={72} y={95} fill={LIME} label="1" cls={na ? undefined : "cr-s1-o1"} />
+      <Ball x={91} y={86} cls={na ? undefined : "cr-s1-ball"} />
+      <Check x={340} y={150} text={badge} color={LIME} cls={na ? undefined : "cr-s1-badge"} />
     </Field>
   );
 }
 
-function SceneTag({ badge }: { badge: string }) {
+function SceneTag({ badge, na }: { badge: string; na?: boolean }) {
   return (
     <Field>
-      {/* reach arc that whiffs */}
-      <path className="cr-s2-reach" d="M300 110 Q250 150 235 175" fill="none" stroke={RED} strokeWidth="3" strokeDasharray="5 6" strokeLinecap="round" />
-      {/* defender lunging */}
-      <Pawn x={300} y={95} fill={RED} label="D" cls="cr-s2-def" />
-      {/* ghost where carrier WOULD be tagged */}
-      <g className="cr-s2-ghost" transform="translate(250,140)">
+      <path className={na ? undefined : "cr-s2-reach"} d="M300 110 Q250 150 235 175" fill="none" stroke={RED} strokeWidth="3" strokeDasharray="5 6" strokeLinecap="round" opacity={na ? 0.6 : undefined} />
+      <Pawn x={300} y={95} fill={RED} label="D" cls={na ? undefined : "cr-s2-def"} />
+      <g className={na ? undefined : "cr-s2-ghost"} transform="translate(250,140)" opacity={na ? 0 : undefined}>
         <circle r="15" fill="none" stroke={RED} strokeWidth="2" strokeDasharray="3 4" />
         <line x1="-7" y1="-7" x2="7" y2="7" stroke={RED} strokeWidth="2.5" />
         <line x1="7" y1="-7" x2="-7" y2="7" stroke={RED} strokeWidth="2.5" />
       </g>
-      {/* carrier jukes */}
-      <g className="cr-s2-car">
+      <g className={na ? undefined : "cr-s2-car"}>
         <Pawn x={130} y={140} fill={LIME} label="1" />
         <Ball x={148} y={132} />
       </g>
@@ -101,11 +94,10 @@ function SceneTag({ badge }: { badge: string }) {
   );
 }
 
-function SceneHold({ badge }: { badge: string }) {
+function SceneHold({ badge, na }: { badge: string; na?: boolean }) {
   return (
     <Field>
-      {/* consequence: dropped ball + OUT (faded) */}
-      <g className="cr-s3-drop" transform="translate(120,150)">
+      <g className={na ? undefined : "cr-s3-drop"} transform="translate(120,150)" opacity={na ? 0 : undefined}>
         <circle r="9" fill="#eaffd1" fillOpacity="0.5" stroke={RED} strokeWidth="2" />
         <g transform="translate(0,-30)">
           <line x1="-6" y1="-6" x2="6" y2="6" stroke={RED} strokeWidth="2.5" />
@@ -113,13 +105,11 @@ function SceneHold({ badge }: { badge: string }) {
         </g>
         <text y="34" textAnchor="middle" fill={RED} fillOpacity="0.8" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="13" letterSpacing="0.1em">OUT</text>
       </g>
-      {/* hands cupping the ball */}
       <g transform="translate(290,150)">
         <path d="M-34 28 Q-30 2 -8 4 L-8 24 Z" fill="#1a2820" stroke="rgba(132,204,22,0.4)" strokeWidth="2" />
         <path d="M34 28 Q30 2 8 4 L8 24 Z" fill="#1a2820" stroke="rgba(132,204,22,0.4)" strokeWidth="2" />
-        {/* secure lock ring */}
-        <circle className="cr-s3-lock" r="22" fill="none" stroke={LIME} strokeWidth="2.5" strokeDasharray="4 5" />
-        <g className="cr-s3-ball">
+        <circle className={na ? undefined : "cr-s3-lock"} r="22" fill="none" stroke={LIME} strokeWidth="2.5" strokeDasharray="4 5" opacity={na ? 1 : undefined} />
+        <g className={na ? undefined : "cr-s3-ball"}>
           <circle r="13" fill="#eaffd1" stroke={LIME} strokeWidth="3" />
           <circle r="4" fill={LIME} />
         </g>
@@ -158,9 +148,9 @@ export default function CoreRules({ noAnimate }: { noAnimate?: boolean }) {
   }, [active, paused, inView, go]);
 
   const scenes = [
-    <SceneScore key="0" badge={steps[0].badge} />,
-    <SceneTag key="1" badge={steps[1].badge} />,
-    <SceneHold key="2" badge={steps[2].badge} />,
+    <SceneScore key="0" badge={steps[0].badge} na={noAnimate} />,
+    <SceneTag key="1" badge={steps[1].badge} na={noAnimate} />,
+    <SceneHold key="2" badge={steps[2].badge} na={noAnimate} />,
   ];
 
   return (
@@ -195,7 +185,7 @@ export default function CoreRules({ noAnimate }: { noAnimate?: boolean }) {
             ))}
             {/* live tag */}
             <div style={{ position: "absolute", top: 16, left: 18, zIndex: 4, display: "inline-flex", alignItems: "center", gap: 7 }}>
-              <span className="cr-live-dot" style={{ width: 7, height: 7, borderRadius: "50%", background: RED }} />
+              <span className={noAnimate ? undefined : "cr-live-dot"} style={{ width: 7, height: 7, borderRadius: "50%", background: RED }} />
               <span style={{ fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.22em", color: "rgba(255,255,255,0.6)", textTransform: "uppercase" }}>{t.play.live}</span>
             </div>
             {/* frame counter */}
@@ -203,8 +193,7 @@ export default function CoreRules({ noAnimate }: { noAnimate?: boolean }) {
               RULE {steps[active].n}/03
             </div>
             <div style={{ padding: "clamp(40px,5vw,56px) clamp(20px,3vw,32px) clamp(24px,3vw,32px)" }}>
-              {/* key forces animation restart on rule change */}
-              <div key={active} className="cr-scene">{scenes[active]}</div>
+              <div key={active} className={noAnimate ? undefined : "cr-scene"}>{scenes[active]}</div>
             </div>
           </div>
 
@@ -223,12 +212,12 @@ export default function CoreRules({ noAnimate }: { noAnimate?: boolean }) {
                     background: on ? "#11131f" : "transparent",
                     border: `1px solid ${on ? `${LIME}3a` : "rgba(255,255,255,0.08)"}`,
                     borderRadius: 16, padding: "18px 20px", overflow: "hidden",
-                    transition: "background 0.4s ease, border-color 0.4s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1)",
-                    transform: on ? "translateX(6px)" : "translateX(0)",
+                    transition: noAnimate ? undefined : "background 0.4s ease, border-color 0.4s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1)",
+                    transform: noAnimate ? undefined : (on ? "translateX(6px)" : "translateX(0)"),
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                    <span style={{ flexShrink: 0, width: 40, height: 40, borderRadius: 11, display: "grid", placeItems: "center", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 17, background: on ? LIME : "rgba(255,255,255,0.06)", color: on ? "#06070f" : "rgba(255,255,255,0.5)", transition: "background 0.4s ease, color 0.4s ease" }}>{s.n}</span>
+                    <span style={{ flexShrink: 0, width: 40, height: 40, borderRadius: 11, display: "grid", placeItems: "center", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 17, background: on ? LIME : "rgba(255,255,255,0.06)", color: on ? "#06070f" : "rgba(255,255,255,0.5)", transition: noAnimate ? undefined : "background 0.4s ease, color 0.4s ease" }}>{s.n}</span>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
                         <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: on ? LIME : "rgba(255,255,255,0.4)" }}>{s.tag}</span>
@@ -238,13 +227,13 @@ export default function CoreRules({ noAnimate }: { noAnimate?: boolean }) {
                     </div>
                   </div>
                   {/* expanding description */}
-                  <div style={{ display: "grid", gridTemplateRows: on ? "1fr" : "0fr", transition: "grid-template-rows 0.45s cubic-bezier(0.16,1,0.3,1)" }}>
+                  <div style={{ display: "grid", gridTemplateRows: on ? "1fr" : "0fr", transition: noAnimate ? undefined : "grid-template-rows 0.45s cubic-bezier(0.16,1,0.3,1)" }}>
                     <div style={{ overflow: "hidden" }}>
                       <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 14.5, lineHeight: 1.7, paddingTop: 14, paddingLeft: 54 }}>{s.desc}</p>
                     </div>
                   </div>
                   {/* autoplay progress bar */}
-                  {on && (
+                  {on && !noAnimate && (
                     <div style={{ position: "absolute", left: 0, bottom: 0, height: 3, width: "100%", background: "rgba(255,255,255,0.06)" }}>
                       <div key={`${active}-${paused}`} className={paused ? "" : "cr-progress"} style={{ height: "100%", background: LIME, width: paused ? "100%" : 0, opacity: paused ? 0.4 : 1 }} />
                     </div>

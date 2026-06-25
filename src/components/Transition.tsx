@@ -123,7 +123,7 @@ export default function Transition({ noAnimate }: { noAnimate?: boolean }) {
               <div key={`${v}${h}`} aria-hidden style={{ position: "absolute", [v]: 14, [h]: 14, width: 18, height: 18, [`border${v[0].toUpperCase()+v.slice(1)}`]: "1.5px solid rgba(56,189,248,0.5)", [`border${h[0].toUpperCase()+h.slice(1)}`]: "1.5px solid rgba(56,189,248,0.5)", zIndex: 3, pointerEvents: "none" } as React.CSSProperties} />
             ))}
             <div style={{ position: "absolute", top: 16, left: 18, zIndex: 4, display: "inline-flex", alignItems: "center", gap: 7 }}>
-              <span className="tr-pulse" style={{ width: 7, height: 7, borderRadius: "50%", background: "#ef4444" }} />
+              <span className={noAnimate ? undefined : "tr-pulse"} style={{ width: 7, height: 7, borderRadius: "50%", background: "#ef4444" }} />
               <span style={{ fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", color: "rgba(255,255,255,0.6)", textTransform: "uppercase" }}>{tr.trigger}</span>
             </div>
             <div style={{ position: "absolute", top: 16, right: 18, zIndex: 4, fontFamily: "'Courier New', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", color: "rgba(56,189,248,0.85)", textTransform: "uppercase" }}>{tr.frame}</div>
@@ -182,10 +182,10 @@ export default function Transition({ noAnimate }: { noAnimate?: boolean }) {
                   : "linear-gradient(135deg, rgba(239,68,68,0.10) 0%, rgba(239,68,68,0.03) 100%)",
                 border: `1.5px solid ${sel === 4 ? "#ef4444" : "rgba(239,68,68,0.35)"}`,
                 boxShadow: sel === 4 ? "0 0 28px rgba(239,68,68,0.28), inset 0 0 20px rgba(239,68,68,0.06)" : "none",
-                transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
+                transition: noAnimate ? undefined : "all 0.3s cubic-bezier(0.16,1,0.3,1)",
               }}
             >
-              <span className="tr-live-dot" style={{ width: 9, height: 9, borderRadius: "50%", background: "#ef4444", boxShadow: "0 0 10px #ef4444", flexShrink: 0 }} />
+              <span className={noAnimate ? undefined : "tr-live-dot"} style={{ width: 9, height: 9, borderRadius: "50%", background: "#ef4444", boxShadow: "0 0 10px #ef4444", flexShrink: 0 }} />
               <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 15, letterSpacing: "0.18em", textTransform: "uppercase", color: sel === 4 ? "#fff" : "rgba(239,68,68,0.85)" }}>
                 {tr.live}
               </span>
@@ -197,7 +197,7 @@ export default function Transition({ noAnimate }: { noAnimate?: boolean }) {
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
               <button
                 onClick={() => setSel(null)}
-                style={{ cursor: "pointer", fontFamily: "var(--font-barlow), sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "7px 16px", borderRadius: 999, border: `1px solid ${sel === null ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.15)"}`, background: sel === null ? "rgba(255,255,255,0.1)" : "transparent", color: sel === null ? "#fff" : "rgba(255,255,255,0.55)", transition: "all 0.2s ease" }}
+                style={{ cursor: "pointer", fontFamily: "var(--font-barlow), sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "7px 16px", borderRadius: 999, border: `1px solid ${sel === null ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.15)"}`, background: sel === null ? "rgba(255,255,255,0.1)" : "transparent", color: sel === null ? "#fff" : "rgba(255,255,255,0.55)", transition: noAnimate ? undefined : "all 0.2s ease" }}
               >
                 {tr.all}
               </button>
@@ -221,7 +221,7 @@ export default function Transition({ noAnimate }: { noAnimate?: boolean }) {
                         border: `1px solid ${on ? COLORS[i] : `${COLORS[i]}26`}`,
                         opacity: dim ? 0.45 : 1,
                         transform: on ? "translateX(5px)" : "translateX(0)",
-                        transition: "all 0.25s cubic-bezier(0.16,1,0.3,1)",
+                        transition: noAnimate ? undefined : "all 0.25s cubic-bezier(0.16,1,0.3,1)",
                       }}
                     >
                       <span style={{ flexShrink: 0, width: 34, height: 34, borderRadius: 9, display: "grid", placeItems: "center", background: `${COLORS[i]}1f`, border: `1px solid ${COLORS[i]}` }}>
