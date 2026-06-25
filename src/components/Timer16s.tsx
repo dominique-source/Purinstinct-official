@@ -172,8 +172,8 @@ export default function Timer16s() {
                 <Card color={RED} label={fr ? "Temps écoulé" : "Time expired"} title={fr ? "Retrait automatique" : "Automatic out"}>
                   {fr ? "Si le chrono atteint zéro sans score, la défense obtient un retrait. Après 3 retraits : transition." : "If the clock hits zero without a score, the defense gets an out. After 3 outs: transition."}
                 </Card>
-                <Card color={CYAN} label={fr ? "Remise à zéro" : "Reset"} title={fr ? "16 sec · Nouvelle séquence" : "16 sec · New sequence"}>
-                  {fr ? "Après chaque séquence (score ou retrait), le chrono recommence à 16 pour la séquence suivante." : "After each sequence (score or out), the clock resets to 16 for the next sequence."}
+                <Card color={CYAN} label={fr ? "Départ immédiat" : "Immediate start"} title={fr ? "Pas de pause entre les séquences" : "No break between sequences"}>
+                  {fr ? "Le chrono repart à 16 dès la fin de la séquence précédente. Les joueurs doivent se dépêcher d'entrer en jeu — il n'y a pas d'attente." : "The clock restarts at 16 the moment the previous sequence ends. Players must rush onto the field — there is no wait."}
                 </Card>
               </>
             ) : (
