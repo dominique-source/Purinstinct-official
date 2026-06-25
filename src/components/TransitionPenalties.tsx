@@ -28,8 +28,10 @@ const DEF_WRONG = "M40,252 C170,248 264,254 306,300 C310,340 309,370 308,400";
 /* Slow player paths (entrée prématurée) — end AT the left cone (52,348) so players stop there */
 const SLOW_PATH   = "M284,406 C200,388 120,372 80,360 C64,354 54,348 52,348";
 const SLOW_PATH_5 = "M276,408 C192,390 112,374 72,362 C56,356 47,350 44,352";
-/* Third fast player path */
-const FAST_PATH_3 = "M286,394 C180,366 86,360 62,350 C38,354 26,344 34,330 C38,304 40,284 40,262";
+/* Terrain players (from play area → direct to DEF box, same as Transition.tsx PATHS[0]) */
+const TERRAIN_1 = "M150,175 C100,210 68,245 56,256";
+const TERRAIN_2 = "M185,158 C120,205 76,248 58,254";
+const TERRAIN_3 = "M120,200 C92,225 66,250 52,260";
 
 function Cone({ x, y }: { x: number; y: number }) {
   return (
@@ -323,34 +325,34 @@ export default function TransitionPenalties() {
                 {/* DEF box entry glow — lights up when D1+D2 arrive while D3 is still en route */}
                 <rect x={27} y={237} width="42" height="42" rx="5" fill="none" stroke={ORANGE} strokeWidth="2.5" className="trpen3-def-entry" />
 
-                {/* D1 — fast */}
+                {/* T1 — terrain player, direct to DEF box */}
                 <g>
                   <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
                   <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
-                  <animateMotion dur="9s" repeatCount="indefinite" path={CORRECT_PATH_1}
-                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.42;1"
+                  <animateMotion dur="9s" repeatCount="indefinite" path={TERRAIN_1}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.36;1"
                     calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
                     values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
                 </g>
 
-                {/* D2 — fast */}
+                {/* T2 — terrain player, direct to DEF box */}
                 <g>
                   <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
                   <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
-                  <animateMotion dur="9s" repeatCount="indefinite" path={CORRECT_PATH_2}
-                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.46;1"
+                  <animateMotion dur="9s" repeatCount="indefinite" path={TERRAIN_2}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.38;1"
                     calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
                     values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
                 </g>
 
-                {/* D3 — fast */}
+                {/* T3 — terrain player, direct to DEF box */}
                 <g>
                   <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
                   <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
-                  <animateMotion dur="9s" repeatCount="indefinite" path={FAST_PATH_3}
-                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.44;1"
+                  <animateMotion dur="9s" repeatCount="indefinite" path={TERRAIN_3}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.40;1"
                     calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
                     values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
@@ -442,8 +444,8 @@ export default function TransitionPenalties() {
               </p>
               <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
                 {fr
-                  ? "Trois joueurs défensifs prennent position dans la zone avant que les deux autres n'aient terminé de contourner le cône. Les deux joueurs plus lents sont encore autour du cône lorsque la faute est sifflée."
-                  : "Three defensive players take position in the zone before the other two have finished going around the cone. The two slower players are still around the cone when the foul is called."}
+                  ? "Trois joueurs défensifs venant du terrain se rendent directement au box défensif. Mais les deux joueurs en attente (qui doivent contourner le cône) n'ont pas encore terminé leur transition lorsque les trois premiers prennent position."
+                  : "Three defensive players coming from the field go directly to the defensive box. But the two waiting players (who must go around the cone) have not yet finished their transition when the first three take position."}
               </p>
             </div>
 
@@ -712,9 +714,9 @@ export default function TransitionPenalties() {
           animation: trpen3DefEntry 9s ease infinite;
         }
         @keyframes trpen3DefEntry {
-          0%,40%    { stroke-opacity: 0; }
-          44%       { stroke-opacity: 0.9; }
-          48%       { stroke-opacity: 0.3; }
+          0%,34%    { stroke-opacity: 0; }
+          38%       { stroke-opacity: 0.9; }
+          42%       { stroke-opacity: 0.3; }
           55%,82%   { stroke-opacity: 0.55; }
           89%,100%  { stroke-opacity: 0; }
         }
