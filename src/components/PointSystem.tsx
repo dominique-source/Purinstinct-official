@@ -35,17 +35,18 @@ const TIERS = [
     fr: "Intermédiaire",
     en: "Intermediate",
     stars: 4,
-    pts_label_fr: "1",
-    pts_label_en: "1",
-    pts_sub_fr: "pt / score",
-    pts_sub_en: "pt / score",
-    pts_bonus: 1,
-    fr_desc: "Passes avant restreintes. La stratégie collective commence à compter.",
-    en_desc: "Forward passes restricted. Collective strategy starts to matter.",
+    pts_label_fr: "1–2 pts",
+    pts_label_en: "1–2 pts",
+    pts_sub_fr: "selon l'action",
+    pts_sub_en: "depending on action",
+    pts_bonus: 0,
+    fr_desc: "Passes avant interdites en jeu. Les points varient selon la technique utilisée.",
+    en_desc: "Forward passes banned in play. Points vary depending on the technique used.",
     rules: [
-      { badge: "1",  fr: "1 point par score",                                  en: "1 point per score" },
-      { badge: "+1", fr: "+1 pt si aucune passe avant dans l'aire de jeu",     en: "+1 pt if no forward pass in play area" },
-      { badge: "—",  fr: "Passes latérales et arrière seulement en zone",      en: "Lateral and backward passes only in end zone" },
+      { badge: "1",  fr: "Courir dans la zone des buts",                              en: "Run into the end zone" },
+      { badge: "2",  fr: "Poke dans la zone des buts",                                en: "Poke into the end zone" },
+      { badge: "2",  fr: "Bottés et redirections attrapées dans la zone des buts",    en: "Kicks and caught redirects in the end zone" },
+      { badge: "2+", fr: "Interception ramenée en zone de départ (+1 retrait)",       en: "Interception returned to starting zone (+1 out)" },
     ],
   },
   {
@@ -184,7 +185,7 @@ export default function PointSystem() {
               {fr ? "Règles de pointage" : "Scoring rules"}
             </p>
 
-            {active === "debutant" ? (
+            {(active === "debutant" || active === "intermediaire") ? (
               /* Score card grid — point value is dominant */
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 {tier.rules.map((rule, i) => (
