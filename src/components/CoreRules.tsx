@@ -89,7 +89,7 @@ function SceneTag({ badge, na }: { badge: string; na?: boolean }) {
         <Pawn x={130} y={140} fill={LIME} label="1" />
         <Ball x={148} y={132} />
       </g>
-      <Check x={300} y={228} text={badge} color={LIME} cls="cr-s2-badge" />
+      <Check x={300} y={228} text={badge} color={LIME} cls={na ? undefined : "cr-s2-badge"} />
     </Field>
   );
 }
@@ -114,7 +114,7 @@ function SceneHold({ badge, na }: { badge: string; na?: boolean }) {
           <circle r="4" fill={LIME} />
         </g>
       </g>
-      <Check x={290} y={228} text={badge} color={LIME} cls="cr-s3-badge" />
+      <Check x={290} y={228} text={badge} color={LIME} cls={na ? undefined : "cr-s3-badge"} />
     </Field>
   );
 }
