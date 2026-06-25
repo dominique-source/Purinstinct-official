@@ -14,12 +14,19 @@ const TIERS = [
     fr: "Débutant",
     en: "Beginner",
     stars: 2,
-    pts_score: 1,
+    pts_label_fr: "1–3 pts",
+    pts_label_en: "1–3 pts",
+    pts_sub_fr: "selon l'action",
+    pts_sub_en: "depending on action",
     pts_bonus: 0,
-    fr_desc: "Toutes les passes autorisées. Concentre-toi sur le mouvement et la coordination.",
-    en_desc: "All passes allowed. Focus on movement, coordination, and timing.",
-    rules_fr: ["1 point par score en zone", "Toutes les passes permises", "Aucun bonus"],
-    rules_en: ["1 point per end-zone score", "All passes allowed", "No bonuses"],
+    fr_desc: "Toutes les passes autorisées. Les points varient selon la technique utilisée pour marquer.",
+    en_desc: "All passes allowed. Points vary depending on the technique used to score.",
+    rules: [
+      { badge: "1", fr: "Courir et passer le ballon dans la zone des buts",       en: "Run and pass the ball into the end zone" },
+      { badge: "2", fr: "Poke dans la zone des buts",                              en: "Poke into the end zone" },
+      { badge: "3", fr: "Bottés et redirections attrapées dans la zone des buts",  en: "Kicks and caught redirects in the end zone" },
+      { badge: "2+", fr: "Interception ramenée en zone de départ (+1 retrait)",    en: "Interception returned to starting zone (+1 out)" },
+    ],
   },
   {
     key: "intermediaire" as const,
@@ -28,12 +35,18 @@ const TIERS = [
     fr: "Intermédiaire",
     en: "Intermediate",
     stars: 4,
-    pts_score: 1,
+    pts_label_fr: "1",
+    pts_label_en: "1",
+    pts_sub_fr: "pt / score",
+    pts_sub_en: "pt / score",
     pts_bonus: 1,
     fr_desc: "Passes avant restreintes. La stratégie collective commence à compter.",
     en_desc: "Forward passes restricted. Collective strategy starts to matter.",
-    rules_fr: ["1 point par score", "+1 pt si aucune passe avant dans l'aire de jeu", "Passes latérales et arrière seulement en zone"],
-    rules_en: ["1 point per score", "+1 pt if no forward pass in play area", "Lateral and backward passes only in the play area"],
+    rules: [
+      { badge: "1",  fr: "1 point par score",                                  en: "1 point per score" },
+      { badge: "+1", fr: "+1 pt si aucune passe avant dans l'aire de jeu",     en: "+1 pt if no forward pass in play area" },
+      { badge: "—",  fr: "Passes latérales et arrière seulement en zone",      en: "Lateral and backward passes only in end zone" },
+    ],
   },
   {
     key: "avance" as const,
@@ -42,12 +55,18 @@ const TIERS = [
     fr: "Avancé",
     en: "Advanced",
     stars: 6,
-    pts_score: 1,
+    pts_label_fr: "1",
+    pts_label_en: "1",
+    pts_sub_fr: "pt / score",
+    pts_sub_en: "pt / score",
     pts_bonus: 2,
     fr_desc: "Règles complètes PurInstinct. Instinct pur, anticipation maximale, timing parfait.",
     en_desc: "Full PurInstinct rules. Pure instinct, maximum anticipation, perfect timing.",
-    rules_fr: ["1 point par score", "+1 pt si aucune passe avant", "+1 pt si score en moins de 8 secondes"],
-    rules_en: ["1 point per score", "+1 pt if no forward pass", "+1 pt if scored in under 8 seconds"],
+    rules: [
+      { badge: "1",  fr: "1 point par score",                          en: "1 point per score" },
+      { badge: "+1", fr: "+1 pt si aucune passe avant",                en: "+1 pt if no forward pass" },
+      { badge: "+1", fr: "+1 pt si score en moins de 8 secondes",      en: "+1 pt if scored in under 8 seconds" },
+    ],
   },
 ] as const;
 
@@ -135,10 +154,10 @@ export default function PointSystem() {
               </p>
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 10, marginBottom: 6 }}>
                 <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 88, lineHeight: 1, color: "#fff" }}>
-                  {tier.pts_score}
+                  {fr ? tier.pts_label_fr : tier.pts_label_en}
                 </span>
                 <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 15, color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                  {fr ? "pt / score" : "pt / score"}
+                  {fr ? tier.pts_sub_fr : tier.pts_sub_en}
                 </span>
               </div>
               {tier.pts_bonus > 0 && (
@@ -164,7 +183,7 @@ export default function PointSystem() {
             <p style={{ margin: "0 0 8px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.28)" }}>
               {fr ? "Règles de pointage" : "Scoring rules"}
             </p>
-            {(fr ? tier.rules_fr : tier.rules_en).map((rule, i) => (
+            {tier.rules.map((rule, i) => (
               <div
                 key={i}
                 style={{
@@ -175,15 +194,15 @@ export default function PointSystem() {
                 }}
               >
                 <span style={{
-                  width: 32, height: 32, borderRadius: 8, flexShrink: 0,
+                  minWidth: 36, height: 32, borderRadius: 8, flexShrink: 0, padding: "0 6px",
                   display: "grid", placeItems: "center",
                   background: `${tier.color}18`, border: `1px solid ${tier.color}40`,
-                  fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 14, color: tier.color,
+                  fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 13, color: tier.color,
                 }}>
-                  {i === 0 ? "1" : `+${i}`}
+                  {rule.badge}
                 </span>
                 <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 600, fontSize: 15, color: i === 0 ? "#fff" : "rgba(255,255,255,0.62)", lineHeight: 1.5 }}>
-                  {rule}
+                  {fr ? rule.fr : rule.en}
                 </span>
               </div>
             ))}
