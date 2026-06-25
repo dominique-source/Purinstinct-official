@@ -25,8 +25,11 @@ const DEF_CORRECT_2 = "M56,252 C150,250 256,252 288,252 C304,254 306,268 294,270
 /* Defensive wrong path: cuts past the right cone without the S-curve wrap */
 const DEF_WRONG = "M40,252 C170,248 264,254 306,300 C310,340 309,370 308,400";
 
-/* Slow player path (entrée prématurée) — same direction as CORRECT, 3rd offset */
-const SLOW_PATH = "M284,406 C178,378 84,372 60,362 C36,366 24,356 32,342 C36,316 38,296 38,274";
+/* Slow player paths (entrée prématurée) — end AT the left cone (52,348) so players stop there */
+const SLOW_PATH   = "M284,406 C200,388 120,372 80,360 C64,354 54,348 52,348";
+const SLOW_PATH_5 = "M276,408 C192,390 112,374 72,362 C56,356 47,350 44,352";
+/* Third fast player path */
+const FAST_PATH_3 = "M286,394 C180,366 86,360 62,350 C38,354 26,344 34,330 C38,304 40,284 40,262";
 
 function Cone({ x, y }: { x: number; y: number }) {
   return (
@@ -320,51 +323,77 @@ export default function TransitionPenalties() {
                 {/* DEF box entry glow — lights up when D1+D2 arrive while D3 is still en route */}
                 <rect x={27} y={237} width="42" height="42" rx="5" fill="none" stroke={ORANGE} strokeWidth="2.5" className="trpen3-def-entry" />
 
-                {/* D1 — fast player */}
+                {/* D1 — fast */}
                 <g>
                   <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
                   <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
-                  <animateMotion dur="9s" repeatCount="indefinite"
-                    path={CORRECT_PATH_1}
+                  <animateMotion dur="9s" repeatCount="indefinite" path={CORRECT_PATH_1}
                     keyPoints="0;0;1;1" keyTimes="0;0.06;0.42;1"
                     calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
                     values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
                 </g>
 
-                {/* D2 — fast player */}
+                {/* D2 — fast */}
                 <g>
                   <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
                   <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
-                  <animateMotion dur="9s" repeatCount="indefinite"
-                    path={CORRECT_PATH_2}
+                  <animateMotion dur="9s" repeatCount="indefinite" path={CORRECT_PATH_2}
                     keyPoints="0;0;1;1" keyTimes="0;0.06;0.46;1"
                     calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
                     values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
                 </g>
 
-                {/* D3 — slow player, freezes mid-path */}
+                {/* D3 — fast */}
+                <g>
+                  <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
+                  <animateMotion dur="9s" repeatCount="indefinite" path={FAST_PATH_3}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.44;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
+                </g>
+
+                {/* D4 — slow, freezes ~48% = near cone */}
                 <g>
                   <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
                   <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.5" />
-                  <animateMotion dur="9s" repeatCount="indefinite"
-                    path={SLOW_PATH}
-                    keyPoints="0;0;0.38;0.38" keyTimes="0;0.06;0.52;1"
+                  <animateMotion dur="9s" repeatCount="indefinite" path={SLOW_PATH}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.55;1"
                     calcMode="spline" keySplines="0 0 1 1;0.35 0 0.65 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
                     values="0;0.65;0.65;0;0" keyTimes="0;0.06;0.85;0.91;1" />
                 </g>
-
-                {/* Warning ring around D3 (pulses when fault triggers) */}
+                {/* Warning ring D4 */}
                 <g>
                   <circle r="18" fill="none" stroke={ORANGE} strokeWidth="2" strokeDasharray="4 3" />
-                  <animateMotion dur="9s" repeatCount="indefinite"
-                    path={SLOW_PATH}
-                    keyPoints="0;0;0.38;0.38" keyTimes="0;0.06;0.52;1"
+                  <animateMotion dur="9s" repeatCount="indefinite" path={SLOW_PATH}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.55;1"
                     calcMode="spline" keySplines="0 0 1 1;0.35 0 0.65 1;0 0 1 1" />
                   <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
-                    values="0;0;0;0.9;0.1;0.9;0;0" keyTimes="0;0.06;0.52;0.57;0.62;0.67;0.73;1" />
+                    values="0;0;0;0.9;0.1;0.9;0;0" keyTimes="0;0.06;0.55;0.60;0.65;0.70;0.76;1" />
+                </g>
+
+                {/* D5 — slow, freezes ~48% = near cone (offset path) */}
+                <g>
+                  <circle r="7" fill={CYAN} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.5" />
+                  <animateMotion dur="9s" repeatCount="indefinite" path={SLOW_PATH_5}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.55;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.35 0 0.65 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;0.65;0.65;0;0" keyTimes="0;0.06;0.85;0.91;1" />
+                </g>
+                {/* Warning ring D5 */}
+                <g>
+                  <circle r="18" fill="none" stroke={ORANGE} strokeWidth="2" strokeDasharray="4 3" />
+                  <animateMotion dur="9s" repeatCount="indefinite" path={SLOW_PATH_5}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.55;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.35 0 0.65 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;0;0;0.9;0.1;0.9;0;0" keyTimes="0;0.06;0.55;0.60;0.65;0.70;0.76;1" />
                 </g>
 
                 {/* FAUTE badge — 170,50 → translate(50%, 10.638%) */}
@@ -413,8 +442,8 @@ export default function TransitionPenalties() {
               </p>
               <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
                 {fr
-                  ? "Deux joueurs défensifs entrent en jeu avant que tous leurs coéquipiers n'aient terminé leur transition. Un joueur plus lent est encore en route lorsque les deux autres prennent position."
-                  : "Two defensive players enter the game before all teammates have completed their transition. A slower player is still en route when the other two take position."}
+                  ? "Trois joueurs défensifs prennent position dans la zone avant que les deux autres n'aient terminé de contourner le cône. Les deux joueurs plus lents sont encore autour du cône lorsque la faute est sifflée."
+                  : "Three defensive players take position in the zone before the other two have finished going around the cone. The two slower players are still around the cone when the foul is called."}
               </p>
             </div>
 
@@ -686,23 +715,23 @@ export default function TransitionPenalties() {
           0%,40%    { stroke-opacity: 0; }
           44%       { stroke-opacity: 0.9; }
           48%       { stroke-opacity: 0.3; }
-          52%,82%   { stroke-opacity: 0.55; }
+          55%,82%   { stroke-opacity: 0.55; }
           89%,100%  { stroke-opacity: 0; }
         }
 
         .trpen3-foul { opacity: 0; transform-box: view-box; animation: trpen3Foul 9s ease infinite; }
         @keyframes trpen3Foul {
-          0%,55%   { opacity: 0; transform: translate(50%, 10.638%) scale(0.5); }
-          63%      { opacity: 1; transform: translate(50%, 10.638%) scale(1.1); }
-          70%,85%  { opacity: 1; transform: translate(50%, 10.638%) scale(1); }
+          0%,57%   { opacity: 0; transform: translate(50%, 10.638%) scale(0.5); }
+          65%      { opacity: 1; transform: translate(50%, 10.638%) scale(1.1); }
+          72%,85%  { opacity: 1; transform: translate(50%, 10.638%) scale(1); }
           91%,100% { opacity: 0; transform: translate(50%, 10.638%) scale(1); }
         }
 
         .trpen3-result { opacity: 0; transform-box: view-box; animation: trpen3Result 9s ease infinite; }
         @keyframes trpen3Result {
-          0%,62%   { opacity: 0; transform: translate(50%, 91.489%) scale(0.5); }
-          70%      { opacity: 1; transform: translate(50%, 91.489%) scale(1.1); }
-          77%,85%  { opacity: 1; transform: translate(50%, 91.489%) scale(1); }
+          0%,65%   { opacity: 0; transform: translate(50%, 91.489%) scale(0.5); }
+          73%      { opacity: 1; transform: translate(50%, 91.489%) scale(1.1); }
+          80%,85%  { opacity: 1; transform: translate(50%, 91.489%) scale(1); }
           91%,100% { opacity: 0; transform: translate(50%, 91.489%) scale(1); }
         }
 
