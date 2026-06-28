@@ -115,6 +115,56 @@ function Panel({ active }: { active: Key }) {
   }
 }
 
+/* Tag scrollable blocks with .zoom-block (CSS scroll-driven) or .zoom-block-fallback (JS) */
+function ScrollZoomFallback({ panelKey }: { panelKey: Key }) {
+  useEffect(() => {
+    const supportsScrollTimeline =
+      typeof CSS !== "undefined" && CSS.supports("animation-timeline", "view()");
+
+    const timer = setTimeout(() => {
+      const panelInner = document.querySelector<HTMLElement>(".panel-root > *");
+      if (!panelInner) return;
+
+      /* Collect candidates: elements between 48px and 620px tall.
+         Then keep only the OUTERMOST ones (skip descendants of already-tagged parents)
+         so we don't double-zoom nested elements. */
+      const all = Array.from(panelInner.querySelectorAll<HTMLElement>("*"));
+      const candidates = all.filter((el) => {
+        const h = el.getBoundingClientRect().height;
+        return h >= 48 && h <= 620 && el.tagName !== "STYLE";
+      });
+      const candidateSet = new Set(candidates);
+      const blocks = candidates.filter((el) => {
+        let p = el.parentElement;
+        while (p && p !== panelInner) {
+          if (candidateSet.has(p)) return false;
+          p = p.parentElement;
+        }
+        return true;
+      });
+
+      const cls = supportsScrollTimeline ? "zoom-block" : "zoom-block-fallback";
+      blocks.forEach((el) => el.classList.add(cls));
+
+      if (supportsScrollTimeline) return;
+
+      /* Fallback: IntersectionObserver */
+      const obs = new IntersectionObserver(
+        (entries) => entries.forEach((e) =>
+          (e.target as HTMLElement).classList.toggle("in-view", e.isIntersecting)
+        ),
+        { threshold: 0.1 }
+      );
+      blocks.forEach((el) => obs.observe(el));
+      return () => obs.disconnect();
+    }, 80);
+
+    return () => clearTimeout(timer);
+  }, [panelKey]);
+
+  return null;
+}
+
 function AnimationsInner() {
   const { lang, setLang } = useLang();
   const fr = lang === "fr";
@@ -280,7 +330,7 @@ function AnimationsInner() {
       </div>
 
       {/* ── Panel ── */}
-      <div key={active} style={{ animation: "panelIn 0.35s cubic-bezier(0.16,1,0.3,1) both" }}>
+      <div key={active} className="panel-root" style={{ animation: "panelIn 0.35s cubic-bezier(0.16,1,0.3,1) both" }}>
         <Panel active={active} />
       </div>
 
@@ -289,7 +339,38 @@ function AnimationsInner() {
           from { opacity: 0; transform: translateY(12px); }
           to   { opacity: 1; transform: none; }
         }
+
+        /* ── Scroll-zoom: blocks zoom in as they enter viewport, zoom out as they leave ── */
+        @supports (animation-timeline: view()) {
+          @media (prefers-reduced-motion: no-preference) {
+            .zoom-block {
+              animation: scrollZoom linear both;
+              animation-timeline: view();
+              animation-range: entry 0% exit 100%;
+            }
+          }
+        }
+
+        @keyframes scrollZoom {
+          entry 0%   { transform: scale(0.84) translateY(32px); opacity: 0.15; }
+          entry 40%  { transform: scale(1)    translateY(0);     opacity: 1;    }
+          exit  60%  { transform: scale(1)    translateY(0);     opacity: 1;    }
+          exit  100% { transform: scale(0.90) translateY(-18px); opacity: 0.25; }
+        }
+
+        /* Fallback: IntersectionObserver-based zoom for non-supporting browsers */
+        .zoom-block-fallback {
+          transform: scale(0.88) translateY(24px);
+          opacity: 0.25;
+          transition: transform 0.55s cubic-bezier(0.34,1.4,0.6,1), opacity 0.4s ease;
+        }
+        .zoom-block-fallback.in-view {
+          transform: scale(1) translateY(0);
+          opacity: 1;
+        }
       `}</style>
+
+      <ScrollZoomFallback panelKey={active} />
     </div>
   );
 }
