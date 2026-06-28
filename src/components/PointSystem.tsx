@@ -73,6 +73,35 @@ const TIERS = [
 
 type TierKey = typeof TIERS[number]["key"];
 
+function HighlightNextForTwo({ text, color }: { text: string; color: string }) {
+  const PHRASE = "next for two";
+  const idx = text.toLowerCase().indexOf(PHRASE);
+  if (idx === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <span style={{
+        display: "inline-block",
+        background: `${color}22`,
+        border: `1px solid ${color}60`,
+        color: color,
+        fontWeight: 900,
+        fontSize: "0.95em",
+        borderRadius: 6,
+        padding: "1px 8px",
+        letterSpacing: "0.04em",
+        textTransform: "uppercase",
+        boxShadow: `0 0 10px ${color}44`,
+        verticalAlign: "middle",
+        margin: "0 2px",
+      }}>
+        {text.slice(idx, idx + PHRASE.length)}
+      </span>
+      {text.slice(idx + PHRASE.length)}
+    </>
+  );
+}
+
 function Star({ filled, color }: { filled: boolean; color: string }) {
   return (
     <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
@@ -240,7 +269,7 @@ export default function PointSystem() {
                     {rule.badge}
                   </span>
                   <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 600, fontSize: 15, color: i === 0 ? "#fff" : "rgba(255,255,255,0.62)", lineHeight: 1.5 }}>
-                    {fr ? rule.fr : rule.en}
+                    <HighlightNextForTwo text={fr ? rule.fr : rule.en} color={tier.color} />
                   </span>
                 </div>
               ))
