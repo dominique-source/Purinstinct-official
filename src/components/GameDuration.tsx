@@ -36,30 +36,40 @@ function TempsContent({ fr }: { fr: boolean }) {
                 />
               );
             })}
-            {/* minute hand pointing to 4 (~20 min) */}
             <line x1="65" y1="65" x2="93" y2="83" stroke={LIME} strokeWidth="3" strokeLinecap="round" style={{ animation: "clockMin 120s linear infinite" }} />
-            {/* hour hand pointing up */}
             <line x1="65" y1="65" x2="65" y2="26" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
             <circle cx="65" cy="65" r="4.5" fill={LIME} />
           </svg>
           <p style={{ margin: "0 0 8px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: LIME }}>
             {fr ? "Option Temps" : "Time option"}
           </p>
-          <div style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 52, lineHeight: 1, color: "#fff", margin: "4px 0 8px" }}>
-            2 <span style={{ fontSize: 24, color: "rgba(255,255,255,0.35)" }}>×</span> 20<span style={{ fontSize: 28, color: "rgba(255,255,255,0.4)" }}> min</span>
+          <div style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 52, lineHeight: 1, color: "#fff", margin: "4px 0 4px" }}>
+            60<span style={{ fontSize: 28, color: "rgba(255,255,255,0.4)" }}> min</span>
           </div>
-          <p style={{ margin: 0, color: "rgba(255,255,255,0.38)", fontSize: 13 }}>
-            {fr ? "+ mi-temps de 5 min" : "+ 5 min halftime"}
+          <p style={{ margin: "6px 0 0", color: "rgba(255,255,255,0.38)", fontSize: 13 }}>
+            {fr ? "6 × 10 minutes" : "6 × 10 minutes"}
+          </p>
+        </div>
+
+        {/* Fin de temps — règle clé */}
+        <div style={{ borderRadius: 16, padding: "18px 20px", background: `${LIME}08`, border: `1px solid ${LIME}22` }}>
+          <p style={{ margin: "0 0 6px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: LIME }}>
+            {fr ? "Fin du temps" : "End of time"}
+          </p>
+          <p style={{ margin: 0, color: "rgba(255,255,255,0.75)", fontSize: 14, lineHeight: 1.65 }}>
+            {fr
+              ? "L'équipe qui commence en défense doit terminer en attaque. À la fin du temps, on s'assure que l'équipe qui doit finir en attaque joue une séquence complète (minimum 3 retraits)."
+              : "The team that starts on defense must finish on offense. At time's end, the team that needs to finish on offense is guaranteed one complete sequence (minimum 3 outs)."}
           </p>
         </div>
       </div>
 
       {/* Info */}
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <InfoRow color={LIME} label={fr ? "Format" : "Format"} title={fr ? "2 périodes de 20 min" : "2 periods of 20 min"} desc={fr ? "La partie est divisée en deux périodes de 20 minutes avec une mi-temps de 5 minutes." : "The game is split into two 20-minute periods with a 5-minute halftime break."} />
+        <InfoRow color={LIME} label={fr ? "Format officiel" : "Official format"} title={fr ? "60 min — 6 × 10 min" : "60 min — 6 × 10 min"} desc={fr ? "Une partie officielle dure 60 minutes, divisée en 6 périodes de 10 minutes." : "An official game lasts 60 minutes, divided into 6 periods of 10 minutes."} />
         <InfoRow color={LIME} label={fr ? "Séquences" : "Sequences"} title={fr ? "16 sec en continu" : "16 sec non-stop"} desc={fr ? "Les séquences de 16 secondes s'enchaînent sans interruption jusqu'à la fin de chaque période." : "The 16-second sequences continue back-to-back until the end of each period."} />
-        <InfoRow color={LIME} label={fr ? "Score final" : "Final score"} title={fr ? "Points cumulés" : "Cumulated points"} desc={fr ? "L'équipe avec le plus de points après deux périodes remporte la partie." : "The team with the most points after two periods wins the game."} />
-        <InfoRow color={LIME} label={fr ? "Idéal pour" : "Best for"} title={fr ? "Championnats & événements" : "Championships & events"} desc={fr ? "Parfait pour les tournois, les championnats et les événements avec un horaire fixe." : "Perfect for tournaments, championships, and events with a fixed schedule."} />
+        <InfoRow color={LIME} label={fr ? "Équité" : "Fairness"} title={fr ? "Défense → Attaque garantie" : "Defense → Offense guaranteed"} desc={fr ? "L'équipe débutant en défense est assurée de terminer en attaque avec au moins une séquence complète." : "The team starting on defense is guaranteed to finish on offense with at least one full sequence."} />
+        <InfoRow color={LIME} label={fr ? "Score final" : "Final score"} title={fr ? "Points cumulés" : "Cumulated points"} desc={fr ? "L'équipe avec le plus de points après toutes les périodes remporte la partie." : "The team with the most points after all periods wins the game."} />
       </div>
 
       <style>{`@keyframes clockMin { to { transform-origin: 65px 65px; transform: rotate(360deg); } }`}</style>
@@ -68,22 +78,33 @@ function TempsContent({ fr }: { fr: boolean }) {
 }
 
 function MancheContent({ fr }: { fr: boolean }) {
-  const [score, setScore] = useState<[number, number]>([0, 0]);
-  const TARGET = 3;
-  const winner = score[0] >= TARGET ? 0 : score[1] >= TARGET ? 1 : null;
+  const [pts, setPts] = useState<[number, number]>([0, 0]);
+  const [manches, setManches] = useState<[number, number]>([0, 0]);
+  const TOTAL = 5;
+  const done = manches[0] >= TOTAL && manches[1] >= TOTAL;
+  const winner = done ? (pts[0] > pts[1] ? 0 : pts[0] < pts[1] ? 1 : -1) : null;
 
-  function add(team: 0 | 1) {
-    if (winner !== null) return;
-    setScore(s => { const n: [number, number] = [s[0], s[1]]; n[team]++; return n; });
+  function addManche(team: 0 | 1) {
+    if (manches[team] >= TOTAL) return;
+    setManches(s => { const n: [number, number] = [s[0], s[1]]; n[team]++; return n; });
   }
+
+  function addPt(team: 0 | 1) {
+    setPts(s => { const n: [number, number] = [s[0], s[1]]; n[team]++; return n; });
+  }
+
+  function reset() { setPts([0, 0]); setManches([0, 0]); }
 
   return (
     <>
-      {/* Visual: interactive scoreboard */}
+      {/* Visual */}
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ borderRadius: 20, padding: "clamp(24px,4vw,38px)", background: `${CYAN}0e`, border: `1px solid ${CYAN}28`, textAlign: "center" }}>
-          <p style={{ margin: "0 0 20px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: CYAN }}>
-            {fr ? "Option Manche — Meilleur de 5" : "Round option — Best of 5"}
+          <p style={{ margin: "0 0 4px", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: CYAN }}>
+            {fr ? "Option Manche" : "Round option"}
+          </p>
+          <p style={{ margin: "0 0 20px", color: "rgba(255,255,255,0.32)", fontSize: 12 }}>
+            {fr ? `${TOTAL} manches offensives chacun` : `${TOTAL} offensive rounds each`}
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 14, alignItems: "center", marginBottom: 20 }}>
@@ -92,16 +113,20 @@ function MancheContent({ fr }: { fr: boolean }) {
               <div style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,0.32)", marginBottom: 8 }}>
                 {fr ? "Équipe A" : "Team A"}
               </div>
-              <div style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 72, lineHeight: 1, color: winner === 0 ? LIME : "#fff", transition: "color 0.3s" }}>
-                {score[0]}
+              <div style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 64, lineHeight: 1, color: winner === 0 ? LIME : "#fff", transition: "color 0.3s" }}>
+                {pts[0]}
               </div>
-              <button
-                onClick={() => add(0)}
-                disabled={winner !== null}
-                style={{ marginTop: 10, padding: "7px 16px", borderRadius: 8, border: `1px solid ${LIME}40`, background: `${LIME}10`, color: LIME, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", cursor: winner !== null ? "default" : "pointer", opacity: winner !== null ? 0.35 : 1, transition: "opacity 0.2s" }}
-              >
-                + manche
-              </button>
+              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", fontFamily: "var(--font-barlow), sans-serif", margin: "2px 0 8px" }}>
+                {manches[0]}/{TOTAL} {fr ? "manches" : "rounds"}
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 5, alignItems: "center" }}>
+                <button onClick={() => addPt(0)} style={{ padding: "5px 14px", borderRadius: 8, border: `1px solid ${LIME}40`, background: `${LIME}10`, color: LIME, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}>
+                  + pt
+                </button>
+                <button onClick={() => addManche(0)} disabled={manches[0] >= TOTAL} style={{ padding: "5px 14px", borderRadius: 8, border: `1px solid rgba(255,255,255,0.12)`, background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.45)", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", cursor: manches[0] >= TOTAL ? "default" : "pointer", opacity: manches[0] >= TOTAL ? 0.3 : 1 }}>
+                  + manche
+                </button>
+              </div>
             </div>
 
             <div style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 20, color: "rgba(255,255,255,0.18)" }}>vs</div>
@@ -111,31 +136,35 @@ function MancheContent({ fr }: { fr: boolean }) {
               <div style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,0.32)", marginBottom: 8 }}>
                 {fr ? "Équipe B" : "Team B"}
               </div>
-              <div style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 72, lineHeight: 1, color: winner === 1 ? LIME : "#fff", transition: "color 0.3s" }}>
-                {score[1]}
+              <div style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 64, lineHeight: 1, color: winner === 1 ? LIME : "#fff", transition: "color 0.3s" }}>
+                {pts[1]}
               </div>
-              <button
-                onClick={() => add(1)}
-                disabled={winner !== null}
-                style={{ marginTop: 10, padding: "7px 16px", borderRadius: 8, border: `1px solid ${CYAN}40`, background: `${CYAN}10`, color: CYAN, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", cursor: winner !== null ? "default" : "pointer", opacity: winner !== null ? 0.35 : 1, transition: "opacity 0.2s" }}
-              >
-                + manche
-              </button>
+              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", fontFamily: "var(--font-barlow), sans-serif", margin: "2px 0 8px" }}>
+                {manches[1]}/{TOTAL} {fr ? "manches" : "rounds"}
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 5, alignItems: "center" }}>
+                <button onClick={() => addPt(1)} style={{ padding: "5px 14px", borderRadius: 8, border: `1px solid ${CYAN}40`, background: `${CYAN}10`, color: CYAN, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}>
+                  + pt
+                </button>
+                <button onClick={() => addManche(1)} disabled={manches[1] >= TOTAL} style={{ padding: "5px 14px", borderRadius: 8, border: `1px solid rgba(255,255,255,0.12)`, background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.45)", fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", cursor: manches[1] >= TOTAL ? "default" : "pointer", opacity: manches[1] >= TOTAL ? 0.3 : 1 }}>
+                  + manche
+                </button>
+              </div>
             </div>
           </div>
 
-          {winner !== null ? (
+          {done ? (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
               <div style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 15, color: LIME, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                {fr ? `Équipe ${winner === 0 ? "A" : "B"} gagne !` : `Team ${winner === 0 ? "A" : "B"} wins!`}
+                {winner === -1 ? (fr ? "Égalité !" : "Tie!") : (fr ? `Équipe ${winner === 0 ? "A" : "B"} gagne !` : `Team ${winner === 0 ? "A" : "B"} wins!`)}
               </div>
-              <button onClick={() => setScore([0, 0])} style={{ padding: "7px 20px", borderRadius: 8, border: `1px solid ${LIME}40`, background: `${LIME}10`, color: LIME, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}>
+              <button onClick={reset} style={{ padding: "7px 20px", borderRadius: 8, border: `1px solid ${LIME}40`, background: `${LIME}10`, color: LIME, fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}>
                 {fr ? "Rejouer" : "Replay"}
               </button>
             </div>
           ) : (
-            <p style={{ margin: 0, color: "rgba(255,255,255,0.28)", fontSize: 12 }}>
-              {fr ? "Premier à 3 manches gagne" : "First to 3 rounds wins"}
+            <p style={{ margin: 0, color: "rgba(255,255,255,0.25)", fontSize: 11 }}>
+              {fr ? "+ pt après chaque score · + manche après 3 retraits" : "+ pt after each score · + round after 3 outs"}
             </p>
           )}
         </div>
@@ -143,9 +172,9 @@ function MancheContent({ fr }: { fr: boolean }) {
 
       {/* Info */}
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <InfoRow color={CYAN} label={fr ? "Format" : "Format"} title={fr ? "Meilleur de 5 manches" : "Best of 5 rounds"} desc={fr ? "La partie se joue en manches. La première équipe à remporter 3 manches gagne la partie." : "The game is played in rounds. The first team to win 3 rounds wins the match."} />
-        <InfoRow color={CYAN} label={fr ? "Une manche" : "One round"} title={fr ? "3 retraits défensifs" : "3 defensive outs"} desc={fr ? "Une manche se termine quand l'équipe défensive cumule 3 retraits. Les équipes pivotent." : "A round ends when the defensive team accumulates 3 outs. Teams swap roles."} />
-        <InfoRow color={CYAN} label={fr ? "Avantage" : "Advantage"} title={fr ? "Pas de limite de temps" : "No time limit"} desc={fr ? "Idéal pour les contextes où le temps est flexible — chaque manche se termine naturellement." : "Ideal for flexible time contexts — each round ends naturally at its own pace."} />
+        <InfoRow color={CYAN} label={fr ? "Format officiel" : "Official format"} title={fr ? "30 manches — 6 × 5" : "30 rounds — 6 × 5"} desc={fr ? "Une partie officielle se joue en 30 manches, soit 6 blocs de 5 manches offensives par équipe." : "An official game is played in 30 rounds — 6 blocks of 5 offensive rounds per team."} />
+        <InfoRow color={CYAN} label={fr ? "Équité" : "Fairness"} title={fr ? "Même nb de manches offensives" : "Equal offensive rounds"} desc={fr ? "Chaque équipe reçoit le même nombre de manches en attaque. L'équité est garantie peu importe qui commence." : "Each team gets the same number of offensive rounds. Fairness is guaranteed regardless of who starts."} />
+        <InfoRow color={CYAN} label={fr ? "Une manche" : "One round"} title={fr ? "3 retraits défensifs" : "3 defensive outs"} desc={fr ? "Une manche se termine quand l'équipe défensive cumule 3 retraits. Les équipes pivotent ensuite." : "A round ends when the defensive team accumulates 3 outs. Teams then swap roles."} />
         <InfoRow color={CYAN} label={fr ? "Idéal pour" : "Best for"} title={fr ? "Cliniques & écoles" : "Clinics & schools"} desc={fr ? "Parfait pour les cours d'éducation physique, les cliniques et les entraînements d'équipe." : "Perfect for physical education classes, clinics, and team training sessions."} />
       </div>
     </>
