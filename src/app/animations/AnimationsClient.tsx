@@ -170,9 +170,11 @@ function AnimationsInner() {
   const fr = lang === "fr";
   const [active, setActive] = useState<Key>("regles");
   const tabsRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const [iconScales, setIconScales] = useState<Record<string, number>>(() =>
     Object.fromEntries(SECTIONS.map((s, i) => [s.key, i === 0 ? 1 : 0]))
   );
+  const [iconZoom, setIconZoom] = useState(1.0);
 
   /* Compute per-icon scale based on distance from container center */
   const updateScales = useCallback(() => {
@@ -206,6 +208,24 @@ function AnimationsInner() {
       window.removeEventListener("resize", updateScales);
     };
   }, [updateScales]);
+
+  /* Scroll-driven zoom for the active tab icon: 1.0 → 1.5 → 1.0 as panel scrolls through viewport */
+  useEffect(() => {
+    setIconZoom(1.0);
+    function onScroll() {
+      const panel = panelRef.current;
+      if (!panel) return;
+      const rect = panel.getBoundingClientRect();
+      const viewH = window.innerHeight;
+      // t: 0 when panel enters bottom of viewport, 1 when panel exits top
+      const t = (viewH - rect.top) / (rect.height + viewH);
+      const scale = 1.0 + 0.5 * Math.sin(Math.max(0, Math.min(1, t)) * Math.PI);
+      setIconZoom(scale);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [active]);
 
   function switchTab(key: Key) {
     if (key === active) return;
@@ -274,8 +294,8 @@ function AnimationsInner() {
       >
         {SECTIONS.map(({ key, fr: labelFr, en: labelEn }) => {
           const on = active === key;
-          /* active tab uses fixed 1.6x; others use scroll-proximity scale */
-          const iconScale = on ? 1.6 : Math.min(iconScales[key] ?? 0.7, 0.88);
+          /* active tab: scroll-driven 1.0→1.5→1.0; others: proximity scale */
+          const iconScale = on ? iconZoom : Math.min(iconScales[key] ?? 0.7, 0.88);
           const dimmed = !on;
           return (
             <button
@@ -316,7 +336,7 @@ function AnimationsInner() {
                 justifyContent: "center",
                 transform: `scale(${iconScale})`,
                 filter: on ? `drop-shadow(0 0 8px ${LIME}aa)` : "none",
-                transition: "transform 0.32s cubic-bezier(0.34,1.4,0.6,1), filter 0.28s ease, opacity 0.22s ease",
+                transition: "transform 0.12s ease-out, filter 0.28s ease, opacity 0.22s ease",
                 willChange: "transform",
               }}>
                 {SECTION_ICONS[key](on)}
@@ -330,7 +350,7 @@ function AnimationsInner() {
       </div>
 
       {/* ── Panel ── */}
-      <div key={active} className="panel-root" style={{ animation: "panelIn 0.35s cubic-bezier(0.16,1,0.3,1) both" }}>
+      <div key={active} ref={panelRef} className="panel-root" style={{ animation: "panelIn 0.35s cubic-bezier(0.16,1,0.3,1) both" }}>
         <Panel active={active} />
       </div>
 
