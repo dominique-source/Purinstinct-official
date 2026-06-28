@@ -175,6 +175,39 @@ function AnimationsInner() {
     Object.fromEntries(SECTIONS.map((s, i) => [s.key, i === 0 ? 1 : 0]))
   );
   const [iconZoom, setIconZoom] = useState(1.0);
+  const [mouseScales, setMouseScales] = useState<Record<string, number>>({});
+
+  /* Mouse proximity zoom — dock-style: icons grow as cursor approaches */
+  useEffect(() => {
+    const bar = tabsRef.current;
+    if (!bar) return;
+    const INFLUENCE = 130; // px radius of effect
+    const MAX_BOOST = 0.9; // adds up to 90% → max scale 1.9×
+
+    function onMouseMove(e: MouseEvent) {
+      const buttons = bar.querySelectorAll<HTMLButtonElement>("button");
+      const next: Record<string, number> = {};
+      buttons.forEach((btn) => {
+        const key = btn.dataset.key!;
+        const r = btn.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+        const t = Math.max(0, 1 - dist / INFLUENCE);
+        next[key] = 1 + MAX_BOOST * t * t; // quadratic falloff
+      });
+      setMouseScales(next);
+    }
+
+    function onMouseLeave() { setMouseScales({}); }
+
+    bar.addEventListener("mousemove", onMouseMove);
+    bar.addEventListener("mouseleave", onMouseLeave);
+    return () => {
+      bar.removeEventListener("mousemove", onMouseMove);
+      bar.removeEventListener("mouseleave", onMouseLeave);
+    };
+  }, []);
 
   /* Compute per-icon scale based on distance from container center */
   const updateScales = useCallback(() => {
@@ -294,8 +327,10 @@ function AnimationsInner() {
       >
         {SECTIONS.map(({ key, fr: labelFr, en: labelEn }) => {
           const on = active === key;
-          /* active tab: scroll-driven 1.0→1.5→1.0; others: proximity scale */
-          const iconScale = on ? iconZoom : Math.min(iconScales[key] ?? 0.7, 0.88);
+          /* mouse overrides scroll scales when cursor is in the tab bar */
+          const hasMouse = Object.keys(mouseScales).length > 0;
+          const baseScale = on ? iconZoom : Math.min(iconScales[key] ?? 0.7, 0.88);
+          const iconScale = hasMouse ? (mouseScales[key] ?? 1.0) : baseScale;
           const dimmed = !on;
           return (
             <button
@@ -336,7 +371,7 @@ function AnimationsInner() {
                 justifyContent: "center",
                 transform: `scale(${iconScale})`,
                 filter: on ? `drop-shadow(0 0 8px ${LIME}aa)` : "none",
-                transition: "transform 0.12s ease-out, filter 0.28s ease, opacity 0.22s ease",
+                transition: "transform 0.08s cubic-bezier(0.34,1.4,0.6,1), filter 0.22s ease, opacity 0.22s ease",
                 willChange: "transform",
               }}>
                 {SECTION_ICONS[key](on)}
