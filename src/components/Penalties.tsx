@@ -182,7 +182,7 @@ export default function Penalties() {
       ref={sectionRef}
       style={{
         background: "#0d0f1c",
-        padding: "clamp(80px,10vw,130px) clamp(16px,4vw,40px)",
+        padding: "clamp(36px,4vw,56px) clamp(16px,4vw,40px)",
         position: "relative",
         overflow: "hidden",
       }}

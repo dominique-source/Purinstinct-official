@@ -50,7 +50,7 @@ export default function TransitionPenalties() {
       id="transition-penalties"
       style={{
         background: "#0b0d18",
-        padding: "clamp(80px,10vw,130px) clamp(16px,4vw,40px)",
+        padding: "clamp(36px,4vw,56px) clamp(16px,4vw,40px)",
         position: "relative",
         overflow: "hidden",
       }}

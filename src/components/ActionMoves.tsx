@@ -263,7 +263,7 @@ export default function ActionMoves() {
       id="moves"
       style={{
         background: "#06070f",
-        padding: "clamp(80px, 10vw, 130px) clamp(16px, 4vw, 40px) clamp(60px, 8vw, 100px)",
+        padding: "clamp(36px,4vw,56px) clamp(16px, 4vw, 40px) clamp(60px, 8vw, 100px)",
         position: "relative",
       }}
     >

@@ -189,7 +189,7 @@ export default function GameDuration() {
   return (
     <section
       id="duree"
-      style={{ background: "#08090f", padding: "clamp(80px,10vw,130px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}
+      style={{ background: "#08090f", padding: "clamp(36px,4vw,56px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}
     >
       <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", background: `radial-gradient(ellipse 45% 50% at 70% 35%, ${accent}0e 0%, transparent 65%)`, transition: "background 0.5s ease" }} />
 

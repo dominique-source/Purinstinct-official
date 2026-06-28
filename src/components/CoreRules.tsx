@@ -160,7 +160,7 @@ export default function CoreRules({ noAnimate }: { noAnimate?: boolean }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       className={noAnimate ? "cr-no-anim" : undefined}
-      style={{ background: "#0b0d18", padding: "clamp(80px,10vw,130px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}
+      style={{ background: "#0b0d18", padding: "clamp(36px,4vw,56px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}
     >
       {/* ambient glow follows active accent */}
       <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", background: `radial-gradient(ellipse 50% 55% at 70% 45%, ${LIME}14 0%, transparent 65%)`, transition: "opacity 0.6s ease" }} />

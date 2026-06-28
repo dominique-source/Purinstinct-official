@@ -70,7 +70,7 @@ export default function Timer16s() {
   return (
     <section
       id="chrono"
-      style={{ background: "#090b14", padding: "clamp(80px,10vw,130px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}
+      style={{ background: "#090b14", padding: "clamp(36px,4vw,56px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}
     >
       <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", background: `radial-gradient(ellipse 50% 55% at 65% 35%, ${accent}10 0%, transparent 65%)`, transition: "background 0.5s ease" }} />
 

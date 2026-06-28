@@ -122,7 +122,7 @@ export default function PointSystem() {
   return (
     <section
       id="points"
-      style={{ background: "#0c0e1a", padding: "clamp(80px,10vw,130px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}
+      style={{ background: "#0c0e1a", padding: "clamp(36px,4vw,56px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}
     >
       <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", background: `radial-gradient(ellipse 45% 50% at 30% 40%, ${tier.color}0e 0%, transparent 65%)`, transition: "background 0.5s ease" }} />
 

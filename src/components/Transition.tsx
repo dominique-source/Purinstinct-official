@@ -103,7 +103,7 @@ export default function Transition({ noAnimate }: { noAnimate?: boolean }) {
   const counts = ["3", "2", "4", "3"];
 
   return (
-    <section id="transition" className={noAnimate ? "tr-no-anim" : undefined} style={{ background: "#0b0d18", padding: "clamp(80px,10vw,130px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}>
+    <section id="transition" className={noAnimate ? "tr-no-anim" : undefined} style={{ background: "#0b0d18", padding: "clamp(36px,4vw,56px) clamp(16px,4vw,40px)", position: "relative", overflow: "hidden" }}>
       <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse 50% 50% at 30% 40%, rgba(56,189,248,0.10) 0%, transparent 65%)" }} />
 
       <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
