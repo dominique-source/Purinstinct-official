@@ -175,37 +175,57 @@ function AnimationsInner() {
     Object.fromEntries(SECTIONS.map((s, i) => [s.key, i === 0 ? 1 : 0]))
   );
   const [iconZoom, setIconZoom] = useState(1.0);
-  const [mouseScales, setMouseScales] = useState<Record<string, number>>({});
 
-  /* Mouse proximity zoom — dock-style: icons grow as cursor approaches */
+  /* Dock-style mouse proximity zoom — direct DOM + RAF, zero React re-renders */
   useEffect(() => {
     const bar = tabsRef.current;
     if (!bar) return;
-    const INFLUENCE = 130; // px radius of effect
-    const MAX_BOOST = 0.9; // adds up to 90% → max scale 1.9×
+    const INFLUENCE = 160;
+    const BOOST = 1.2; // scale 1.0 → 2.2 at center
 
-    function onMouseMove(e: MouseEvent) {
-      const buttons = bar.querySelectorAll<HTMLButtonElement>("button");
-      const next: Record<string, number> = {};
-      buttons.forEach((btn) => {
-        const key = btn.dataset.key!;
-        const r = btn.getBoundingClientRect();
+    let mx = -9999, my = -9999;
+    let raf = 0;
+    let active = false;
+
+    function tick() {
+      const spans = bar.querySelectorAll<HTMLSpanElement>("span[data-icon-span]");
+      spans.forEach((span) => {
+        const r = span.getBoundingClientRect();
         const cx = r.left + r.width / 2;
         const cy = r.top + r.height / 2;
-        const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+        const dist = Math.hypot(mx - cx, my - cy);
         const t = Math.max(0, 1 - dist / INFLUENCE);
-        next[key] = 1 + MAX_BOOST * t * t; // quadratic falloff
+        const scale = 1 + BOOST * t * t;
+        span.style.transform = `scale(${scale})`;
+        span.style.filter = t > 0.15 ? `drop-shadow(0 0 ${8 * t}px ${LIME}cc)` : "none";
       });
-      setMouseScales(next);
+      if (active) raf = requestAnimationFrame(tick);
     }
 
-    function onMouseLeave() { setMouseScales({}); }
+    function onMouseMove(e: MouseEvent) { mx = e.clientX; my = e.clientY; }
+
+    function onMouseEnter() {
+      active = true;
+      raf = requestAnimationFrame(tick);
+    }
+
+    function onMouseLeave() {
+      active = false;
+      cancelAnimationFrame(raf);
+      bar.querySelectorAll<HTMLSpanElement>("span[data-icon-span]").forEach((span) => {
+        span.style.transform = "";
+        span.style.filter = "";
+      });
+    }
 
     bar.addEventListener("mousemove", onMouseMove);
+    bar.addEventListener("mouseenter", onMouseEnter);
     bar.addEventListener("mouseleave", onMouseLeave);
     return () => {
       bar.removeEventListener("mousemove", onMouseMove);
+      bar.removeEventListener("mouseenter", onMouseEnter);
       bar.removeEventListener("mouseleave", onMouseLeave);
+      cancelAnimationFrame(raf);
     };
   }, []);
 
@@ -327,10 +347,8 @@ function AnimationsInner() {
       >
         {SECTIONS.map(({ key, fr: labelFr, en: labelEn }) => {
           const on = active === key;
-          /* mouse overrides scroll scales when cursor is in the tab bar */
-          const hasMouse = Object.keys(mouseScales).length > 0;
-          const baseScale = on ? iconZoom : Math.min(iconScales[key] ?? 0.7, 0.88);
-          const iconScale = hasMouse ? (mouseScales[key] ?? 1.0) : baseScale;
+          /* scroll-driven scale (mouse proximity handled via direct DOM in RAF loop) */
+          const iconScale = on ? iconZoom : Math.min(iconScales[key] ?? 0.7, 0.88);
           const dimmed = !on;
           return (
             <button
@@ -365,15 +383,17 @@ function AnimationsInner() {
                 opacity: on ? 1 : 0.55 + (iconScales[key] ?? 0.7) * 0.45,
               } as React.CSSProperties}
             >
-              <span style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transform: `scale(${iconScale})`,
-                filter: on ? `drop-shadow(0 0 8px ${LIME}aa)` : "none",
-                transition: "transform 0.08s cubic-bezier(0.34,1.4,0.6,1), filter 0.22s ease, opacity 0.22s ease",
-                willChange: "transform",
-              }}>
+              <span
+                data-icon-span=""
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transform: `scale(${iconScale})`,
+                  filter: on ? `drop-shadow(0 0 8px ${LIME}aa)` : "none",
+                  transition: "transform 0.18s cubic-bezier(0.34,1.4,0.6,1), filter 0.18s ease",
+                  willChange: "transform",
+                }}>
                 {SECTION_ICONS[key](on)}
               </span>
               <span style={{ lineHeight: 1 }}>
