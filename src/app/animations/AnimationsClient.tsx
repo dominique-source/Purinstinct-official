@@ -176,12 +176,12 @@ function AnimationsInner() {
   );
   const [iconZoom, setIconZoom] = useState(1.0);
 
-  /* Dock-style mouse proximity zoom — direct DOM + RAF, zero React re-renders */
+  /* Dock-style mouse proximity glow — full button: scale + lime glow + text color */
   useEffect(() => {
     const bar = tabsRef.current;
     if (!bar) return;
-    const INFLUENCE = 160;
-    const BOOST = 1.2; // scale 1.0 → 2.2 at center
+    const INFLUENCE = 180;
+    const BOOST = 0.38; // scale 1.0 → 1.38 at center
 
     let mx = -9999, my = -9999;
     let raf = 0;
@@ -189,16 +189,19 @@ function AnimationsInner() {
 
     function tick() {
       if (!bar) return;
-      const spans = bar.querySelectorAll<HTMLSpanElement>("span[data-icon-span]");
-      spans.forEach((span) => {
-        const r = span.getBoundingClientRect();
+      const btns = bar.querySelectorAll<HTMLButtonElement>("button[data-key]");
+      btns.forEach((btn) => {
+        const r = btn.getBoundingClientRect();
         const cx = r.left + r.width / 2;
         const cy = r.top + r.height / 2;
         const dist = Math.hypot(mx - cx, my - cy);
         const t = Math.max(0, 1 - dist / INFLUENCE);
-        const scale = 1 + BOOST * t * t;
-        span.style.transform = `scale(${scale})`;
-        span.style.filter = t > 0.15 ? `drop-shadow(0 0 ${8 * t}px ${LIME}cc)` : "none";
+        const t2 = t * t;
+        btn.style.transform = t > 0.05 ? `scale(${1 + BOOST * t2})` : "";
+        btn.style.filter = t > 0.1 ? `drop-shadow(0 0 ${22 * t}px ${LIME}bb)` : "";
+        btn.style.color = t > 0.1 ? `rgba(132,204,22,${0.4 + 0.6 * t})` : "";
+        btn.style.background = t > 0.1 ? `rgba(132,204,22,${0.1 * t2})` : "";
+        btn.style.borderColor = t > 0.1 ? `rgba(132,204,22,${0.7 * t})` : "";
       });
       if (active) raf = requestAnimationFrame(tick);
     }
@@ -214,9 +217,12 @@ function AnimationsInner() {
       active = false;
       cancelAnimationFrame(raf);
       if (!bar) return;
-      bar.querySelectorAll<HTMLSpanElement>("span[data-icon-span]").forEach((span) => {
-        span.style.transform = "";
-        span.style.filter = "";
+      bar.querySelectorAll<HTMLButtonElement>("button[data-key]").forEach((btn) => {
+        btn.style.transform = "";
+        btn.style.filter = "";
+        btn.style.color = "";
+        btn.style.background = "";
+        btn.style.borderColor = "";
       });
     }
 
