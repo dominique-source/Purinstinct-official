@@ -230,7 +230,7 @@ function AnimationsInner() {
   function switchTab(key: Key) {
     if (key === active) return;
     setActive(key);
-    window.scrollTo({ top: TOP_H + TAB_H, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
     /* Scroll the clicked tab toward the center of the bar */
     const bar = tabsRef.current;
     const btn = bar?.querySelector<HTMLButtonElement>(`[data-key="${key}"]`);
