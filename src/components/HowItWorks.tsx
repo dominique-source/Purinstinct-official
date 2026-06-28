@@ -1,39 +1,18 @@
 "use client";
-import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
 
 const STEP_PHOTOS = ["/images/sprint.jpg", "/images/gameplay-hold.jpg", "/images/gameplay-tag.jpg"];
 const STEP_POSITIONS = ["center 20%", "center 40%", "center 30%"];
 
-function useReveal() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { el.style.opacity = "1"; el.style.transform = "translateY(0)"; } },
-      { threshold: 0.15 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return ref;
-}
-
-function StepCard({ photo, pos, num, title, body, delay }: { photo: string; pos: string; num: string; title: string; body: string; delay: number }) {
-  const ref = useReveal();
+function StepCard({ photo, pos, num, title, body }: { photo: string; pos: string; num: string; title: string; body: string; delay: number }) {
   return (
     <div
-      ref={ref}
       style={{
         position: "relative",
         borderRadius: 20,
         overflow: "hidden",
         border: "1px solid rgba(255,255,255,0.07)",
-        opacity: 0,
-        transform: "translateY(32px)",
-        transition: `opacity 0.7s ease ${delay}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
         cursor: "default",
         minHeight: 340,
         display: "flex",
@@ -43,7 +22,7 @@ function StepCard({ photo, pos, num, title, body, delay }: { photo: string; pos:
     >
       {/* Photo */}
       <div
-        style={{ position: "absolute", inset: 0, transition: "transform 0.6s cubic-bezier(0.16,1,0.3,1)" }}
+        style={{ position: "absolute", inset: 0 }}
         className="step-photo-wrap"
       >
         <Image src={photo} alt={title} fill sizes="(max-width:768px) 100vw, 33vw" style={{ objectFit: "cover", objectPosition: pos }} />
@@ -74,26 +53,13 @@ function StepCard({ photo, pos, num, title, body, delay }: { photo: string; pos:
 
 export default function HowItWorks() {
   const { t } = useLang();
-  const headerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = headerRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { el.style.opacity = "1"; el.style.transform = "translateY(0)"; } },
-      { threshold: 0.2 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
 
   return (
     <section id="how" style={{ padding: "110px 24px", background: "#0d1117" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         {/* Header */}
         <div
-          ref={headerRef}
-          style={{ textAlign: "center", marginBottom: 64, opacity: 0, transform: "translateY(24px)", transition: "opacity 0.7s ease, transform 0.7s cubic-bezier(0.16,1,0.3,1)" }}
+          style={{ textAlign: "center", marginBottom: 64 }}
         >
           <span className="section-label" style={{ display: "block", marginBottom: 16 }}>{t.what.label}</span>
           <h2 style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: "clamp(36px, 5.5vw, 64px)", lineHeight: 1.0, textTransform: "uppercase", color: "#fff", whiteSpace: "pre-line", marginBottom: 16 }}>

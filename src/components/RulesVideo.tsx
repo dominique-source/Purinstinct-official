@@ -1,21 +1,8 @@
 "use client";
-import { useEffect, useRef } from "react";
 import { useLang } from "@/lib/i18n";
 
 export default function RulesVideo() {
   const { t, lang } = useLang();
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { el.style.opacity = "1"; el.style.transform = "translateY(0)"; } },
-      { threshold: 0.15 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
 
   return (
     <section id="rules" style={{ padding: "120px 24px", background: "#06070f", position: "relative", overflow: "hidden" }}>
@@ -35,11 +22,8 @@ export default function RulesVideo() {
       </span>
 
       <div
-        ref={ref}
         style={{
           maxWidth: 900, margin: "0 auto", position: "relative", textAlign: "center",
-          opacity: 0, transform: "translateY(32px)",
-          transition: "opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
         <span className="section-label" style={{ display: "inline-block", marginBottom: 22 }}>{t.rules.label}</span>

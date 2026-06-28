@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
 
@@ -39,40 +39,6 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
 }) {
   const isAlt = idx % 2 === 1;
   const cardRef = useRef<HTMLDivElement>(null);
-  const parallaxRef = useRef<HTMLDivElement>(null);
-  const [vis, setVis] = useState(false);
-  const rafRef = useRef(false);
-  const delay = idx * 0.09;
-
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) setVis(true);
-    }, { threshold: 0.1 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  const onScroll = useCallback(() => {
-    if (rafRef.current) return;
-    rafRef.current = true;
-    requestAnimationFrame(() => {
-      rafRef.current = false;
-      const card = cardRef.current;
-      const pr = parallaxRef.current;
-      if (!card || !pr) return;
-      const rect = card.getBoundingClientRect();
-      const progress = (window.innerHeight / 2 - (rect.top + rect.height / 2)) / window.innerHeight;
-      pr.style.transform = `translateY(${progress * 26}px)`;
-    });
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [onScroll]);
 
   return (
     <div
@@ -84,9 +50,8 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
         background: "#0c0d17",
         border: `1px solid ${accent}22`,
         boxShadow: "0 24px 72px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03)",
-        opacity: vis ? 1 : 0,
-        transform: vis ? "translateY(0)" : "translateY(52px)",
-        transition: `opacity 0.85s ease ${delay}s, transform 0.85s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+        opacity: 1,
+        transform: "none",
       }}
     >
       {/* Radial accent glow */}
@@ -150,7 +115,7 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
               }}>{content.tag}</span>
             </div>
 
-            {/* Title — slides in from the side */}
+            {/* Title */}
             <h3 style={{
               fontFamily: "var(--font-barlow), sans-serif",
               fontWeight: 900,
@@ -160,9 +125,8 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
               color: "#fff",
               letterSpacing: "-0.02em",
               marginBottom: 22,
-              opacity: vis ? 1 : 0,
-              transform: vis ? "translateX(0)" : `translateX(${isAlt ? "24px" : "-24px"})`,
-              transition: `opacity 0.7s ease ${delay + 0.14}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay + 0.14}s`,
+              opacity: 1,
+              transform: "none",
             }}>{content.title}</h3>
 
             {/* Accent rule */}
@@ -177,9 +141,8 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
               color: "rgba(255,255,255,0.5)",
               fontSize: "clamp(14px, 1.3vw, 15.5px)",
               lineHeight: 1.78, maxWidth: 340,
-              opacity: vis ? 1 : 0,
-              transform: vis ? "translateY(0)" : "translateY(10px)",
-              transition: `opacity 0.6s ease ${delay + 0.26}s, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${delay + 0.26}s`,
+              opacity: 1,
+              transform: "none",
             }}>{content.sub}</p>
 
             {/* Special power callout */}
@@ -189,9 +152,8 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
                 marginLeft: 4,
                 paddingLeft: 12,
                 borderLeft: "2px solid #38bdf855",
-                opacity: vis ? 1 : 0,
-                transform: vis ? "translateY(0)" : "translateY(10px)",
-                transition: `opacity 0.6s ease ${delay + 0.36}s, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${delay + 0.36}s`,
+                opacity: 1,
+                transform: "none",
               }}>
                 <p style={{
                   color: "#38bdf8cc",
@@ -208,30 +170,26 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
 
         {/* ── Image column ── */}
         <div className="amoves-img" style={{ position: "relative", overflow: "hidden", minHeight: 280 }}>
-          {/* Parallax layer — only Y, set by JS */}
-          <div ref={parallaxRef} style={{ position: "absolute", inset: "0 0 -5% 0", willChange: "transform" }}>
-            {/* Reveal layer — X slide + opacity, CSS transition */}
-            <div style={{
-              position: "absolute", inset: 0,
-              opacity: vis ? 1 : 0,
-              transform: vis ? "translateX(0)" : `translateX(${isAlt ? "-32px" : "32px"})`,
-              transition: `opacity 0.9s ease ${delay + 0.1}s, transform 0.9s cubic-bezier(0.16,1,0.3,1) ${delay + 0.1}s`,
-            }}>
-              <Image
-                src={athlete}
-                alt={content.title}
-                fill
-                style={{
-                  objectFit: "contain",
-                  objectPosition: "center 85%",
-                  transform: `scale(${imgScale})`,
-                  transformOrigin: "center 85%",
-                  filter: "drop-shadow(0 12px 32px rgba(0,0,0,0.85))",
-                }}
-                sizes="(max-width: 768px) 92vw, 56vw"
-                priority={idx === 0}
-              />
-            </div>
+          {/* Image reveal div */}
+          <div style={{
+            position: "absolute", inset: 0,
+            opacity: 1,
+            transform: "none",
+          }}>
+            <Image
+              src={athlete}
+              alt={content.title}
+              fill
+              style={{
+                objectFit: "contain",
+                objectPosition: "center 85%",
+                transform: `scale(${imgScale})`,
+                transformOrigin: "center 85%",
+                filter: "drop-shadow(0 12px 32px rgba(0,0,0,0.85))",
+              }}
+              sizes="(max-width: 768px) 92vw, 56vw"
+              priority={idx === 0}
+            />
           </div>
         </div>
 
@@ -244,19 +202,6 @@ export default function ActionMoves() {
   const { t } = useLang();
   const moves = t.moves.items as unknown as MoveContent[];
   const [line1, line2] = t.moves.title.split("\n");
-
-  const headerRef = useRef<HTMLDivElement>(null);
-  const [headerIn, setHeaderIn] = useState(false);
-
-  useEffect(() => {
-    const el = headerRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) setHeaderIn(true);
-    }, { threshold: 0.2 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
 
   return (
     <section
@@ -276,11 +221,10 @@ export default function ActionMoves() {
       }} />
 
       {/* Section header */}
-      <div ref={headerRef} style={{
+      <div style={{
         textAlign: "center", maxWidth: 560, margin: "0 auto clamp(44px, 6vw, 68px)",
-        opacity: headerIn ? 1 : 0,
-        transform: headerIn ? "translateY(0)" : "translateY(28px)",
-        transition: "opacity 0.75s ease, transform 0.75s cubic-bezier(0.16,1,0.3,1)",
+        opacity: 1,
+        transform: "none",
       }}>
         <span className="section-label" style={{ display: "inline-block", marginBottom: 16 }}>
           {t.moves.label}
@@ -320,9 +264,6 @@ export default function ActionMoves() {
           .amoves-grid { grid-template-columns: 1fr !important; min-height: auto !important; }
           .amoves-text { order: 0 !important; }
           .amoves-img  { order: 1 !important; min-height: 220px; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .amoves-grid * { transition: none !important; animation: none !important; }
         }
       `}</style>
     </section>

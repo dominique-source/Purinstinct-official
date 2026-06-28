@@ -114,7 +114,6 @@ export default function GameLevels() {
 
   const [mode, setMode] = useState<"pinned" | "native">("pinned");
   const [active, setActive] = useState(0);
-  const [headerRevealed, setHeaderRevealed] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -138,19 +137,6 @@ export default function GameLevels() {
     };
   }, []);
 
-  /* Header reveal — re-run when `mode` changes so the observer attaches
-     once the shared Header (mobile/native branch) is actually in the DOM */
-  useEffect(() => {
-    const el = headerRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setHeaderRevealed(true); },
-      { threshold: 0.2 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [mode]);
-
   /* ── Pinned horizontal scroll driver ── */
   const onScroll = useCallback(() => {
     if (rafPending.current) return;
@@ -171,17 +157,6 @@ export default function GameLevels() {
       track.style.transform = `translate3d(${-x}px,0,0)`;
 
       if (fillRef.current) fillRef.current.style.width = `${progress * 100}%`;
-
-      // Depth: scale + opacity per panel based on distance from viewport center
-      for (let i = 0; i < n; i++) {
-        const panel = panelRefs.current[i];
-        if (!panel) continue;
-        const d = Math.abs(i * vw - x) / vw; // 0 = centered
-        const close = Math.max(0, 1 - d);
-        panel.style.opacity = String(0.32 + 0.68 * close);
-        const inner = panel.firstElementChild as HTMLElement | null;
-        if (inner) inner.style.transform = `scale(${0.93 + 0.07 * close})`;
-      }
 
       const idx = Math.round(progress * (n - 1));
       if (idx !== lastIdx.current) {
@@ -222,9 +197,8 @@ export default function GameLevels() {
         maxWidth: 560,
         margin: "0 auto",
         padding: "0 24px",
-        opacity: headerRevealed ? 1 : 0,
-        transform: headerRevealed ? "translateY(0)" : "translateY(26px)",
-        transition: "opacity 0.75s ease, transform 0.75s cubic-bezier(0.16,1,0.3,1)",
+        opacity: 1,
+        transform: "none",
       }}
     >
       <span className="section-label" style={{ display: "inline-block", marginBottom: 18 }}>
@@ -328,7 +302,6 @@ export default function GameLevels() {
                       gap: 56,
                       alignItems: "center",
                       willChange: "transform",
-                      transition: "transform 0.1s linear",
                     }}
                   >
                     {/* Left: text + watermark */}
@@ -459,7 +432,6 @@ export default function GameLevels() {
                         borderRadius: "50%",
                         marginTop: -3,
                         background: i <= active ? LIME : "rgba(255,255,255,0.2)",
-                        transition: "background 0.3s ease",
                       }}
                     />
                   ))}
@@ -565,7 +537,6 @@ export default function GameLevels() {
                   height: 8,
                   borderRadius: 4,
                   background: i === active ? LIME : "rgba(255,255,255,0.18)",
-                  transition: "width 0.3s cubic-bezier(0.16,1,0.3,1), background 0.3s ease",
                 }}
               />
             ))}

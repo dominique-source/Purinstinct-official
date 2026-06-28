@@ -364,14 +364,15 @@ function AnimationsInner() {
               data-key={key}
               onClick={() => switchTab(key)}
               aria-pressed={on}
+              className={on ? "tab-active-pulse" : undefined}
               style={{
                 flex: "1 0 auto",
                 minWidth: 72,
                 padding: "0 clamp(10px,1.8vw,20px)",
                 height: "100%",
-                border: "none",
-                borderBottom: `2.5px solid ${on ? LIME : "transparent"}`,
-                background: on ? "rgba(132,204,22,0.06)" : "transparent",
+                border: on ? `1.5px solid ${LIME}` : "none",
+                borderBottom: on ? `2.5px solid ${LIME}` : "2.5px solid transparent",
+                background: on ? "rgba(132,204,22,0.08)" : "transparent",
                 borderRadius: "4px 4px 0 0",
                 color: on ? LIME : `rgba(255,255,255,${dimmed ? 0.28 : 0.45})`,
                 fontFamily: "var(--font-barlow), sans-serif",

@@ -1,22 +1,10 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useLang } from "@/lib/i18n";
 
 export default function Contact() {
   const { t } = useLang();
-  const ref = useRef<HTMLDivElement>(null);
   const [sent, setSent] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { el.style.opacity = "1"; el.style.transform = "translateY(0)"; } },
-      { threshold: 0.15 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,7 +26,6 @@ export default function Contact() {
     color: "#fff",
     fontSize: 15,
     outline: "none",
-    transition: "border-color 0.2s",
     fontFamily: "var(--font-dm), sans-serif",
   };
 
@@ -48,12 +35,9 @@ export default function Contact() {
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 50% 50% at 18% 30%, rgba(132,204,22,0.07) 0%, transparent 60%)", pointerEvents: "none" }} />
 
       <div
-        ref={ref}
         style={{
           maxWidth: 1000, margin: "0 auto", position: "relative",
           display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 48, alignItems: "start",
-          opacity: 0, transform: "translateY(28px)",
-          transition: "opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
         {/* Left — info */}

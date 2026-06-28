@@ -1,21 +1,9 @@
 "use client";
-import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
 
 export default function Hero() {
   const { t } = useLang();
-  const bgRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (bgRef.current) {
-        bgRef.current.style.transform = `translateY(${window.scrollY * 0.38}px)`;
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <section
@@ -34,11 +22,9 @@ export default function Hero() {
     >
       {/* Parallax photo */}
       <div
-        ref={bgRef}
         style={{
           position: "absolute",
           inset: "-20% 0",
-          willChange: "transform",
           zIndex: 0,
         }}
       >
@@ -91,7 +77,6 @@ export default function Hero() {
       <div style={{ position: "relative", zIndex: 3, maxWidth: 860, width: "100%" }}>
         {/* Headline */}
         <h1
-          className="anim-fade-up delay-100"
           style={{
             fontFamily: "var(--font-barlow), sans-serif",
             fontWeight: 900,
@@ -111,7 +96,6 @@ export default function Hero() {
 
         {/* Sub */}
         <p
-          className="anim-fade-up delay-200"
           style={{
             fontSize: "clamp(16px, 2vw, 19px)",
             color: "rgba(255,255,255,0.7)",
@@ -126,7 +110,6 @@ export default function Hero() {
 
         {/* CTAs */}
         <div
-          className="anim-fade-up delay-300"
           style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}
         >
           <a href="#how" className="btn-primary" style={{ fontSize: 15, padding: "16px 34px", boxShadow: "0 0 32px rgba(132,204,22,0.35)" }}>
@@ -150,7 +133,7 @@ export default function Hero() {
           color: "rgba(255,255,255,0.45)", textDecoration: "none",
           fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase",
           fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700,
-          zIndex: 3, animation: "scroll-bounce 2s ease-in-out infinite",
+          zIndex: 3,
         }}
       >
         {t.hero.scroll}
@@ -158,11 +141,6 @@ export default function Hero() {
           <path d="M4 7l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </a>
-
-      <style>{`
-        @keyframes pulse-dot { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.6);opacity:0.4} }
-        @keyframes scroll-bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(5px)} }
-      `}</style>
     </section>
   );
 }

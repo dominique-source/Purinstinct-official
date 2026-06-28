@@ -90,7 +90,7 @@ export default function EmailCapture() {
                 value={f.val}
                 onChange={(e) => f.set(e.target.value)}
                 placeholder={f.ph}
-                style={{ width: "100%", height: 56, padding: "0 20px", borderRadius: 11, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", fontSize: 16, outline: "none", transition: "border-color 0.2s", fontFamily: "var(--font-dm), sans-serif" }}
+                style={{ width: "100%", height: 56, padding: "0 20px", borderRadius: 11, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", fontSize: 16, outline: "none", fontFamily: "var(--font-dm), sans-serif" }}
                 onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(132,204,22,0.5)")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)")}
               />
