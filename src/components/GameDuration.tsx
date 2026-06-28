@@ -175,7 +175,6 @@ function MancheContent({ fr }: { fr: boolean }) {
         <InfoRow color={CYAN} label={fr ? "Format officiel" : "Official format"} title={fr ? "30 manches — 6 × 5" : "30 rounds — 6 × 5"} desc={fr ? "Une partie officielle se joue en 30 manches, soit 6 blocs de 5 manches offensives par équipe." : "An official game is played in 30 rounds — 6 blocks of 5 offensive rounds per team."} />
         <InfoRow color={CYAN} label={fr ? "Équité" : "Fairness"} title={fr ? "Même nb de manches offensives" : "Equal offensive rounds"} desc={fr ? "Chaque équipe reçoit le même nombre de manches en attaque. L'équité est garantie peu importe qui commence." : "Each team gets the same number of offensive rounds. Fairness is guaranteed regardless of who starts."} />
         <InfoRow color={CYAN} label={fr ? "Une manche" : "One round"} title={fr ? "3 retraits défensifs" : "3 defensive outs"} desc={fr ? "Une manche se termine quand l'équipe défensive cumule 3 retraits. Les équipes pivotent ensuite." : "A round ends when the defensive team accumulates 3 outs. Teams then swap roles."} />
-        <InfoRow color={CYAN} label={fr ? "Idéal pour" : "Best for"} title={fr ? "Cliniques & écoles" : "Clinics & schools"} desc={fr ? "Parfait pour les cours d'éducation physique, les cliniques et les entraînements d'équipe." : "Perfect for physical education classes, clinics, and team training sessions."} />
       </div>
     </>
   );
