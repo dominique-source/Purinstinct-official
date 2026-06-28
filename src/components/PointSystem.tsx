@@ -31,10 +31,10 @@ const TIERS = [
   {
     key: "intermediaire" as const,
     color: AMBER,
-    num: "03–04",
+    num: "03–05",
     fr: "Intermédiaire",
     en: "Intermediate",
-    stars: 4,
+    stars: 5,
     pts_label_fr: "1–2 pts",
     pts_label_en: "1–2 pts",
     pts_sub_fr: "selon l'action",
@@ -52,7 +52,7 @@ const TIERS = [
   {
     key: "avance" as const,
     color: LIME,
-    num: "05–06",
+    num: "06",
     fr: "Avancé",
     en: "Advanced",
     stars: 6,
