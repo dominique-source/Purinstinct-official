@@ -66,7 +66,7 @@ const TIERS = [
     rules: [
       { badge: "1",  fr: "1 point par score",                                                                          en: "1 point per score" },
       { badge: "2",  fr: "Interception ramenée à la zone de départ offensif",                                          en: "Interception returned to the offensive starting zone" },
-      { badge: "1+", fr: "Botté reçu dans la zone de buts = 1 pt, et la prochaine séquence vaut 2 pts (next for two)", en: "Kick received in end zone = 1 pt, next sequence worth 2 pts (next for two)" },
+      { badge: "1+", fr: "Botté reçu dans la zone de buts = 1 pt, et la prochaine séquence vaut 2 pts next for two", en: "Kick received in end zone = 1 pt, next sequence worth 2 pts next for two" },
     ],
   },
 ] as const;
