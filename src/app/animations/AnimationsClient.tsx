@@ -213,6 +213,7 @@ function AnimationsInner() {
     function onMouseLeave() {
       active = false;
       cancelAnimationFrame(raf);
+      if (!bar) return;
       bar.querySelectorAll<HTMLSpanElement>("span[data-icon-span]").forEach((span) => {
         span.style.transform = "";
         span.style.filter = "";
