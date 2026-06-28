@@ -4,9 +4,7 @@ import Image from "next/image";
 import { useLang } from "@/lib/i18n";
 import dynamic from "next/dynamic";
 
-const CoreRules = dynamic(() => import("@/components/CoreRules"), { ssr: false });
-const Transition = dynamic(() => import("@/components/Transition"), { ssr: false });
-const Penalties = dynamic(() => import("@/components/Penalties"), { ssr: false });
+const AnimationsTabs = dynamic(() => import("@/components/AnimationsTabs"), { ssr: false });
 
 const LIME = "#84cc16";
 const CYAN = "#38bdf8";
@@ -458,43 +456,25 @@ export default function GuideClient() {
             fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10,
             letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)",
           }}>
-            {fr ? "Activations" : "Activations"}
+            {fr ? "Animations interactives" : "Interactive animations"}
           </span>
           <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.07)" }} />
           <span style={{
             fontFamily: "var(--font-barlow), sans-serif", fontWeight: 700, fontSize: 10,
             letterSpacing: "0.12em", color: "rgba(255,255,255,0.2)",
           }}>
-            3 / 3 {fr ? "disponibles" : "available"}
+            6 {fr ? "sections" : "sections"}
           </span>
         </div>
       </div>
 
-      {/* ── Activation 1: CoreRules ── */}
+      {/* ── Animations complètes ── */}
       <LockedSection
         unlocked={unlocked}
-        title={fr ? "Débloque pour explorer les règles" : "Unlock to explore the rules"}
-        badge={fr ? "Activation 01" : "Activation 01"}
+        title={fr ? "Débloque pour accéder aux animations" : "Unlock to access the animations"}
+        badge={fr ? "Contenu interactif" : "Interactive content"}
       >
-        <CoreRules />
-      </LockedSection>
-
-      {/* ── Activation 2: Transition ── */}
-      <LockedSection
-        unlocked={unlocked}
-        title={fr ? "Débloque pour voir la transition" : "Unlock to see the transition"}
-        badge={fr ? "Activation 02" : "Activation 02"}
-      >
-        <Transition />
-      </LockedSection>
-
-      {/* ── Activation 3: Penalties ── */}
-      <LockedSection
-        unlocked={unlocked}
-        title={fr ? "Débloque pour voir les pénalités" : "Unlock to see the penalties"}
-        badge={fr ? "Activation 03" : "Activation 03"}
-      >
-        <Penalties />
+        <AnimationsTabs />
       </LockedSection>
 
       {/* ── Coming soon teaser ── */}
