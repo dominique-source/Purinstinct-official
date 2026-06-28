@@ -188,6 +188,7 @@ function AnimationsInner() {
     let active = false;
 
     function tick() {
+      if (!bar) return;
       const spans = bar.querySelectorAll<HTMLSpanElement>("span[data-icon-span]");
       spans.forEach((span) => {
         const r = span.getBoundingClientRect();
