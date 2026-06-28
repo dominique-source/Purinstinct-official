@@ -27,6 +27,12 @@ const DEF_WRONG = "M40,252 C170,248 264,254 306,300 C310,340 309,370 308,400";
 
 /* Slow player paths (entrée prématurée) — end AT the left cone (52,348) so players stop there */
 const SLOW_PATH = "M284,406 C200,388 120,372 80,360 C64,354 54,348 52,348";
+
+/* Attack correct paths: DEF box left → around RIGHT cone (288,258) → OFF box bottom-right */
+const ATT_CORRECT_1 = "M40,252 C140,248 250,250 284,250 C300,252 302,266 290,268 C298,310 305,358 305,400";
+const ATT_CORRECT_2 = "M56,252 C150,250 256,252 288,252 C304,254 306,268 294,270 C302,312 309,360 309,402";
+/* Attack slow path — stops just past the right cone, visually distinct */
+const ATT_SLOW = "M40,252 C140,248 250,250 284,250 C296,252 304,264 298,280";
 /* Entry paths: OFF box → cone → DEF box → continue INTO field (premature entry) */
 const ENTRY_PATH_1 = "M296,400 C190,372 96,366 70,356 C46,360 34,350 42,336 C46,310 48,290 48,268 C55,250 88,232 128,218";
 const ENTRY_PATH_2 = "M306,406 C200,378 102,370 74,360 C50,364 38,354 46,340 C50,314 52,294 52,272 C60,254 94,237 134,224";
@@ -663,83 +669,143 @@ export default function TransitionPenalties() {
                 <rect x="72" y="24" width="196" height="98" fill={TEAL} />
                 <rect x="72" y="122" width="196" height="226" fill={MAROON} />
                 <rect x="72" y="348" width="196" height="98" fill={TEAL} />
+                <line x1="72" y1="336" x2="268" y2="336" stroke="#fff" strokeOpacity="0.45" strokeWidth="1.4" strokeDasharray="5 5" />
                 <rect x="72" y="24" width="196" height="422" fill="none" stroke="#fff" strokeOpacity="0.85" strokeWidth="2.5" />
+                <text x="170" y="72" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="12" letterSpacing="0.14em">{fr ? "ZONE DE FIN" : "END ZONE"}</text>
+                <text x="170" y="210" textAnchor="middle" fill="#fff" fillOpacity="0.85" fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="12" letterSpacing="0.14em">{fr ? "AIRE DE JEU" : "PLAY AREA"}</text>
+                <text x="170" y="402" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="12" letterSpacing="0.14em">{fr ? "ZONE DE DÉPART" : "START ZONE"}</text>
 
-                {/* Zone labels */}
-                <text x="170" y="72" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="12" letterSpacing="0.14em">{fr ? "ZONE DE BUT" : "END ZONE"}</text>
-                <text x="170" y="235" textAnchor="middle" fill="#fff" fillOpacity="0.85" fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="12" letterSpacing="0.14em">{fr ? "AIRE DE JEU" : "PLAY AREA"}</text>
-                <text x="170" y="400" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="12" letterSpacing="0.14em">{fr ? "ZONE DE DÉPART" : "START ZONE"}</text>
+                {/* DEF box (starting position, left) */}
+                <rect x={33} y={243} width="30" height="30" rx="3" fill={`${LIME}1a`} stroke={LIME} strokeWidth="1.7" strokeDasharray="3 3" />
+                <text x={48} y={287} textAnchor="middle" fill={LIME} fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="9" letterSpacing="0.12em">DÉF</text>
+                {/* OFF box (destination, bottom-right) */}
+                <rect x={290} y={390} width="30" height="30" rx="3" fill={`${LIME}1a`} stroke={LIME} strokeWidth="1.7" strokeDasharray="3 3" />
+                <text x={305} y={434} textAnchor="middle" fill={LIME} fontFamily="var(--font-barlow), sans-serif" fontWeight="800" fontSize="9" letterSpacing="0.12em">OFF</text>
 
-                {/* Lime boundary at AIRE DE JEU / ZONE DE BUT (y=122) — players must cross here */}
-                <line x1="72" y1="122" x2="268" y2="122" stroke={LIME} strokeOpacity="0.35" strokeWidth="1.5" strokeDasharray="4 4" />
+                {/* Ball on offensive start line — disappears when picked up */}
+                <circle cx="170" cy="348" r="5.5" fill={RED} stroke="#06070f" strokeWidth="1.2">
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite" calcMode="linear"
+                    values="1;1;0;0;1" keyTimes="0;0.71;0.73;0.92;1" />
+                </circle>
 
-                {/* Orange flash around ZONE DE BUT on violation */}
-                <rect x="72" y="24" width="196" height="98" fill="none" stroke={ORANGE} strokeWidth="2.5" strokeDasharray="5 4" className="trpen4-zone-flash" />
+                {/* Right cone — mirror of left cone, at same height as DEF box */}
+                <Cone x={288} y={258} />
 
-                {/* Center player — static in ZONE DE DÉPART, holds ball */}
-                <g transform="translate(170,385)">
-                  <circle r="8" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
-                  <circle r="2.5" cx="-2" cy="-2" fill="#fff" opacity="0.9" />
-                </g>
-
-                {/* Ball on ground near center player */}
-                <circle cx="170" cy="368" r="5" fill="#fff" fillOpacity="0.85" />
-                {/* Glow ring on pickup */}
-                <circle className="trpen4-ball-glow" cx="170" cy="368" r="11" fill="none" stroke={LIME} strokeWidth="2" />
-
-                {/* P1 — correct, reaches ZONE DE BUT left (dim ghost) */}
+                {/* OFF1 — enters from below the field, positions behind start line, left */}
                 <g>
-                  <circle r="6" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
-                  <circle r="1.9" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.5" />
-                  <animateMotion dur="9s" repeatCount="indefinite"
-                    path="M110,420 C100,330 100,190 100,60"
-                    keyPoints="0;0;1;1" keyTimes="0;0.08;0.47;1"
-                    calcMode="spline" keySplines="0 0 1 1;0.42 0 0.58 1;0 0 1 1" />
-                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
-                    values="0;0.30;0.30;0;0" keyTimes="0;0.06;0.73;0.83;1" />
-                </g>
-
-                {/* P2 — correct, reaches ZONE DE BUT right (dim ghost) */}
-                <g>
-                  <circle r="6" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
-                  <circle r="1.9" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.5" />
-                  <animateMotion dur="9s" repeatCount="indefinite"
-                    path="M230,420 C240,330 240,190 240,60"
-                    keyPoints="0;0;1;1" keyTimes="0;0.08;0.47;1"
-                    calcMode="spline" keySplines="0 0 1 1;0.42 0 0.58 1;0 0 1 1" />
-                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
-                    values="0;0.30;0.30;0;0" keyTimes="0;0.06;0.73;0.83;1" />
-                </g>
-
-                {/* P3 — LATE, stops in AIRE DE JEU (highlighted) */}
-                <g>
-                  <circle r="7" fill={LIME} stroke={ORANGE} strokeWidth="2" />
+                  <animateMotion dur="9s" repeatCount="indefinite" calcMode="linear"
+                    keyPoints="0;0;1;1" keyTimes="0;0.50;0.60;1"
+                    path="M305,400 L230,362" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite" calcMode="linear"
+                    values="0;0;1;1;0;0" keyTimes="0;0.50;0.52;0.88;0.93;1" />
+                  <circle r="7" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
                   <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
-                  <animateMotion dur="9s" repeatCount="indefinite"
-                    path="M170,420 L170,215"
-                    keyPoints="0;0;1;1" keyTimes="0;0.08;0.43;1"
-                    calcMode="spline" keySplines="0 0 1 1;0.42 0 0.58 1;0 0 1 1" />
-                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
-                    values="0;1;1;0;0" keyTimes="0;0.06;0.81;0.88;1" />
                 </g>
 
-                {/* Orange violation ring around P3's stopped position (170, 215) */}
-                <circle className="trpen4-p3-ring" cx="170" cy="215" r="18" fill="none" stroke={ORANGE} strokeWidth="2.5" />
+                {/* OFF2 — continues from OFF box to center of line, then picks up ball */}
+                <g>
+                  <animateMotion dur="9s" repeatCount="indefinite" calcMode="linear"
+                    keyPoints="0;0;0.91;0.91;1;1" keyTimes="0;0.50;0.66;0.71;0.73;1"
+                    path="M305,400 L170,362 L170,348" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite" calcMode="linear"
+                    values="0;0;1;1;0;0" keyTimes="0;0.50;0.52;0.88;0.93;1" />
+                  <circle r="7" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
+                </g>
 
-                {/* FAUTE badge — top center (170, 50) via CSS transform-box */}
-                <g className="trpen4-foul">
-                  <rect x="-58" y="-18" width="116" height="36" rx="18" fill={RED} />
-                  <text y="6" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="17" letterSpacing="0.04em">
+                {/* OFF3 — continues from OFF box leftward to left of start line */}
+                <g>
+                  <animateMotion dur="9s" repeatCount="indefinite" calcMode="linear"
+                    keyPoints="0;0;1;1" keyTimes="0;0.50;0.70;1"
+                    path="M305,400 L110,362" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite" calcMode="linear"
+                    values="0;0;1;1;0;0" keyTimes="0;0.50;0.52;0.88;0.93;1" />
+                  <circle r="7" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
+                </g>
+
+                {/* FAUTE badge — appears after ball pickup */}
+                <g>
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite" calcMode="linear"
+                    values="0;0;1;1;0;0" keyTimes="0;0.73;0.76;0.87;0.90;1" />
+                  <rect x="120" y="42" width="100" height="30" rx="15" fill={RED} />
+                  <text x="170" y="62" textAnchor="middle" fill="#fff" fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="15" letterSpacing="0.06em">
                     {fr ? "FAUTE !" : "FOUL!"}
                   </text>
                 </g>
 
-                {/* 2 vs 2 result — bottom center (170, 430) via CSS transform-box */}
-                <g className="trpen4-result">
-                  <rect x="-66" y="-18" width="132" height="36" rx="18" fill={`${RED}18`} stroke={RED} strokeWidth="1.5" />
-                  <text y="6" textAnchor="middle" fill={RED} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="17" letterSpacing="0.04em">
+                {/* Consequence — 2vs2 */}
+                <g>
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite" calcMode="linear"
+                    values="0;0;1;1;0;0" keyTimes="0;0.77;0.80;0.96;0.98;1" />
+                  <rect x="110" y="414" width="120" height="36" rx="18" fill={`${RED}28`} stroke={RED} strokeWidth="2" />
+                  <text x="170" y="438" textAnchor="middle" fill={RED} fontFamily="var(--font-barlow), sans-serif" fontWeight="900" fontSize="17" letterSpacing="0.06em">
                     2 vs 2
                   </text>
+                </g>
+
+                {/* P1 — correct, DEF box → around right cone → OFF box */}
+                <g>
+                  <circle r="7" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
+                  <animateMotion dur="9s" repeatCount="indefinite" path={ATT_CORRECT_1}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.43;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
+                </g>
+
+                {/* P2 — correct, DEF box → around right cone → OFF box */}
+                <g>
+                  <circle r="7" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
+                  <animateMotion dur="9s" repeatCount="indefinite" path={ATT_CORRECT_2}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.45;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
+                </g>
+
+                {/* P3 — correct (offset variant 1) */}
+                <g>
+                  <circle r="7" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
+                  <animateMotion dur="9s" repeatCount="indefinite" path={ATT_CORRECT_1}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.47;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
+                </g>
+
+                {/* P4 — correct (offset variant 2) */}
+                <g>
+                  <circle r="7" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.9" />
+                  <animateMotion dur="9s" repeatCount="indefinite" path={ATT_CORRECT_2}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.49;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.45 0 0.55 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;1;1;0;0" keyTimes="0;0.06;0.85;0.91;1" />
+                </g>
+
+                {/* SLOW — 1 lagging player, stops at right cone */}
+                <g>
+                  <circle r="7" fill={LIME} stroke="#06070f" strokeWidth="1.7" />
+                  <circle r="2.2" cx="-1.8" cy="-1.8" fill="#fff" opacity="0.5" />
+                  <animateMotion dur="9s" repeatCount="indefinite" path={ATT_SLOW}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.58;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.35 0 0.65 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;0.65;0.65;0;0" keyTimes="0;0.06;0.85;0.91;1" />
+                </g>
+                {/* Warning ring follows slow player */}
+                <g>
+                  <circle r="18" fill="none" stroke={ORANGE} strokeWidth="2" strokeDasharray="4 3" />
+                  <animateMotion dur="9s" repeatCount="indefinite" path={ATT_SLOW}
+                    keyPoints="0;0;1;1" keyTimes="0;0.06;0.58;1"
+                    calcMode="spline" keySplines="0 0 1 1;0.35 0 0.65 1;0 0 1 1" />
+                  <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+                    values="0;0;0;0.9;0.1;0.9;0;0" keyTimes="0;0.06;0.58;0.63;0.68;0.73;0.79;1" />
                 </g>
 
               </svg>
@@ -771,8 +837,8 @@ export default function TransitionPenalties() {
               </p>
               <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
                 {fr
-                  ? "Lors d'une transition défense → attaque, le joueur du centre prend le ballon alors qu'un coéquipier n'a pas encore atteint la zone de but."
-                  : "During a defense → attack transition, the center player picks up the ball while a teammate has not yet reached the end zone."}
+                  ? "5 joueurs en attente contournent le cône droit vers le box OFF. Un joueur est plus lent et n'a pas terminé sa transition."
+                  : "5 waiting players go around the right cone toward the OFF box. One player is slower and hasn't finished their transition."}
               </p>
             </div>
 
@@ -782,8 +848,8 @@ export default function TransitionPenalties() {
               </p>
               <p style={{ margin: "0 0 16px", color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.72 }}>
                 {fr
-                  ? "Le jeu s'arrête immédiatement. Un joueur offensif doit se retirer. La prochaine séquence se joue à 2 contre 2."
-                  : "The game stops immediately. One offensive player must sit out. The next sequence is played 2 vs 2."}
+                  ? "Le joueur central prend le ballon alors qu'un coéquipier n'a pas terminé sa transition. Le jeu s'arrête — la prochaine séquence se joue à 2 contre 2."
+                  : "The center player picks up the ball while a teammate hasn't finished their transition. Play stops — the next sequence is played 2 vs 2."}
               </p>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: "10px 18px" }}>
                 <span style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: 22, color: LIME, letterSpacing: "-0.02em" }}>3 vs 2</span>
