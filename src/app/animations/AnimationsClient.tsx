@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { LangProvider, useLang } from "@/lib/i18n";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -14,19 +14,95 @@ const GameDuration       = dynamic(() => import("@/components/GameDuration"),   
 
 const LIME = "#84cc16";
 
+/* ── Section icons ── */
+function IconRules({ active }: { active: boolean }) {
+  const c = active ? LIME : "rgba(255,255,255,0.45)";
+  return (
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="5" width="14" height="2" rx="1" fill={c} />
+      <rect x="3" y="12" width="14" height="2" rx="1" fill={c} />
+      <rect x="3" y="19" width="14" height="2" rx="1" fill={c} />
+      <circle cx="21" cy="6" r="2.5" stroke={c} strokeWidth="1.8" />
+      <path d="M19.5 6l1.2 1.2 2-2" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconTransition({ active }: { active: boolean }) {
+  const c = active ? LIME : "rgba(255,255,255,0.45)";
+  return (
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 9h14M14 5l4 4-4 4" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M22 17H8M12 21l-4-4 4-4" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconPenalties({ active }: { active: boolean }) {
+  const c = active ? LIME : "rgba(255,255,255,0.45)";
+  return (
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 3L2 22h22L13 3z" stroke={c} strokeWidth="2" strokeLinejoin="round" />
+      <rect x="12" y="10" width="2" height="6" rx="1" fill={c} />
+      <circle cx="13" cy="19" r="1.2" fill={c} />
+    </svg>
+  );
+}
+
+function IconChrono({ active }: { active: boolean }) {
+  const c = active ? LIME : "rgba(255,255,255,0.45)";
+  return (
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="13" cy="14" r="9" stroke={c} strokeWidth="2" />
+      <path d="M13 9v5l3 2" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10 3h6M13 3v2" stroke={c} strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconPoints({ active }: { active: boolean }) {
+  const c = active ? LIME : "rgba(255,255,255,0.45)";
+  return (
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 3l2.5 5 5.5.8-4 3.9.94 5.5L13 15.7l-4.94 2.5L10 12.7 6 8.8l5.5-.8L13 3z" stroke={c} strokeWidth="1.8" strokeLinejoin="round" fill={active ? `${LIME}28` : "none"} />
+    </svg>
+  );
+}
+
+function IconDuration({ active }: { active: boolean }) {
+  const c = active ? LIME : "rgba(255,255,255,0.45)";
+  return (
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="5" width="20" height="18" rx="2.5" stroke={c} strokeWidth="2" />
+      <path d="M3 10h20" stroke={c} strokeWidth="2" />
+      <path d="M8 3v4M18 3v4" stroke={c} strokeWidth="2" strokeLinecap="round" />
+      <rect x="7" y="14" width="4" height="4" rx="0.8" fill={c} />
+    </svg>
+  );
+}
+
+const SECTION_ICONS: Record<string, (a: boolean) => React.ReactNode> = {
+  regles:     (a) => <IconRules active={a} />,
+  transition: (a) => <IconTransition active={a} />,
+  punitions:  (a) => <IconPenalties active={a} />,
+  chrono:     (a) => <IconChrono active={a} />,
+  points:     (a) => <IconPoints active={a} />,
+  duree:      (a) => <IconDuration active={a} />,
+};
+
 const SECTIONS = [
-  { key: "regles",     fr: "3 règles de base",  en: "3 basic rules"  },
-  { key: "transition", fr: "La transition",      en: "The transition" },
-  { key: "punitions",  fr: "Les punitions",      en: "Penalties"      },
-  { key: "chrono",     fr: "16 secondes",        en: "16 seconds"     },
-  { key: "points",     fr: "Système de points",  en: "Point system"   },
-  { key: "duree",      fr: "Durée d'une partie", en: "Game duration"  },
+  { key: "regles",     fr: "3 règles",    en: "3 rules"    },
+  { key: "transition", fr: "Transition",  en: "Transition" },
+  { key: "punitions",  fr: "Punitions",   en: "Penalties"  },
+  { key: "chrono",     fr: "16 sec",      en: "16 sec"     },
+  { key: "points",     fr: "Points",      en: "Points"     },
+  { key: "duree",      fr: "Durée",       en: "Duration"   },
 ] as const;
 
 type Key = typeof SECTIONS[number]["key"];
 
 const TOP_H = 60;
-const TAB_H = 50;
+const TAB_H = 72;
 
 function Panel({ active }: { active: Key }) {
   switch (active) {
@@ -43,11 +119,56 @@ function AnimationsInner() {
   const { lang, setLang } = useLang();
   const fr = lang === "fr";
   const [active, setActive] = useState<Key>("regles");
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [iconScales, setIconScales] = useState<Record<string, number>>(() =>
+    Object.fromEntries(SECTIONS.map((s, i) => [s.key, i === 0 ? 1 : 0]))
+  );
+
+  /* Compute per-icon scale based on distance from container center */
+  const updateScales = useCallback(() => {
+    const bar = tabsRef.current;
+    if (!bar) return;
+    const barRect = bar.getBoundingClientRect();
+    const centerX = barRect.left + barRect.width / 2;
+    const buttons = bar.querySelectorAll<HTMLButtonElement>("button");
+    const next: Record<string, number> = {};
+    buttons.forEach((btn) => {
+      const key = btn.dataset.key!;
+      const r = btn.getBoundingClientRect();
+      const btnCenter = r.left + r.width / 2;
+      const dist = Math.abs(btnCenter - centerX);
+      const maxDist = barRect.width / 2 + r.width;
+      // 0 = at center (max zoom), 1 = at edge (min zoom)
+      const t = Math.min(dist / maxDist, 1);
+      next[key] = 1 - t * 0.55; // range: 0.45 → 1.0
+    });
+    setIconScales(next);
+  }, []);
+
+  useEffect(() => {
+    const bar = tabsRef.current;
+    if (!bar) return;
+    updateScales();
+    bar.addEventListener("scroll", updateScales, { passive: true });
+    window.addEventListener("resize", updateScales, { passive: true });
+    return () => {
+      bar.removeEventListener("scroll", updateScales);
+      window.removeEventListener("resize", updateScales);
+    };
+  }, [updateScales]);
 
   function switchTab(key: Key) {
     if (key === active) return;
     setActive(key);
     window.scrollTo({ top: TOP_H + TAB_H, behavior: "smooth" });
+    /* Scroll the clicked tab toward the center of the bar */
+    const bar = tabsRef.current;
+    const btn = bar?.querySelector<HTMLButtonElement>(`[data-key="${key}"]`);
+    if (bar && btn) {
+      const barCenter = bar.offsetWidth / 2;
+      const btnCenter = btn.offsetLeft + btn.offsetWidth / 2;
+      bar.scrollTo({ left: btnCenter - barCenter, behavior: "smooth" });
+    }
   }
 
   return (
@@ -88,40 +209,71 @@ function AnimationsInner() {
       </nav>
 
       {/* ── Section tabs ── */}
-      <div style={{
-        position: "sticky", top: TOP_H, zIndex: 40,
-        background: "rgba(6,7,15,0.98)", backdropFilter: "blur(12px)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        display: "flex", overflowX: "auto",
-        scrollbarWidth: "none", msOverflowStyle: "none",
-        height: TAB_H,
-      } as React.CSSProperties}>
+      <div
+        ref={tabsRef}
+        style={{
+          position: "sticky", top: TOP_H, zIndex: 40,
+          background: "rgba(6,7,15,0.98)", backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          display: "flex", overflowX: "auto",
+          scrollbarWidth: "none", msOverflowStyle: "none",
+          height: TAB_H,
+          gap: 2,
+          padding: "0 4px",
+        } as React.CSSProperties}
+      >
         {SECTIONS.map(({ key, fr: labelFr, en: labelEn }) => {
           const on = active === key;
+          /* active tab uses fixed 1.6x; others use scroll-proximity scale */
+          const iconScale = on ? 1.6 : Math.min(iconScales[key] ?? 0.7, 0.88);
+          const dimmed = !on;
           return (
             <button
               key={key}
+              data-key={key}
               onClick={() => switchTab(key)}
+              aria-pressed={on}
               style={{
-                flex: "0 0 auto",
-                padding: "0 clamp(14px,2.2vw,26px)",
+                flex: "1 0 auto",
+                minWidth: 72,
+                padding: "0 clamp(10px,1.8vw,20px)",
                 height: "100%",
                 border: "none",
-                borderBottom: `2px solid ${on ? LIME : "transparent"}`,
-                background: "transparent",
-                color: on ? LIME : "rgba(255,255,255,0.36)",
+                borderBottom: `2.5px solid ${on ? LIME : "transparent"}`,
+                background: on ? "rgba(132,204,22,0.06)" : "transparent",
+                borderRadius: "4px 4px 0 0",
+                color: on ? LIME : `rgba(255,255,255,${dimmed ? 0.28 : 0.45})`,
                 fontFamily: "var(--font-barlow), sans-serif",
                 fontWeight: on ? 800 : 600,
-                fontSize: "clamp(10px,1.4vw,12px)",
-                letterSpacing: "0.12em",
+                fontSize: "clamp(9px,1.2vw,11px)",
+                letterSpacing: "0.10em",
                 textTransform: "uppercase",
                 cursor: "pointer",
                 whiteSpace: "nowrap",
-                transition: "color 0.2s ease, border-color 0.2s ease",
+                transition: "color 0.22s ease, border-color 0.22s ease, background 0.22s ease",
                 WebkitTapHighlightColor: "transparent",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 4,
+                opacity: on ? 1 : 0.55 + (iconScales[key] ?? 0.7) * 0.45,
               } as React.CSSProperties}
             >
-              {fr ? labelFr : labelEn}
+              <span style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transform: `scale(${iconScale})`,
+                filter: on ? `drop-shadow(0 0 8px ${LIME}aa)` : "none",
+                transition: "transform 0.32s cubic-bezier(0.34,1.4,0.6,1), filter 0.28s ease, opacity 0.22s ease",
+                willChange: "transform",
+              }}>
+                {SECTION_ICONS[key](on)}
+              </span>
+              <span style={{ lineHeight: 1 }}>
+                {fr ? labelFr : labelEn}
+              </span>
             </button>
           );
         })}
