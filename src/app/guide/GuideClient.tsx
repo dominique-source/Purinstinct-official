@@ -12,7 +12,7 @@ const CYAN = "#38bdf8";
 const SHEET_ENDPOINT = process.env.NEXT_PUBLIC_GUIDE_SHEET_ENDPOINT || "";
 
 const PDF_URLS: Record<string, string> = {
-  fr: "/guides/purinstinct-guide-fr.pdf",
+  fr: "/Guide_Francais_PurInstinct-final.pdf",
   en: "/English_Guide_PurInstinct-final.pdf",
 };
 
