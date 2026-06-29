@@ -476,8 +476,22 @@ const LangContext = createContext<LangCtx>({
   t: translations.fr as TranslationShape,
 });
 
+const STORAGE_KEY = "pi_lang";
+
 export function LangProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>("fr");
+  const [lang, setLangState] = useState<Lang>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved === "en" || saved === "fr") return saved;
+    }
+    return "fr";
+  });
+
+  const setLang = (l: Lang) => {
+    localStorage.setItem(STORAGE_KEY, l);
+    setLangState(l);
+  };
+
   return (
     <LangContext.Provider value={{ lang, setLang, t: translations[lang] as TranslationShape }}>
       {children}
