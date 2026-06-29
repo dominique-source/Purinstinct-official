@@ -4,7 +4,7 @@ import { useLang } from "@/lib/i18n";
 
 const GUIDES: Record<string, string> = {
   fr: "/guides/purinstinct-guide-fr.pdf",
-  en: "/guides/purinstinct-guide-en.pdf",
+  en: "/English_Guide_PurInstinct-final.pdf",
 };
 
 const SHEET_ENDPOINT =

@@ -13,7 +13,7 @@ const SHEET_ENDPOINT = process.env.NEXT_PUBLIC_GUIDE_SHEET_ENDPOINT || "";
 
 const PDF_URLS: Record<string, string> = {
   fr: "/guides/purinstinct-guide-fr.pdf",
-  en: "/guides/purinstinct-guide-en.pdf",
+  en: "/English_Guide_PurInstinct-final.pdf",
 };
 
 async function logToSheet(payload: Record<string, string>) {
