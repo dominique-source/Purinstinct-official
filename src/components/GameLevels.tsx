@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
+import useScrollReveal from "@/lib/useScrollReveal";
 
 const IMGS: Record<string, Record<string, string>> = {
   fr: {
@@ -119,7 +120,7 @@ export default function GameLevels() {
   const trackRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const fillRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useScrollReveal<HTMLDivElement>();
   const lastIdx = useRef(0);
   const rafPending = useRef(false);
 
@@ -162,6 +163,10 @@ export default function GameLevels() {
       if (idx !== lastIdx.current) {
         lastIdx.current = idx;
         setActive(idx);
+        /* Fade the active panel in, dim the others (CSS transition eases it) */
+        panelRefs.current.forEach((p, i) => {
+          if (p) p.style.opacity = i === idx ? "1" : "0.32";
+        });
       }
     });
   }, [n]);
@@ -192,13 +197,12 @@ export default function GameLevels() {
   const Header = (
     <div
       ref={headerRef}
+      className="reveal"
       style={{
         textAlign: "center",
         maxWidth: 560,
         margin: "0 auto",
         padding: "0 24px",
-        opacity: 1,
-        transform: "none",
       }}
     >
       <span className="section-label" style={{ display: "inline-block", marginBottom: 18 }}>
@@ -291,6 +295,7 @@ export default function GameLevels() {
                     justifyContent: "center",
                     padding: "0 6vw",
                     opacity: i === 0 ? 1 : 0.32,
+                    transition: "opacity 0.45s ease",
                   }}
                 >
                   <div
@@ -432,6 +437,7 @@ export default function GameLevels() {
                         borderRadius: "50%",
                         marginTop: -3,
                         background: i <= active ? LIME : "rgba(255,255,255,0.2)",
+                        transition: "background 0.3s ease",
                       }}
                     />
                   ))}
@@ -537,6 +543,7 @@ export default function GameLevels() {
                   height: 8,
                   borderRadius: 4,
                   background: i === active ? LIME : "rgba(255,255,255,0.18)",
+                  transition: "width 0.3s cubic-bezier(0.16,1,0.3,1), background 0.3s ease",
                 }}
               />
             ))}
