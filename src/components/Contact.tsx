@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useLang } from "@/lib/i18n";
+import useScrollReveal from "@/lib/useScrollReveal";
 
 export default function Contact() {
   const { t } = useLang();
   const [sent, setSent] = useState(false);
+  const revealRef = useScrollReveal();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,6 +29,7 @@ export default function Contact() {
     fontSize: 15,
     outline: "none",
     fontFamily: "var(--font-dm), sans-serif",
+    transition: "border-color 0.18s ease",
   };
 
   return (
@@ -35,13 +38,14 @@ export default function Contact() {
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 50% 50% at 18% 30%, rgba(132,204,22,0.07) 0%, transparent 60%)", pointerEvents: "none" }} />
 
       <div
+        ref={revealRef}
         style={{
           maxWidth: 1000, margin: "0 auto", position: "relative",
           display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 48, alignItems: "start",
         }}
       >
         {/* Left — info */}
-        <div>
+        <div className="reveal">
           <span className="section-label" style={{ display: "inline-block", marginBottom: 18 }}>{t.contact.label}</span>
           <h2 style={{ fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900, fontSize: "clamp(40px, 5.5vw, 68px)", lineHeight: 0.95, textTransform: "uppercase", color: "#fff", marginBottom: 18, letterSpacing: "-0.01em" }}>
             {t.contact.title}
@@ -65,9 +69,11 @@ export default function Contact() {
         {/* Right — form */}
         <form
           onSubmit={handleSubmit}
+          className="reveal"
           style={{
             background: "#0d1117", border: "1px solid rgba(255,255,255,0.08)",
             borderRadius: 18, padding: "32px 28px", display: "flex", flexDirection: "column", gap: 14,
+            ...({ "--reveal-delay": "120ms" } as React.CSSProperties),
           }}
         >
           <input name="name" required placeholder={t.contact.formName} style={inputStyle}

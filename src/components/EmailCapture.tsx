@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { useLang } from "@/lib/i18n";
+import useScrollReveal from "@/lib/useScrollReveal";
 
 const GUIDES: Record<string, string> = {
   fr: "/Guide_Francais_PurInstinct-final.pdf",
@@ -299,33 +300,35 @@ export default function EmailCapture() {
   const { lang } = useLang();
   const fr = lang === "fr";
   const [modal, setModal] = useState<Action | null>(null);
+  const revealRef = useScrollReveal();
 
   return (
     <>
       <section id="cta" style={{ padding: "110px 24px", background: "#06070f", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 70% at 50% 100%, rgba(132,204,22,0.09) 0%, transparent 65%)", pointerEvents: "none" }} />
 
-        <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center", position: "relative" }}>
-          <span className="section-label" style={{ display: "inline-block", marginBottom: 20 }}>
+        <div ref={revealRef} style={{ maxWidth: 640, margin: "0 auto", textAlign: "center", position: "relative" }}>
+          <span className="section-label reveal" style={{ display: "inline-block", marginBottom: 20 }}>
             {fr ? "Le guide de jeu" : "The game guide"}
           </span>
 
-          <h2 style={{
+          <h2 className="reveal" style={{
             fontFamily: "var(--font-barlow), sans-serif", fontWeight: 900,
             fontSize: "clamp(48px, 7vw, 84px)", lineHeight: 0.92,
             textTransform: "uppercase", color: "#fff",
             marginBottom: 20, letterSpacing: "-0.01em",
+            ...({ "--reveal-delay": "60ms" } as React.CSSProperties),
           }}>
             {fr ? <>Prêt à<br /><span className="gradient-text">jouer ?</span></> : <>Ready to<br /><span className="gradient-text">play?</span></>}
           </h2>
 
-          <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 17, lineHeight: 1.65, maxWidth: 480, margin: "0 auto 44px" }}>
+          <p className="reveal" style={{ color: "rgba(255,255,255,0.55)", fontSize: 17, lineHeight: 1.65, maxWidth: 480, margin: "0 auto 44px", ...({ "--reveal-delay": "120ms" } as React.CSSProperties) }}>
             {fr
               ? "Explore les règles en animations interactives ou télécharge le guide PDF officiel — gratuitement."
               : "Explore the rules with interactive animations or download the official PDF guide — for free."}
           </p>
 
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+          <div className="reveal" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, ...({ "--reveal-delay": "180ms" } as React.CSSProperties) }}>
             {/* Primary — animations */}
             <button
               onClick={() => setModal("animations")}
