@@ -159,12 +159,14 @@ export default function AnimationsTabs() {
   );
   const [iconZoom, setIconZoom] = useState(1.0);
 
-  /* Dock-style mouse proximity glow */
+  /* Dock-style mouse proximity — gentle scale + glow only; color/background
+     stay CSS-driven so the active state always reads unambiguously */
   useEffect(() => {
     const bar = tabsRef.current;
     if (!bar) return;
-    const INFLUENCE = 180;
-    const BOOST = 0.38;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const INFLUENCE = 160;
+    const BOOST = 0.14;
     let mx = -9999, my = -9999;
     let raf = 0;
     let running = false;
@@ -176,11 +178,8 @@ export default function AnimationsTabs() {
         const dist = Math.hypot(mx - (r.left + r.width / 2), my - (r.top + r.height / 2));
         const t = Math.max(0, 1 - dist / INFLUENCE);
         const t2 = t * t;
-        btn.style.transform  = t > 0.05 ? `scale(${1 + BOOST * t2})` : "";
-        btn.style.filter     = t > 0.1  ? `drop-shadow(0 0 ${22 * t}px ${LIME}bb)` : "";
-        btn.style.color      = t > 0.1  ? `rgba(132,204,22,${0.4 + 0.6 * t})` : "";
-        btn.style.background = t > 0.1  ? `rgba(132,204,22,${0.1 * t2})` : "";
-        btn.style.borderColor = t > 0.1 ? `rgba(132,204,22,${0.7 * t})` : "";
+        btn.style.transform = t > 0.05 ? `scale(${1 + BOOST * t2})` : "";
+        btn.style.filter    = t > 0.1  ? `drop-shadow(0 0 ${10 * t}px ${LIME}66)` : "";
       });
       if (running) raf = requestAnimationFrame(tick);
     }
@@ -192,7 +191,7 @@ export default function AnimationsTabs() {
       cancelAnimationFrame(raf);
       if (!bar) return;
       bar.querySelectorAll<HTMLButtonElement>("button[data-key]").forEach((btn) => {
-        btn.style.transform = btn.style.filter = btn.style.color = btn.style.background = btn.style.borderColor = "";
+        btn.style.transform = btn.style.filter = "";
       });
     }
 
@@ -234,6 +233,24 @@ export default function AnimationsTabs() {
     };
   }, [updateScales]);
 
+  /* Sliding ink indicator — carries the active state from tab to tab */
+  const [ink, setInk] = useState<{ x: number; w: number } | null>(null);
+  const measureInk = useCallback(() => {
+    const bar = tabsRef.current;
+    const btn = bar?.querySelector<HTMLButtonElement>(`[data-key="${active}"]`);
+    if (!bar || !btn) return;
+    const inset = 14;
+    setInk({ x: btn.offsetLeft + inset, w: Math.max(btn.offsetWidth - inset * 2, 24) });
+  }, [active]);
+
+  useEffect(() => {
+    measureInk();
+    /* Re-measure once webfonts settle (tab widths depend on Barlow) */
+    document.fonts?.ready?.then(measureInk);
+    window.addEventListener("resize", measureInk);
+    return () => window.removeEventListener("resize", measureInk);
+  }, [measureInk, lang]);
+
   /* Scroll-driven zoom for active tab icon */
   useEffect(() => {
     setIconZoom(1.0);
@@ -248,6 +265,21 @@ export default function AnimationsTabs() {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, [active]);
+
+  /* Arrow-key navigation between tabs (ArrowLeft/Right, Home, End) */
+  function onTabsKeyDown(e: React.KeyboardEvent) {
+    const idx = SECTIONS.findIndex((s) => s.key === active);
+    let next = -1;
+    if (e.key === "ArrowRight") next = (idx + 1) % SECTIONS.length;
+    else if (e.key === "ArrowLeft") next = (idx - 1 + SECTIONS.length) % SECTIONS.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = SECTIONS.length - 1;
+    if (next < 0) return;
+    e.preventDefault();
+    const key = SECTIONS[next].key;
+    switchTab(key);
+    tabsRef.current?.querySelector<HTMLButtonElement>(`[data-key="${key}"]`)?.focus();
+  }
 
   function switchTab(key: Key) {
     if (key === active) return;
@@ -271,6 +303,9 @@ export default function AnimationsTabs() {
       {/* ── Tab bar ── */}
       <div
         ref={tabsRef}
+        role="tablist"
+        aria-label={fr ? "Sections du guide" : "Guide sections"}
+        onKeyDown={onTabsKeyDown}
         style={{
           position: "sticky", top: NAV_H, zIndex: 40,
           background: "rgba(6,7,15,0.98)", backdropFilter: "blur(12px)",
@@ -288,24 +323,23 @@ export default function AnimationsTabs() {
               key={key}
               data-key={key}
               onClick={() => switchTab(key)}
-              aria-pressed={on}
-              className={on ? "tab-active-pulse" : undefined}
+              role="tab"
+              aria-selected={on}
+              tabIndex={on ? 0 : -1}
+              className={`gtab${on ? " gtab-on" : ""}`}
               style={{
                 flex: "1 0 auto", minWidth: 72,
                 padding: "0 clamp(10px,1.8vw,20px)",
                 height: "100%",
-                border: on ? `1.5px solid ${LIME}` : "none",
-                borderBottom: on ? `2.5px solid ${LIME}` : "2.5px solid transparent",
-                background: on ? "rgba(132,204,22,0.08)" : "transparent",
-                borderRadius: "4px 4px 0 0",
-                color: on ? LIME : `rgba(255,255,255,${!on ? 0.28 : 0.45})`,
+                border: "none",
+                borderRadius: 10,
                 fontFamily: "var(--font-barlow), sans-serif",
                 fontWeight: on ? 800 : 600,
                 fontSize: "clamp(9px,1.2vw,11px)",
                 letterSpacing: "0.10em", textTransform: "uppercase",
                 cursor: "pointer", whiteSpace: "nowrap",
-                transition: "color 0.22s ease, border-color 0.22s ease, background 0.22s ease",
                 WebkitTapHighlightColor: "transparent",
+                touchAction: "manipulation",
                 display: "flex", flexDirection: "column",
                 alignItems: "center", justifyContent: "center", gap: 4,
                 opacity: on ? 1 : 0.55 + (iconScales[key] ?? 0.7) * 0.45,
@@ -313,6 +347,8 @@ export default function AnimationsTabs() {
             >
               <span
                 data-icon-span=""
+                key={`${key}-${on ? "on" : "off"}`}
+                className={on ? "gtab-icon-pop" : undefined}
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center",
                   transform: `scale(${iconScale})`,
@@ -326,10 +362,19 @@ export default function AnimationsTabs() {
             </button>
           );
         })}
+
+        {/* Sliding ink indicator — one element, follows the active tab */}
+        {ink && (
+          <div
+            aria-hidden
+            className="gtab-ink"
+            style={{ transform: `translateX(${ink.x}px)`, width: ink.w }}
+          />
+        )}
       </div>
 
       {/* ── Panel ── */}
-      <div key={active} ref={panelRef} className="panel-root" style={{ animation: "panelIn 0.35s cubic-bezier(0.16,1,0.3,1) both" }}>
+      <div key={active} ref={panelRef} className="panel-root" role="tabpanel" aria-label={SECTIONS.find((s) => s.key === active)?.[fr ? "fr" : "en"]} style={{ animation: "panelIn 0.35s cubic-bezier(0.16,1,0.3,1) both" }}>
         <Panel active={active} />
       </div>
 
@@ -337,6 +382,37 @@ export default function AnimationsTabs() {
         @keyframes panelIn {
           from { opacity: 0; transform: translateY(12px); }
           to   { opacity: 1; transform: none; }
+        }
+        /* ── Tab activation states ── */
+        .gtab {
+          color: rgba(255,255,255,0.5);
+          background: transparent;
+          transition: color 0.22s ease, background 0.22s ease, opacity 0.22s ease;
+        }
+        .gtab:not(.gtab-on):hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.04); }
+        .gtab-on { color: ${LIME}; background: rgba(132,204,22,0.08); }
+        .gtab:active { background: rgba(132,204,22,0.16); }
+        .gtab:focus-visible { outline: 2px solid ${LIME}; outline-offset: -3px; }
+        .gtab-ink {
+          position: absolute;
+          left: 0; bottom: 0;
+          height: 2.5px;
+          background: ${LIME};
+          border-radius: 2px;
+          box-shadow: 0 0 10px rgba(132,204,22,0.8);
+          pointer-events: none;
+          transition: transform 0.32s cubic-bezier(0.16,1,0.3,1), width 0.32s cubic-bezier(0.16,1,0.3,1);
+        }
+        /* One-shot pop when a tab becomes active (replaces the infinite pulse) */
+        @keyframes gtabIconPop {
+          0%   { transform: scale(0.72); }
+          55%  { transform: scale(1.16); }
+          100% { transform: scale(1); }
+        }
+        .gtab-icon-pop { animation: gtabIconPop 0.35s cubic-bezier(0.34,1.4,0.6,1); }
+        @media (prefers-reduced-motion: reduce) {
+          .gtab, .gtab-ink { transition: none; }
+          .gtab-icon-pop { animation: none; }
         }
         @supports (animation-timeline: view()) {
           @media (prefers-reduced-motion: no-preference) {
