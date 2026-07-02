@@ -1,7 +1,7 @@
 "use client";
-import { useRef } from "react";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
+import useScrollReveal from "@/lib/useScrollReveal";
 
 const LIME = "#84cc16";
 const ACCENTS = [LIME, "#f97316", "#a855f7", "#eab308", "#38bdf8"] as const;
@@ -38,11 +38,12 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
   imgScale: number;
 }) {
   const isAlt = idx % 2 === 1;
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useScrollReveal<HTMLDivElement>();
 
   return (
     <div
       ref={cardRef}
+      className="reveal"
       style={{
         position: "relative",
         borderRadius: 20,
@@ -50,8 +51,6 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
         background: "#0c0d17",
         border: `1px solid ${accent}22`,
         boxShadow: "0 24px 72px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03)",
-        opacity: 1,
-        transform: "none",
       }}
     >
       {/* Radial accent glow */}
@@ -125,8 +124,6 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
               color: "#fff",
               letterSpacing: "-0.02em",
               marginBottom: 22,
-              opacity: 1,
-              transform: "none",
             }}>{content.title}</h3>
 
             {/* Accent rule */}
@@ -141,8 +138,6 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
               color: "rgba(255,255,255,0.5)",
               fontSize: "clamp(14px, 1.3vw, 15.5px)",
               lineHeight: 1.78, maxWidth: 340,
-              opacity: 1,
-              transform: "none",
             }}>{content.sub}</p>
 
             {/* Special power callout */}
@@ -152,8 +147,6 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
                 marginLeft: 4,
                 paddingLeft: 12,
                 borderLeft: "2px solid #38bdf855",
-                opacity: 1,
-                transform: "none",
               }}>
                 <p style={{
                   color: "#38bdf8cc",
@@ -170,11 +163,10 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
 
         {/* ── Image column ── */}
         <div className="amoves-img" style={{ position: "relative", overflow: "hidden", minHeight: 280 }}>
-          {/* Image reveal div */}
-          <div style={{
+          {/* Image fades in just after the card body */}
+          <div className="reveal reveal-fade" style={{
             position: "absolute", inset: 0,
-            opacity: 1,
-            transform: "none",
+            ...({ "--reveal-delay": "160ms" } as React.CSSProperties),
           }}>
             <Image
               src={athlete}
@@ -200,6 +192,7 @@ function MoveCard({ idx, content, accent, athlete, imgScale }: {
 
 export default function ActionMoves() {
   const { t } = useLang();
+  const headerRef = useScrollReveal();
   const moves = t.moves.items as unknown as MoveContent[];
   const [line1, line2] = t.moves.title.split("\n");
 
@@ -221,10 +214,8 @@ export default function ActionMoves() {
       }} />
 
       {/* Section header */}
-      <div style={{
+      <div ref={headerRef} className="reveal" style={{
         textAlign: "center", maxWidth: 560, margin: "0 auto clamp(44px, 6vw, 68px)",
-        opacity: 1,
-        transform: "none",
       }}>
         <span className="section-label" style={{ display: "inline-block", marginBottom: 16 }}>
           {t.moves.label}
