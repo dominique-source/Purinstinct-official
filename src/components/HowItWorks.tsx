@@ -1,13 +1,15 @@
 "use client";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
+import useScrollReveal from "@/lib/useScrollReveal";
 
 const STEP_PHOTOS = ["/images/sprint.jpg", "/images/gameplay-hold.jpg", "/images/gameplay-tag.jpg"];
 const STEP_POSITIONS = ["center 20%", "center 40%", "center 30%"];
 
-function StepCard({ photo, pos, num, title, body }: { photo: string; pos: string; num: string; title: string; body: string; delay: number }) {
+function StepCard({ photo, pos, num, title, body, delay }: { photo: string; pos: string; num: string; title: string; body: string; delay: number }) {
   return (
     <div
+      className="reveal step-card"
       style={{
         position: "relative",
         borderRadius: 20,
@@ -18,6 +20,7 @@ function StepCard({ photo, pos, num, title, body }: { photo: string; pos: string
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-end",
+        ...({ "--reveal-delay": `${delay}ms` } as React.CSSProperties),
       }}
     >
       {/* Photo */}
@@ -53,12 +56,14 @@ function StepCard({ photo, pos, num, title, body }: { photo: string; pos: string
 
 export default function HowItWorks() {
   const { t } = useLang();
+  const revealRef = useScrollReveal();
 
   return (
     <section id="how" style={{ padding: "110px 24px", background: "#0d1117" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      <div ref={revealRef} style={{ maxWidth: 1100, margin: "0 auto" }}>
         {/* Header */}
         <div
+          className="reveal"
           style={{ textAlign: "center", marginBottom: 64 }}
         >
           <span className="section-label" style={{ display: "block", marginBottom: 16 }}>{t.what.label}</span>
@@ -77,7 +82,13 @@ export default function HowItWorks() {
 
       </div>
 
-      <style>{`.step-photo-wrap:hover { transform: scale(1.04); }`}</style>
+      <style>{`
+        .step-photo-wrap { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); }
+        .step-card:hover .step-photo-wrap { transform: scale(1.04); }
+        @media (prefers-reduced-motion: reduce) {
+          .step-photo-wrap { transition: none; }
+        }
+      `}</style>
     </section>
   );
 }
