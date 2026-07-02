@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 
 /**
  * Scroll-reveal via IntersectionObserver.
@@ -9,16 +9,22 @@ import { useEffect, useRef } from "react";
  * either on the container itself, or on children for staggered entrances
  * (stagger via `--reveal-delay` inline style).
  *
+ * Implemented as a callback ref so it also works for elements that mount
+ * later than the component (e.g. after a responsive mode switch).
+ *
  * Falls back to instantly visible when the user prefers reduced motion or
  * IntersectionObserver is unavailable.
  */
 export default function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
   options?: { threshold?: number; rootMargin?: string }
 ) {
-  const ref = useRef<T>(null);
+  const cleanup = useRef<(() => void) | null>(null);
+  // Options are read once (first render) — reveal thresholds never change at runtime
+  const opts = useRef(options);
 
-  useEffect(() => {
-    const el = ref.current;
+  return useCallback((el: T | null) => {
+    cleanup.current?.();
+    cleanup.current = null;
     if (!el) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -35,15 +41,11 @@ export default function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
         }
       },
       {
-        threshold: options?.threshold ?? 0.12,
-        rootMargin: options?.rootMargin ?? "0px 0px -8% 0px",
+        threshold: opts.current?.threshold ?? 0.12,
+        rootMargin: opts.current?.rootMargin ?? "0px 0px -8% 0px",
       }
     );
     io.observe(el);
-    return () => io.disconnect();
-    // options is intentionally read once — reveal runs a single time per mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    cleanup.current = () => io.disconnect();
   }, []);
-
-  return ref;
 }
