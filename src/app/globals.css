@@ -57,6 +57,35 @@ body {
 .delay-300 { animation-delay: 0.32s; }
 .delay-400 { animation-delay: 0.46s; }
 .delay-500 { animation-delay: 0.62s; }
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up, .anim-fade-in { animation: none; }
+}
+
+/* ── Scroll reveal (paired with useScrollReveal hook) ──
+   Put `.reveal` on the observed container itself, or on its children for a
+   staggered entrance (delay via `--reveal-delay` inline style). The hook adds
+   `.is-visible` when the container enters the viewport. */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal-fade { transform: none; }
+.is-visible.reveal,
+.is-visible .reveal {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
 
 .gradient-text {
   background: linear-gradient(135deg, #84cc16 0%, #a3e635 55%, #d9f99d 100%);
