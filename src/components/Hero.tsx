@@ -1,9 +1,36 @@
 "use client";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
 
 export default function Hero() {
   const { t } = useLang();
+  const photoRef = useRef<HTMLDivElement>(null);
+
+  /* Parallax: the photo scrolls at ~0.18x speed while the hero is on screen.
+     The wrapper's -20% inset provides the overflow headroom. */
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const el = photoRef.current;
+        if (!el) return;
+        const y = window.scrollY;
+        if (y <= window.innerHeight * 1.1) {
+          el.style.transform = `translate3d(0, ${y * 0.18}px, 0)`;
+        }
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   return (
     <section
@@ -22,10 +49,12 @@ export default function Hero() {
     >
       {/* Parallax photo */}
       <div
+        ref={photoRef}
         style={{
           position: "absolute",
           inset: "-20% 0",
           zIndex: 0,
+          willChange: "transform",
         }}
       >
         <Image
@@ -77,6 +106,7 @@ export default function Hero() {
       <div style={{ position: "relative", zIndex: 3, maxWidth: 860, width: "100%" }}>
         {/* Headline */}
         <h1
+          className="anim-fade-up"
           style={{
             fontFamily: "var(--font-barlow), sans-serif",
             fontWeight: 900,
@@ -96,6 +126,7 @@ export default function Hero() {
 
         {/* Sub */}
         <p
+          className="anim-fade-up delay-200"
           style={{
             fontSize: "clamp(16px, 2vw, 19px)",
             color: "rgba(255,255,255,0.7)",
@@ -110,6 +141,7 @@ export default function Hero() {
 
         {/* CTAs */}
         <div
+          className="anim-fade-up delay-300"
           style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}
         >
           <a href="#how" className="btn-primary" style={{ fontSize: 15, padding: "16px 34px", boxShadow: "0 0 32px rgba(132,204,22,0.35)" }}>
@@ -127,6 +159,7 @@ export default function Hero() {
       {/* Scroll cue */}
       <a
         href="#how"
+        className="anim-fade-in delay-500"
         style={{
           position: "absolute", bottom: 32, left: "50%", transform: "translateX(-50%)",
           display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
