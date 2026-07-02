@@ -1,14 +1,15 @@
 "use client";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
+import useScrollReveal from "@/lib/useScrollReveal";
 
 const CARD_PHOTOS = ["/images/coaching.jpg", "/images/gameplay-ball.jpg", "/images/championship.jpg"];
 const CARD_POSITIONS = ["center 30%", "center 40%", "center 20%"];
 
-function ServiceCard({ photo, pos, icon, title, body, cta }: { photo: string; pos: string; icon: string; title: string; body: string; cta: string; delay: number }) {
+function ServiceCard({ photo, pos, icon, title, body, cta, delay }: { photo: string; pos: string; icon: string; title: string; body: string; cta: string; delay: number }) {
   return (
     <div
-      className="service-card"
+      className="service-card reveal"
       style={{
         position: "relative",
         borderRadius: 20,
@@ -19,6 +20,7 @@ function ServiceCard({ photo, pos, icon, title, body, cta }: { photo: string; po
         flexDirection: "column",
         justifyContent: "flex-end",
         cursor: "default",
+        ...({ "--reveal-delay": `${delay}ms` } as React.CSSProperties),
       }}
     >
       {/* Photo — zooms on card hover */}
@@ -26,8 +28,10 @@ function ServiceCard({ photo, pos, icon, title, body, cta }: { photo: string; po
         <Image src={photo} alt={title} fill sizes="(max-width:768px) 100vw, 33vw" style={{ objectFit: "cover", objectPosition: pos }} />
       </div>
 
-      {/* Dark overlay — lifts slightly on hover to reveal more photo */}
+      {/* Dark overlay — crossfades to a lighter variant on hover to reveal more photo
+          (two layers because gradients can't be transitioned directly) */}
       <div className="service-overlay" style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,7,15,0.1) 0%, rgba(6,7,15,0.55) 45%, rgba(6,7,15,0.97) 80%, #06070f 100%)" }} />
+      <div aria-hidden className="service-overlay-hover" style={{ position: "absolute", inset: 0, opacity: 0, background: "linear-gradient(to bottom, rgba(6,7,15,0.0) 0%, rgba(6,7,15,0.35) 35%, rgba(6,7,15,0.92) 75%, #06070f 100%)" }} />
 
       {/* Lime accent bar bottom */}
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 3, background: "linear-gradient(to right, #84cc16, transparent)", opacity: 0 }} className="service-bar" />
@@ -39,6 +43,7 @@ function ServiceCard({ photo, pos, icon, title, body, cta }: { photo: string; po
         <p style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.65, fontSize: 15, marginBottom: 24 }}>{body}</p>
         <a
           href="#contact"
+          className="service-cta"
           style={{ display: "inline-flex", alignItems: "center", gap: 7, color: "#84cc16", fontSize: 14, fontWeight: 600, textDecoration: "none" }}
         >
           {cta}
@@ -53,12 +58,14 @@ function ServiceCard({ photo, pos, icon, title, body, cta }: { photo: string; po
 
 export default function ForWhom() {
   const { t } = useLang();
+  const revealRef = useScrollReveal();
 
   return (
     <section id="forwhom" style={{ padding: "110px 24px", background: "#0d1117" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      <div ref={revealRef} style={{ maxWidth: 1100, margin: "0 auto" }}>
         {/* Header */}
         <div
+          className="reveal"
           style={{ textAlign: "center", marginBottom: 64 }}
         >
           <span className="section-label" style={{ display: "block", marginBottom: 16 }}>{t.forwhom.label}</span>
@@ -77,9 +84,19 @@ export default function ForWhom() {
       </div>
 
       <style>{`
+        .service-photo-wrap { transition: transform 0.55s cubic-bezier(0.16,1,0.3,1); }
+        .service-overlay, .service-overlay-hover { transition: opacity 0.35s ease; }
+        .service-bar { transition: opacity 0.3s ease; }
         .service-card:hover .service-photo-wrap { transform: scale(1.06); }
-        .service-card:hover .service-overlay { background: linear-gradient(to bottom, rgba(6,7,15,0.0) 0%, rgba(6,7,15,0.35) 35%, rgba(6,7,15,0.92) 75%, #06070f 100%) !important; }
+        .service-card:hover .service-overlay { opacity: 0; }
+        .service-card:hover .service-overlay-hover { opacity: 1 !important; }
         .service-card:hover .service-bar { opacity: 1 !important; }
+        .service-cta svg { transition: transform 0.25s cubic-bezier(0.16,1,0.3,1); }
+        .service-cta:hover svg { transform: translateX(4px); }
+        .service-cta:hover { text-decoration: underline; text-underline-offset: 4px; }
+        @media (prefers-reduced-motion: reduce) {
+          .service-photo-wrap, .service-overlay, .service-bar, .service-cta svg { transition: none; }
+        }
       `}</style>
     </section>
   );
